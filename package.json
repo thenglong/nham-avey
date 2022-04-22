@@ -6,7 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "nx": "nx"
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
@@ -24,6 +24,8 @@
     "tslib": "^2.4.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
     "@nestjs/schematics": "^8.0.10",
     "@nestjs/testing": "^8.4.4",
     "@nrwl/cli": "14.0.1",
@@ -55,6 +57,7 @@
     "eslint-plugin-jsx-a11y": "6.5.1",
     "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.4.0",
+    "husky": "^7.0.4",
     "jest": "27.5.1",
     "nx": "14.0.1",
     "postcss": "^8.4.12",
