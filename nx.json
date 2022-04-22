@@ -29,5 +29,18 @@
       }
     ]
   },
-  "defaultProject": "nham-eylov-be"
+  "defaultProject": "nham-eylov-be",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  }
 }

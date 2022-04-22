@@ -1,0 +1,60 @@
+{
+  "root": "apps/nham-eylov-fe",
+  "sourceRoot": "apps/nham-eylov-fe",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/nham-eylov-fe",
+        "outputPath": "dist/apps/nham-eylov-fe"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "nham-eylov-fe:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "nham-eylov-fe:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "nham-eylov-fe:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "nham-eylov-fe:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/nham-eylov-fe"],
+      "options": {
+        "jestConfig": "apps/nham-eylov-fe/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/nham-eylov-fe/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
