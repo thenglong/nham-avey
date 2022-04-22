@@ -1,3 +1,3 @@
 {
-  "*": "npx nx format:write"
+  "*": ["npx nx format:write", "npx nx format:check"]
 }
