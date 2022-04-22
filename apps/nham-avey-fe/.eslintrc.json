@@ -3,10 +3,10 @@
     "plugin:@nrwl/nx/react-typescript",
     "..\\..\\.eslintrc.json",
     "next",
+    "next/core-web-vitals",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "next/core-web-vitals",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:jsx-a11y/recommended"
