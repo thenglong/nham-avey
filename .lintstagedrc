@@ -1,4 +1,4 @@
 {
   "*": "npx nx format:write",
-  "*.{js,jsx,ts,tsx,json,mdx}": "npx nx affected --target=lint --fix=true"
+  "*.{js,jsx,ts,tsx,json,mdx}": "npx nx run-many --target=lint --all --fix=true"
 }
