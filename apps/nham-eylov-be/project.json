@@ -1,0 +1,52 @@
+{
+  "root": "apps/nham-eylov-be",
+  "sourceRoot": "apps/nham-eylov-be/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/nham-eylov-be",
+        "main": "apps/nham-eylov-be/src/main.ts",
+        "tsConfig": "apps/nham-eylov-be/tsconfig.app.json",
+        "assets": ["apps/nham-eylov-be/src/assets"]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/nham-eylov-be/src/environments/environment.ts",
+              "with": "apps/nham-eylov-be/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "nham-eylov-be:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/nham-eylov-be/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/nham-eylov-be"],
+      "options": {
+        "jestConfig": "apps/nham-eylov-be/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

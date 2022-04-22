@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "projects": {
+    "nham-eylov-be": "apps/nham-eylov-be"
+  }
+}
