@@ -1,5 +1,5 @@
 {
-  "npmScope": "nham-eylov",
+  "npmScope": "nham-avey",
   "affected": {
     "defaultBase": "main"
   },
@@ -29,7 +29,7 @@
       }
     ]
   },
-  "defaultProject": "nham-eylov-be",
+  "defaultProject": "nham-avey-be",
   "generators": {
     "@nrwl/react": {
       "application": {

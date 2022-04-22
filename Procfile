@@ -1,1 +1,1 @@
-web: node dist/apps/nham-eylov-be/main.js
+web: node dist/apps/nham-avey-be/main.js

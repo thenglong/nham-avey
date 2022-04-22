@@ -1,6 +1,6 @@
 {
-  "root": "apps/nham-eylov-fe",
-  "sourceRoot": "apps/nham-eylov-fe",
+  "root": "apps/nham-avey-fe",
+  "sourceRoot": "apps/nham-avey-fe",
   "projectType": "application",
   "targets": {
     "build": {
@@ -8,8 +8,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/nham-eylov-fe",
-        "outputPath": "dist/apps/nham-eylov-fe"
+        "root": "apps/nham-avey-fe",
+        "outputPath": "dist/apps/nham-avey-fe"
       },
       "configurations": {
         "development": {},
@@ -20,16 +20,16 @@
       "executor": "@nrwl/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "nham-eylov-fe:build",
+        "buildTarget": "nham-avey-fe:build",
         "dev": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "nham-eylov-fe:build:development",
+          "buildTarget": "nham-avey-fe:build:development",
           "dev": true
         },
         "production": {
-          "buildTarget": "nham-eylov-fe:build:production",
+          "buildTarget": "nham-avey-fe:build:production",
           "dev": false
         }
       }
@@ -37,14 +37,14 @@
     "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "nham-eylov-fe:build:production"
+        "buildTarget": "nham-avey-fe:build:production"
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/nham-eylov-fe"],
+      "outputs": ["coverage/apps/nham-avey-fe"],
       "options": {
-        "jestConfig": "apps/nham-eylov-fe/jest.config.ts",
+        "jestConfig": "apps/nham-avey-fe/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -52,7 +52,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/nham-eylov-fe/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/nham-avey-fe/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

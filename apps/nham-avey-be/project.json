@@ -1,16 +1,16 @@
 {
-  "root": "apps/nham-eylov-be",
-  "sourceRoot": "apps/nham-eylov-be/src",
+  "root": "apps/nham-avey-be",
+  "sourceRoot": "apps/nham-avey-be/src",
   "projectType": "application",
   "targets": {
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/nham-eylov-be",
-        "main": "apps/nham-eylov-be/src/main.ts",
-        "tsConfig": "apps/nham-eylov-be/tsconfig.app.json",
-        "assets": ["apps/nham-eylov-be/src/assets"]
+        "outputPath": "dist/apps/nham-avey-be",
+        "main": "apps/nham-avey-be/src/main.ts",
+        "tsConfig": "apps/nham-avey-be/tsconfig.app.json",
+        "assets": ["apps/nham-avey-be/src/assets"]
       },
       "configurations": {
         "production": {
@@ -19,8 +19,8 @@
           "inspect": false,
           "fileReplacements": [
             {
-              "replace": "apps/nham-eylov-be/src/environments/environment.ts",
-              "with": "apps/nham-eylov-be/src/environments/environment.prod.ts"
+              "replace": "apps/nham-avey-be/src/environments/environment.ts",
+              "with": "apps/nham-avey-be/src/environments/environment.prod.ts"
             }
           ]
         }
@@ -29,21 +29,21 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "nham-eylov-be:build"
+        "buildTarget": "nham-avey-be:build"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/nham-eylov-be/**/*.ts"]
+        "lintFilePatterns": ["apps/nham-avey-be/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/nham-eylov-be"],
+      "outputs": ["coverage/apps/nham-avey-be"],
       "options": {
-        "jestConfig": "apps/nham-eylov-be/jest.config.ts",
+        "jestConfig": "apps/nham-avey-be/jest.config.ts",
         "passWithNoTests": true
       }
     }

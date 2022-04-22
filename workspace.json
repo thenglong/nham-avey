@@ -1,8 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "nham-eylov-be": "apps/nham-eylov-be",
-    "nham-eylov-fe": "apps/nham-eylov-fe",
-    "nham-eylov-fe-e2e": "apps/nham-eylov-fe-e2e"
+    "nham-avey-be": "apps/nham-avey-be",
+    "nham-avey-fe": "apps/nham-avey-fe",
+    "nham-avey-fe-e2e": "apps/nham-avey-fe-e2e"
   }
 }

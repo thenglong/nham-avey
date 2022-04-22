@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'nham-eylov-be',
+  displayName: 'nham-avey-be',
   preset: '../../jest.preset.ts',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/nham-eylov-be',
+  coverageDirectory: '../../coverage/apps/nham-avey-be',
 };
