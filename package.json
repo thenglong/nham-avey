@@ -15,7 +15,7 @@
     "@nestjs/core": "^8.4.4",
     "@nestjs/platform-express": "^8.4.4",
     "@nrwl/next": "14.0.3",
-    "core-js": "^3.22.2",
+    "core-js": "^3.22.3",
     "next": "12.1.5",
     "react": "18.1.0",
     "react-dom": "18.1.0",
