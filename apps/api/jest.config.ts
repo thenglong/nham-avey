@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'nham-avey-be',
+  displayName: 'api',
   preset: '../../jest.preset.ts',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/nham-avey-be',
+  coverageDirectory: '../../coverage/apps/api',
 };

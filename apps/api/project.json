@@ -1,16 +1,15 @@
 {
-  "root": "apps/nham-avey-be",
-  "sourceRoot": "apps/nham-avey-be/src",
+  "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/nham-avey-be",
-        "main": "apps/nham-avey-be/src/main.ts",
-        "tsConfig": "apps/nham-avey-be/tsconfig.app.json",
-        "assets": ["apps/nham-avey-be/src/assets"]
+        "outputPath": "dist/apps/api",
+        "main": "apps/api/src/main.ts",
+        "tsConfig": "apps/api/tsconfig.app.json",
+        "assets": ["apps/api/src/assets"]
       },
       "configurations": {
         "production": {
@@ -19,8 +18,8 @@
           "inspect": false,
           "fileReplacements": [
             {
-              "replace": "apps/nham-avey-be/src/environments/environment.ts",
-              "with": "apps/nham-avey-be/src/environments/environment.prod.ts"
+              "replace": "apps/api/src/environments/environment.ts",
+              "with": "apps/api/src/environments/environment.prod.ts"
             }
           ]
         }
@@ -29,21 +28,21 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "nham-avey-be:build"
+        "buildTarget": "api:build"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/nham-avey-be/**/*.ts"]
+        "lintFilePatterns": ["apps/api/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/nham-avey-be"],
+      "outputs": ["coverage/apps/api"],
       "options": {
-        "jestConfig": "apps/nham-avey-be/jest.config.ts",
+        "jestConfig": "apps/api/jest.config.ts",
         "passWithNoTests": true
       }
     }

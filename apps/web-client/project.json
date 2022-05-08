@@ -1,6 +1,5 @@
 {
-  "root": "apps/nham-avey-fe",
-  "sourceRoot": "apps/nham-avey-fe",
+  "sourceRoot": "apps/web-client",
   "projectType": "application",
   "targets": {
     "build": {
@@ -8,8 +7,8 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "root": "apps/nham-avey-fe",
-        "outputPath": "dist/apps/nham-avey-fe"
+        "root": "apps/web-client",
+        "outputPath": "dist/apps/web-client"
       },
       "configurations": {
         "development": {},
@@ -20,16 +19,16 @@
       "executor": "@nrwl/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "nham-avey-fe:build",
+        "buildTarget": "web-client:build",
         "dev": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "nham-avey-fe:build:development",
+          "buildTarget": "web-client:build:development",
           "dev": true
         },
         "production": {
-          "buildTarget": "nham-avey-fe:build:production",
+          "buildTarget": "web-client:build:production",
           "dev": false
         }
       }
@@ -37,14 +36,14 @@
     "export": {
       "executor": "@nrwl/next:export",
       "options": {
-        "buildTarget": "nham-avey-fe:build:production"
+        "buildTarget": "web-client:build:production"
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/nham-avey-fe"],
+      "outputs": ["coverage/apps/web-client"],
       "options": {
-        "jestConfig": "apps/nham-avey-fe/jest.config.ts",
+        "jestConfig": "apps/web-client/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -52,7 +51,7 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/nham-avey-fe/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/web-client/**/*.{ts,tsx,js,jsx}"]
       }
     }
   },

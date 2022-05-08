@@ -29,7 +29,7 @@
       }
     ]
   },
-  "defaultProject": "nham-avey-be",
+  "defaultProject": "api",
   "generators": {
     "@nrwl/react": {
       "application": {

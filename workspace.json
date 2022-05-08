@@ -1,8 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "nham-avey-be": "apps/nham-avey-be",
-    "nham-avey-fe": "apps/nham-avey-fe",
-    "nham-avey-fe-e2e": "apps/nham-avey-fe-e2e"
+    "api": "apps/api",
+    "web-client": "apps/web-client",
+    "web-client-e2e": "apps/web-client-e2e"
   }
 }

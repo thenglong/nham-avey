@@ -16,10 +16,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": [
-          "error",
-          "apps/nham-avey-fe/pages"
-        ]
+        "@next/next/no-html-link-for-pages": ["error", "apps/web-client/pages"]
       }
     },
     {
