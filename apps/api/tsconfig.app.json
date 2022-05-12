@@ -6,7 +6,7 @@
     "types": ["node"],
     "emitDecoratorMetadata": true,
     "target": "es2015",
-    "strict": true,
+    "strict": true
   },
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts", "ormconfig.js"]

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   upgrade-packages:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js ⚙️
         uses: actions/setup-node@v2
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -37,7 +37,7 @@ jobs:
       - name: Commit and create PR 🔀
         uses: peter-evans/create-pull-request@v4
         with:
-          title: 'build(deps): Upgrade NPM packages (automated)'
-          branch: 'build-deps-upgrade-npm-packages-automated'
-          commit-message: 'build(deps): upgrade NPM packages (automated)'
-          labels: 'dependencies'
+          title: "build(deps): Upgrade NPM packages (automated)"
+          branch: "build-deps-upgrade-npm-packages-automated"
+          commit-message: "build(deps): upgrade NPM packages (automated)"
+          labels: "dependencies"
