@@ -42,7 +42,7 @@
     "@nrwl/next": "^14.1.5",
     "@nrwl/node": "14.1.5",
     "@nrwl/react": "14.1.5",
-    "@nrwl/web": "14.1.4",
+    "@nrwl/web": "14.1.5",
     "@nrwl/workspace": "14.1.4",
     "@testing-library/react": "13.2.0",
     "@types/jest": "27.5.0",
