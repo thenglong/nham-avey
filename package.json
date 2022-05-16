@@ -42,7 +42,7 @@
     "@nrwl/eslint-plugin-nx": "14.1.5",
     "@nrwl/jest": "14.1.5",
     "@nrwl/linter": "14.1.5",
-    "@nrwl/nest": "14.1.5",
+    "@nrwl/nest": "14.1.6",
     "@nrwl/node": "14.1.5",
     "@nrwl/react": "14.1.5",
     "@nrwl/web": "14.1.5",
