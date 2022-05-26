@@ -46,7 +46,7 @@
     "@nrwl/node": "14.1.7",
     "@nrwl/react": "14.1.7",
     "@nrwl/web": "14.1.7",
-    "@nrwl/workspace": "14.1.7",
+    "@nrwl/workspace": "14.1.9",
     "@testing-library/react": "13.2.0",
     "@types/jest": "27.5.1",
     "@types/node": "17.0.34",
