@@ -1,4 +1,4 @@
-export default () => ({
+const configs = () => ({
   port: +(process.env.PORT as string) || 3000,
   serverApiKey: process.env.SERVER_API_KEY,
   enableSwagger: process.env.ENABLE_SWAGGER === "true",
@@ -20,3 +20,5 @@ export default () => ({
   },
   isProd: process.env.NODE_ENV === "production",
 })
+
+export default configs

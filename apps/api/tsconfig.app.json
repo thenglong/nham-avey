@@ -3,10 +3,12 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "commonjs",
-    "types": ["node"],
+    "types": ["node", "multer"],
     "emitDecoratorMetadata": true,
     "target": "es2015",
-    "strict": true
+    "strict": true,
+    "baseUrl": "./src",
+    "strictPropertyInitialization": false
   },
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
   "include": ["**/*.ts", "ormconfig.js"]
