@@ -13,7 +13,7 @@ import { GetOrderInput, GetOrderOutput } from "orders/dtos/get-order.dto"
 import { GetOrdersInput, GetOrdersOutput } from "orders/dtos/get-orders.dto"
 import { TakeOrderInput, TakeOrderOutput } from "orders/dtos/take-order.dto"
 import { OrderItem } from "orders/entities/order-item.entity"
-import { EOrderStatus, Order } from "orders/entities/order.entity"
+import { OrderStatus, Order } from "orders/entities/order.entity"
 import { Dish } from "restaurants/entities/dish.entity"
 import { Restaurant } from "restaurants/entities/restaurant.entity"
 import { Repository, Equal } from "typeorm"
@@ -235,13 +235,13 @@ export class OrderService {
       }
 
       if (user.role === UserRole.Owner) {
-        if (status !== EOrderStatus.Cooking && status !== EOrderStatus.Cooked) {
+        if (status !== OrderStatus.Cooking && status !== OrderStatus.Cooked) {
           canEdit = false
         }
       }
 
       if (user.role === UserRole.Delivery) {
-        if (status !== EOrderStatus.PickedUp && status !== EOrderStatus.Delivered) {
+        if (status !== OrderStatus.PickedUp && status !== OrderStatus.Delivered) {
           canEdit = false
         }
       }
@@ -261,7 +261,7 @@ export class OrderService {
       const newOrder = { ...order, status }
 
       if (user.role === UserRole.Owner) {
-        if (status === EOrderStatus.Cooked) {
+        if (status === OrderStatus.Cooked) {
           await this.pubSub.publish(NEW_COOKED_ORDER, {
             cookedOrders: newOrder,
           })

@@ -36,7 +36,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       migrationsTableName: "typeorm_migrations",
       logger: "advanced-console",
       logging: this.config.get<boolean>("db.logging"),
-      synchronize: true,
+      synchronize: false,
       keepConnectionAlive: !this.config.get("isProd"),
       ...(this.config.get("db.isHeroku") && {
         ssl: {

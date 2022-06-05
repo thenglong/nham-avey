@@ -45,6 +45,46 @@
         "jestConfig": "apps/api/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "generate-migration": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project tsconfig.app.json -r tsconfig-paths/register ../../node_modules/typeorm/cli migration:generate --pretty -d src/db/data-source.ts src/db/migrations/{args.name}",
+        "cwd": "apps/api"
+      }
+    },
+    "create-migration": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project tsconfig.app.json -r tsconfig-paths/register ../../node_modules/typeorm/cli migration:create -d src/db/data-source.ts src/db/migrations/{args.name}",
+        "cwd": "apps/api"
+      }
+    },
+    "run-migration": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project tsconfig.app.json -r tsconfig-paths/register ../../node_modules/typeorm/cli migration:run -d src/db/data-source.ts",
+        "cwd": "apps/api"
+      }
+    },
+    "revert-migration": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project tsconfig.app.json -r tsconfig-paths/register ../../node_modules/typeorm/cli migration:revert -d src/db/data-source.ts",
+        "cwd": "apps/api"
+      }
+    },
+    "drop-schema": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project tsconfig.app.json -r tsconfig-paths/register ../../node_modules/typeorm/cli schema:drop -d src/db/data-source.ts",
+        "cwd": "apps/api"
+      }
     }
   },
   "tags": []

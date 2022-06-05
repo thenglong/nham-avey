@@ -1,11 +1,11 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql"
 import { CoreOutput } from "common/dtos/output.dto"
-import { EOrderStatus, Order } from "orders/entities/order.entity"
+import { OrderStatus, Order } from "orders/entities/order.entity"
 
 @InputType()
 export class GetOrdersInput {
-  @Field(type => EOrderStatus, { nullable: true })
-  status?: EOrderStatus
+  @Field(type => OrderStatus, { nullable: true })
+  status?: OrderStatus
 }
 
 @ObjectType()

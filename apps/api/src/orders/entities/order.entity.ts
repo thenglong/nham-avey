@@ -6,7 +6,7 @@ import { Restaurant } from "restaurants/entities/restaurant.entity"
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, RelationId } from "typeorm"
 import { User } from "users/entities/user.entity"
 
-export enum EOrderStatus {
+export enum OrderStatus {
   Pending = "Pending",
   Cooking = "Cooking",
   Cooked = "Cooked",
@@ -14,7 +14,7 @@ export enum EOrderStatus {
   Delivered = "Delivered",
 }
 
-registerEnumType(EOrderStatus, { name: "OrderStatus" })
+registerEnumType(OrderStatus, { name: "OrderStatus" })
 
 @InputType("OrderInputType", { isAbstract: true })
 @ObjectType()
@@ -62,8 +62,8 @@ export class Order extends CoreEntity {
   @IsNumber()
   total?: number
 
-  @Column({ type: "enum", enum: EOrderStatus, default: EOrderStatus.Pending })
-  @Field(type => EOrderStatus)
-  @IsEnum(EOrderStatus)
-  status: EOrderStatus
+  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+  @Field(type => OrderStatus)
+  @IsEnum(OrderStatus)
+  status: OrderStatus
 }
