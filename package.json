@@ -57,7 +57,7 @@
     "@nrwl/nest": "14.1.9",
     "@nrwl/node": "14.1.9",
     "@nrwl/react": "14.1.9",
-    "@nrwl/web": "14.1.9",
+    "@nrwl/web": "14.2.1",
     "@nrwl/workspace": "14.1.9",
     "@testing-library/react": "13.2.0",
     "@types/bcrypt": "^5.0.0",
