@@ -53,7 +53,7 @@
     "@nrwl/cypress": "14.1.9",
     "@nrwl/eslint-plugin-nx": "14.1.9",
     "@nrwl/jest": "14.1.9",
-    "@nrwl/linter": "14.1.9",
+    "@nrwl/linter": "14.2.1",
     "@nrwl/nest": "14.1.9",
     "@nrwl/node": "14.1.9",
     "@nrwl/react": "14.1.9",
