@@ -1,6 +1,6 @@
 {
   "extends": [
-    "..\\..\\.eslintrc.json",
+    "../../.eslintrc.json",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
