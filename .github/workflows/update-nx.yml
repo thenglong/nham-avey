@@ -1,0 +1,42 @@
+name: Upgrade nx workspace
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upgrade-packages:
+    name: Upgrade nx workspace
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: "lts/*"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Upgrade nx 🔀
+        run: |
+          npm i
+          npx nx migrate latest
+          npm i
+          npm update
+
+      - name: Commit and create PR 🔀
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: "build(deps): Upgrade nx (automated)"
+          branch: "build-deps-upgrade-nx-automated"
+          commit-message: "build(deps): upgrade nx (automated)"
+          labels: "dependencies"
