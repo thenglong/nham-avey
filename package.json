@@ -69,7 +69,7 @@
     "@types/react": "18.0.12",
     "@types/react-dom": "18.0.5",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "~5.24.0",
+    "@typescript-eslint/eslint-plugin": "~5.27.1",
     "@typescript-eslint/parser": "~5.24.0",
     "autoprefixer": "^10.4.7",
     "babel-jest": "^27.5.1",
