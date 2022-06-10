@@ -3,7 +3,7 @@ const configs = () => ({
   serverApiKey: process.env.SERVER_API_KEY,
   enableSwagger: process.env.ENABLE_SWAGGER === "true",
   firebase: {
-    serviceAccount: JSON.parse(process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT as string),
+    serviceAccount: JSON.parse(process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON as string),
     bucketUrl: process.env.FIREBASE_STORAGE_BUCKET_URL,
   },
   db: {
