@@ -1,7 +1,7 @@
 import { join } from "path"
 
 import { ApolloDriver } from "@nestjs/apollo"
-import { Module } from "@nestjs/common"
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common"
 import { ConfigModule, ConfigService } from "@nestjs/config"
 import { GraphQLModule } from "@nestjs/graphql"
 import { ScheduleModule } from "@nestjs/schedule"
@@ -10,6 +10,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
 import { cert } from "firebase-admin/app"
 import * as Joi from "joi"
+import { ApiKeyMiddleware } from "src/auth/api-key.middleware"
 import { AuthModule } from "src/auth/auth.module"
 import { CommonModule } from "src/common/common.module"
 import configuration from "src/config/configuration"
@@ -85,4 +86,8 @@ import { UsersModule } from "src/users/users.module"
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ApiKeyMiddleware).forRoutes({ path: "*", method: RequestMethod.ALL })
+  }
+}
