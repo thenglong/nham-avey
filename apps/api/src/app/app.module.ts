@@ -13,6 +13,7 @@ import * as Joi from "joi"
 import { AuthModule } from "src/auth/auth.module"
 import { CommonModule } from "src/common/common.module"
 import configuration from "src/config/configuration"
+import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
 import { FirebaseAdminModule } from "src/firebase-admin/firebase-admin.module"
 import { JwtModule } from "src/jwt/jwt.module"
 import { MailModule } from "src/mail/mail.module"
@@ -20,7 +21,6 @@ import { OrdersModule } from "src/orders/orders.module"
 import { PaymentsModule } from "src/payments/payments.module"
 import { RestaurantsModule } from "src/restaurants/restaurants.module"
 import { TypeormConfigService } from "src/typeorm/typeorm-config.service"
-import { UploadsModule } from "src/uploads/uploads.module"
 import { UsersModule } from "src/users/users.module"
 
 @Module({
@@ -80,7 +80,7 @@ import { UsersModule } from "src/users/users.module"
     OrdersModule,
     CommonModule,
     PaymentsModule,
-    UploadsModule,
+    FileUploadsModule,
   ],
   controllers: [],
   providers: [],
