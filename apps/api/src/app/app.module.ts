@@ -2,24 +2,26 @@ import { join } from "path"
 
 import { ApolloDriver } from "@nestjs/apollo"
 import { Module } from "@nestjs/common"
-import { ConfigModule } from "@nestjs/config"
+import { ConfigModule, ConfigService } from "@nestjs/config"
 import { GraphQLModule } from "@nestjs/graphql"
 import { ScheduleModule } from "@nestjs/schedule"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
-import { AuthModule } from "auth/auth.module"
-import { CommonModule } from "common/common.module"
-import configuration from "config/configuration"
-import { TypeormConfigService } from "db/typeorm-config.service"
+import { cert } from "firebase-admin/app"
 import * as Joi from "joi"
-import { JwtModule } from "jwt/jwt.module"
-import { MailModule } from "mail/mail.module"
-import { OrdersModule } from "orders/orders.module"
-import { PaymentsModule } from "payments/payments.module"
-import { RestaurantsModule } from "restaurants/restaurants.module"
-import { UploadsModule } from "uploads/uploads.module"
-import { UsersModule } from "users/users.module"
+import { AuthModule } from "src/auth/auth.module"
+import { CommonModule } from "src/common/common.module"
+import configuration from "src/config/configuration"
+import { FirebaseAdminModule } from "src/firebase-admin/firebase-admin.module"
+import { JwtModule } from "src/jwt/jwt.module"
+import { MailModule } from "src/mail/mail.module"
+import { OrdersModule } from "src/orders/orders.module"
+import { PaymentsModule } from "src/payments/payments.module"
+import { RestaurantsModule } from "src/restaurants/restaurants.module"
+import { TypeormConfigService } from "src/typeorm/typeorm-config.service"
+import { UploadsModule } from "src/uploads/uploads.module"
+import { UsersModule } from "src/users/users.module"
 
 @Module({
   imports: [
@@ -59,6 +61,18 @@ import { UsersModule } from "users/users.module"
       apiKey: process.env.MAILGUN_API_KEY as string,
       domain: process.env.MAILGUN_DOMAIN_NAME as string,
       fromEmail: process.env.MAILGUN_FROM_EMAIL as string,
+    }),
+    FirebaseAdminModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const serviceAccount = configService.get("firebase.serviceAccount")
+        const storageBucket = configService.get("firebase.bucketUrl")
+        return {
+          credential: cert(serviceAccount),
+          storageBucket,
+        }
+      },
     }),
     AuthModule,
     UsersModule,

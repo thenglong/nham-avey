@@ -1,11 +1,11 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql"
 import { IsString, Length } from "class-validator"
-import { CoreEntity } from "common/entities/core.entity"
-import { Order } from "orders/entities/order.entity"
-import { Category } from "restaurants/entities/category.entity"
-import { Dish } from "restaurants/entities/dish.entity"
+import { CoreEntity } from "src/common/entities/core.entity"
+import { Order } from "src/orders/entities/order.entity"
+import { Category } from "src/restaurants/entities/category.entity"
+import { Dish } from "src/restaurants/entities/dish.entity"
+import { User } from "src/users/entities/user.entity"
 import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm"
-import { User } from "users/entities/user.entity"
 
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()

@@ -7,7 +7,7 @@
     "emitDecoratorMetadata": true,
     "target": "es2015",
     "strict": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "strictPropertyInitialization": false
   },
   "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],

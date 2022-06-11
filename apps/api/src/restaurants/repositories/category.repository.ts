@@ -1,4 +1,4 @@
-import { Category } from "restaurants/entities/category.entity"
+import { Category } from "src/restaurants/entities/category.entity"
 import { EntityRepository, Repository } from "typeorm"
 
 // TODO:

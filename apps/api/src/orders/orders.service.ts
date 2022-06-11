@@ -1,23 +1,23 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
+import { PubSub } from "graphql-subscriptions"
 import {
   NEW_COOKED_ORDER,
   NEW_ORDER_UPDATE,
   NEW_PENDING_ORDER,
   PUB_SUB,
-} from "common/common.constants"
-import { PubSub } from "graphql-subscriptions"
-import { CreateOrderInput, CreateOrderOutput } from "orders/dtos/create-order.dto"
-import { EditOrderInput, EditOrderOutput } from "orders/dtos/edit-order.dto"
-import { GetOrderInput, GetOrderOutput } from "orders/dtos/get-order.dto"
-import { GetOrdersInput, GetOrdersOutput } from "orders/dtos/get-orders.dto"
-import { TakeOrderInput, TakeOrderOutput } from "orders/dtos/take-order.dto"
-import { OrderItem } from "orders/entities/order-item.entity"
-import { OrderStatus, Order } from "orders/entities/order.entity"
-import { Dish } from "restaurants/entities/dish.entity"
-import { Restaurant } from "restaurants/entities/restaurant.entity"
+} from "src/common/common.constants"
+import { CreateOrderInput, CreateOrderOutput } from "src/orders/dtos/create-order.dto"
+import { EditOrderInput, EditOrderOutput } from "src/orders/dtos/edit-order.dto"
+import { GetOrderInput, GetOrderOutput } from "src/orders/dtos/get-order.dto"
+import { GetOrdersInput, GetOrdersOutput } from "src/orders/dtos/get-orders.dto"
+import { TakeOrderInput, TakeOrderOutput } from "src/orders/dtos/take-order.dto"
+import { OrderItem } from "src/orders/entities/order-item.entity"
+import { OrderStatus, Order } from "src/orders/entities/order.entity"
+import { Dish } from "src/restaurants/entities/dish.entity"
+import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { UserRole, User } from "src/users/entities/user.entity"
 import { Repository, Equal } from "typeorm"
-import { UserRole, User } from "users/entities/user.entity"
 
 @Injectable()
 export class OrderService {

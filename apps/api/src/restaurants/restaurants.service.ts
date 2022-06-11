@@ -1,36 +1,36 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { AllCategoriesOutput } from "restaurants/dtos/all-categories.dto"
-import { CategoryInput, CategoryOutput } from "restaurants/dtos/category.dto"
-import { CreateDishInput, CreateDishOutput } from "restaurants/dtos/create-dish.dto"
+import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
+import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
+import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
-} from "restaurants/dtos/create-restaurant.dto"
-import { DeleteDishInput, DeleteDishOutput } from "restaurants/dtos/delete-dish.dto"
+} from "src/restaurants/dtos/create-restaurant.dto"
+import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
 import {
   DeleteRestaurantInput,
   DeleteRestaurantOutput,
-} from "restaurants/dtos/delete-restaurant.dto"
-import { EditDishInput, EditDishOutput } from "restaurants/dtos/edit-dish.dto"
+} from "src/restaurants/dtos/delete-restaurant.dto"
+import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
 import {
   EditRestaurantInput,
   EditRestaurantOutput,
-} from "restaurants/dtos/edit.restaurant.dto"
-import { MyRestaurantInput, MyRestaurantOutput } from "restaurants/dtos/my-restaurant"
-import { MyRestaurantsOutput } from "restaurants/dtos/my-restaurants.dto"
-import { RestaurantInput, RestaurantOutput } from "restaurants/dtos/restaurant.dto"
-import { RestaurantsInput, RestaurantsOutput } from "restaurants/dtos/restaurants.dto"
+} from "src/restaurants/dtos/edit.restaurant.dto"
+import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
+import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
+import { RestaurantInput, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
+import { RestaurantsInput, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
 import {
   SearchRestaurantInput,
   SearchRestaurantOutput,
-} from "restaurants/dtos/search-restaurant.dto"
-import { Category } from "restaurants/entities/category.entity"
-import { Dish } from "restaurants/entities/dish.entity"
-import { Restaurant } from "restaurants/entities/restaurant.entity"
-import { CategoryRepository } from "restaurants/repositories/category.repository"
+} from "src/restaurants/dtos/search-restaurant.dto"
+import { Category } from "src/restaurants/entities/category.entity"
+import { Dish } from "src/restaurants/entities/dish.entity"
+import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { CategoryRepository } from "src/restaurants/repositories/category.repository"
+import { User } from "src/users/entities/user.entity"
 import { ILike, Repository, Equal } from "typeorm"
-import { User } from "users/entities/user.entity"
 
 @Injectable()
 export class RestaurantService {

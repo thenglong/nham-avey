@@ -1,11 +1,14 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
-import { AuthUser } from "auth/auth-user.decorator"
-import { Role } from "auth/role.decorator"
-import { CreatePaymentInput, CreatePaymentOutput } from "payments/dtos/create-payment.dto"
-import { GetPaymentsOutput } from "payments/dtos/get-payments.dto"
-import { Payment } from "payments/entities/payment.entity"
-import { PaymentService } from "payments/payments.service"
-import { UserRole, User } from "users/entities/user.entity"
+import { AuthUser } from "src/auth/auth-user.decorator"
+import { Role } from "src/auth/role.decorator"
+import {
+  CreatePaymentInput,
+  CreatePaymentOutput,
+} from "src/payments/dtos/create-payment.dto"
+import { GetPaymentsOutput } from "src/payments/dtos/get-payments.dto"
+import { Payment } from "src/payments/entities/payment.entity"
+import { PaymentService } from "src/payments/payments.service"
+import { UserRole, User } from "src/users/entities/user.entity"
 
 @Resolver(() => Payment)
 export class PaymentResolver {

@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { OrderItem } from "orders/entities/order-item.entity"
-import { Order } from "orders/entities/order.entity"
-import { OrderResolver } from "orders/orders.resolver"
-import { OrderService } from "orders/orders.service"
-import { Dish } from "restaurants/entities/dish.entity"
-import { Restaurant } from "restaurants/entities/restaurant.entity"
+import { OrderItem } from "src/orders/entities/order-item.entity"
+import { Order } from "src/orders/entities/order.entity"
+import { OrderResolver } from "src/orders/orders.resolver"
+import { OrderService } from "src/orders/orders.service"
+import { Dish } from "src/restaurants/entities/dish.entity"
+import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, Restaurant, OrderItem, Dish])],

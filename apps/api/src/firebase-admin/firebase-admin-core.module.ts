@@ -1,4 +1,5 @@
 import { Global, Module, DynamicModule, Provider } from "@nestjs/common"
+import { apps } from "firebase-admin"
 import { App, initializeApp } from "firebase-admin/app"
 
 import { FirebaseAuthenticationService } from "./firebase-admin-authentication.service"
@@ -26,8 +27,7 @@ export class FirebaseAdminCoreModule {
       useValue: options,
     }
 
-    const app = initializeApp(options)
-
+    const app = apps.length === 0 ? initializeApp(options) : (apps[0] as App)
     const providers = this.createProviders(app)
 
     return {
@@ -67,7 +67,7 @@ export class FirebaseAdminCoreModule {
     return PROVIDERS.map<Provider>(ProviderService => ({
       provide: ProviderService,
       useFactory: (options: FirebaseAdminModuleOptions) => {
-        const app = initializeApp(options)
+        const app = apps.length === 0 ? initializeApp(options) : (apps[0] as App)
         return new ProviderService(app)
       },
       inject: [FIREBASE_ADMIN_MODULE_OPTIONS],

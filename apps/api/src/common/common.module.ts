@@ -1,6 +1,6 @@
 import { Global, Module } from "@nestjs/common"
-import { PUB_SUB } from "common/common.constants"
 import { PubSub } from "graphql-subscriptions"
+import { PUB_SUB } from "src/common/common.constants"
 
 const pubsub = new PubSub()
 

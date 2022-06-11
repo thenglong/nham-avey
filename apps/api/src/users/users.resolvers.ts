@@ -1,15 +1,18 @@
 import { UseGuards } from "@nestjs/common"
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
-import { AuthUser } from "auth/auth-user.decorator"
-import { AuthGuard } from "auth/auth.guard"
-import { Role } from "auth/role.decorator"
-import { CreateAccountInput, CreateAccountOutput } from "users/dtos/create-account.dto"
-import { EditProfileInput, EditProfileOutput } from "users/dtos/edit-profile.dto"
-import { LoginInput, LoginOutput } from "users/dtos/login.dto"
-import { UserProfileInput, UserProfileOutput } from "users/dtos/user-profile.dto"
-import { VerifyEmailInput, VerifyEmailOutput } from "users/dtos/verify-email.dto"
-import { User } from "users/entities/user.entity"
-import { UserService } from "users/users.service"
+import { AuthUser } from "src/auth/auth-user.decorator"
+import { AuthGuard } from "src/auth/auth.guard"
+import { Role } from "src/auth/role.decorator"
+import {
+  CreateAccountInput,
+  CreateAccountOutput,
+} from "src/users/dtos/create-account.dto"
+import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
+import { LoginInput, LoginOutput } from "src/users/dtos/login.dto"
+import { UserProfileInput, UserProfileOutput } from "src/users/dtos/user-profile.dto"
+import { VerifyEmailInput, VerifyEmailOutput } from "src/users/dtos/verify-email.dto"
+import { User } from "src/users/entities/user.entity"
+import { UserService } from "src/users/users.service"
 
 @Resolver(() => User)
 export class UsersResolver {

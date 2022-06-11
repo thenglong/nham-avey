@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
-import { OrderItem } from "orders/entities/order-item.entity"
-import { Order } from "orders/entities/order.entity"
-import { Payment } from "payments/entities/payment.entity"
-import { Category } from "restaurants/entities/category.entity"
-import { Dish } from "restaurants/entities/dish.entity"
-import { Restaurant } from "restaurants/entities/restaurant.entity"
-import { User } from "users/entities/user.entity"
-import { Verification } from "users/entities/verification.entity"
+import { OrderItem } from "src/orders/entities/order-item.entity"
+import { Order } from "src/orders/entities/order.entity"
+import { Payment } from "src/payments/entities/payment.entity"
+import { Category } from "src/restaurants/entities/category.entity"
+import { Dish } from "src/restaurants/entities/dish.entity"
+import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { User } from "src/users/entities/user.entity"
+import { Verification } from "src/users/entities/verification.entity"
 
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {

@@ -1,6 +1,6 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql"
-import { CoreEntity } from "common/entities/core.entity"
-import { Dish } from "restaurants/entities/dish.entity"
+import { CoreEntity } from "src/common/entities/core.entity"
+import { Dish } from "src/restaurants/entities/dish.entity"
 import { Column, Entity, ManyToOne } from "typeorm"
 
 @InputType("OrderItemOptionInputType", { isAbstract: true })

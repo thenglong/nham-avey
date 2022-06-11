@@ -1,23 +1,23 @@
 import { Inject } from "@nestjs/common"
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql"
-import { AuthUser } from "auth/auth-user.decorator"
-import { Role } from "auth/role.decorator"
+import { PubSub } from "graphql-subscriptions"
+import { AuthUser } from "src/auth/auth-user.decorator"
+import { Role } from "src/auth/role.decorator"
 import {
   NEW_COOKED_ORDER,
   NEW_ORDER_UPDATE,
   NEW_PENDING_ORDER,
   PUB_SUB,
-} from "common/common.constants"
-import { PubSub } from "graphql-subscriptions"
-import { CreateOrderInput, CreateOrderOutput } from "orders/dtos/create-order.dto"
-import { EditOrderInput, EditOrderOutput } from "orders/dtos/edit-order.dto"
-import { GetOrderInput, GetOrderOutput } from "orders/dtos/get-order.dto"
-import { GetOrdersInput, GetOrdersOutput } from "orders/dtos/get-orders.dto"
-import { OrderUpdatesInput } from "orders/dtos/order-updates.dto"
-import { TakeOrderInput, TakeOrderOutput } from "orders/dtos/take-order.dto"
-import { Order } from "orders/entities/order.entity"
-import { OrderService } from "orders/orders.service"
-import { UserRole, User } from "users/entities/user.entity"
+} from "src/common/common.constants"
+import { CreateOrderInput, CreateOrderOutput } from "src/orders/dtos/create-order.dto"
+import { EditOrderInput, EditOrderOutput } from "src/orders/dtos/edit-order.dto"
+import { GetOrderInput, GetOrderOutput } from "src/orders/dtos/get-order.dto"
+import { GetOrdersInput, GetOrdersOutput } from "src/orders/dtos/get-orders.dto"
+import { OrderUpdatesInput } from "src/orders/dtos/order-updates.dto"
+import { TakeOrderInput, TakeOrderOutput } from "src/orders/dtos/take-order.dto"
+import { Order } from "src/orders/entities/order.entity"
+import { OrderService } from "src/orders/orders.service"
+import { UserRole, User } from "src/users/entities/user.entity"
 
 @Resolver(() => Order)
 export class OrderResolver {

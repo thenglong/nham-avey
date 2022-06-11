@@ -1,6 +1,6 @@
 import { InputType, ObjectType, PickType } from "@nestjs/graphql"
-import { CoreOutput } from "common/dtos/output.dto"
-import { Payment } from "payments/entities/payment.entity"
+import { CoreOutput } from "src/common/dtos/output.dto"
+import { Payment } from "src/payments/entities/payment.entity"
 
 @InputType()
 export class CreatePaymentInput extends PickType(Payment, [
