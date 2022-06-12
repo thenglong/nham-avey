@@ -12,6 +12,7 @@ import { cert } from "firebase-admin/app"
 import * as Joi from "joi"
 import { ApiKeyMiddleware } from "src/auth/api-key.middleware"
 import { AuthModule } from "src/auth/auth.module"
+import { SWAGGER_PATH } from "src/common/common.constants"
 import { CommonModule } from "src/common/common.module"
 import configuration from "src/config/configuration"
 import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
@@ -88,6 +89,10 @@ import { UsersModule } from "src/users/users.module"
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ApiKeyMiddleware).forRoutes({ path: "*", method: RequestMethod.ALL })
+    consumer
+      .apply(ApiKeyMiddleware)
+      .exclude({ path: SWAGGER_PATH, method: RequestMethod.ALL })
+      .exclude({ path: "graphql", method: RequestMethod.ALL }) // TODO: remove this line when include api key from the frontend
+      .forRoutes({ path: "*", method: RequestMethod.ALL })
   }
 }

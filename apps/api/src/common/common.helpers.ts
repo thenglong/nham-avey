@@ -2,7 +2,7 @@ import { readFile } from "fs/promises"
 
 import { INestApplication } from "@nestjs/common"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
-import { API_KEY_HEADER, API_KEY_NAME } from "src/common/common.constants"
+import { API_KEY_HEADER, API_KEY_NAME, SWAGGER_PATH } from "src/common/common.constants"
 
 export const createSwagger = async (app: INestApplication) => {
   const css = await readFile("apps/api/src/assets/swagger-ui-theme-material.css", {
@@ -25,7 +25,7 @@ export const createSwagger = async (app: INestApplication) => {
     )
     .build()
   const document = SwaggerModule.createDocument(app, swaggerConfig)
-  SwaggerModule.setup("swagger", app, document, {
+  SwaggerModule.setup(SWAGGER_PATH, app, document, {
     customCss: css,
     customSiteTitle: "Nham Avey API Documentation",
     swaggerOptions: {

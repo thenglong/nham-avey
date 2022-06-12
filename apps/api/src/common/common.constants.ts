@@ -7,3 +7,5 @@ export const NEW_ORDER_UPDATE = "NEW_ORDER_UPDATE"
 export const API_KEY_HEADER = "api-key"
 export const API_KEY_NAME = "server-api-key"
 export const FILE_KEY = "file"
+
+export const SWAGGER_PATH = "swagger"

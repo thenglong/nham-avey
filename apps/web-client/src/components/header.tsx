@@ -1,0 +1,32 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import nuberLogo from "images/logo.svg"
+import Link from "next/link"
+
+import { useMe } from "../hooks/useMe"
+
+export const Header = () => {
+  const { data } = useMe()
+
+  return (
+    <>
+      {!data?.me.verified && (
+        <div className="bg-red-500 p-3 text-center text-base text-white">
+          <span>Please verify your email</span>
+        </div>
+      )}
+      <header className="py-4">
+        <div className="item-center mx-auto flex w-full max-w-screen-xl justify-between px-5 xl:px-0">
+          <Link href="/">
+            <img src={nuberLogo} className="w-36" alt="Nuber Eats Logo" />
+          </Link>
+          <span className="text-xs">
+            <Link href="/edit-profile">
+              <FontAwesomeIcon icon={faUser} className="text-xl" /> {data?.me.email}
+            </Link>
+          </span>
+        </div>
+      </header>
+    </>
+  )
+}

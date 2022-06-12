@@ -1,0 +1,9 @@
+schema: http://localhost:3000/graphql
+generates:
+  ./src/__generated__/gql_typed.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      fetcher: fetch
