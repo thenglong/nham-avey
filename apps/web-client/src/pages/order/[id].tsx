@@ -1,73 +1,43 @@
 import { useEffect } from "react"
 
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { NextPage } from "next"
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
 
-import { editOrder, editOrderVariables } from "../__generated__/editOrder"
-import { getOrder, getOrderVariables } from "../__generated__/getOrder"
-import { OrderStatus, UserRole } from "../__generated__/globalTypes"
-import { orderUpdates } from "../__generated__/orderUpdates"
-import { FULL_ORDER_FRAGMENT } from "../graphql/fragments"
-import { useMe } from "../hooks/useMe"
+import {
+  OrderStatus,
+  OrderUpdatesDocument,
+  OrderUpdatesSubscription,
+  useEditOrderMutation,
+  useGetMeQuery,
+  useGetOrderQuery,
+  UserRole,
+} from "../../__generated__/types.react-apollo"
 
-const GET_ORDER = gql`
-  query getOrder($input: GetOrderInput!) {
-    getOrder(input: $input) {
-      ok
-      error
-      order {
-        ...FullOrderParts
-      }
-    }
-  }
-  ${FULL_ORDER_FRAGMENT}
-`
+export const OrderPage: NextPage = () => {
+  const router = useRouter()
+  const id = +router.query.id
 
-const ORDER_SUBSCRIPTION = gql`
-  subscription orderUpdates($input: OrderUpdatesInput!) {
-    orderUpdates(input: $input) {
-      ...FullOrderParts
-    }
-  }
-  ${FULL_ORDER_FRAGMENT}
-`
-
-const EDIT_ORDER = gql`
-  mutation editOrder($input: EditOrderInput!) {
-    editOrder(input: $input) {
-      ok
-      error
-    }
-  }
-`
-
-interface Params {
-  id: string
-}
-
-export const Order = () => {
-  const params = useParams<Params>()
-  const { data: userData } = useMe()
-  const [editOrderMutation] = useMutation<editOrder, editOrderVariables>(EDIT_ORDER)
-  const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(GET_ORDER, {
-    variables: {
-      input: {
-        id: +params.id,
-      },
-    },
+  const { data: userData } = useGetMeQuery()
+  const [editOrderMutation] = useEditOrderMutation()
+  const { data, subscribeToMore } = useGetOrderQuery({
+    variables: { input: { id: +id } },
   })
 
   useEffect(() => {
     if (data?.getOrder.ok) {
       subscribeToMore({
-        document: ORDER_SUBSCRIPTION,
+        document: OrderUpdatesDocument,
         variables: {
           input: {
-            id: +params.id,
+            id: +id,
           },
         },
         updateQuery: (
           prev,
-          { subscriptionData: { data } }: { subscriptionData: { data: orderUpdates } }
+          {
+            subscriptionData: { data },
+          }: { subscriptionData: { data: OrderUpdatesSubscription } }
         ) => {
           if (!data) return prev
           return {
@@ -81,13 +51,13 @@ export const Order = () => {
         },
       })
     }
-  }, [data])
+  }, [data, id, subscribeToMore])
 
   const onButtonClick = (newStatus: OrderStatus) => {
     editOrderMutation({
       variables: {
         input: {
-          id: +params.id,
+          id: +id,
           status: newStatus,
         },
       },
@@ -96,12 +66,10 @@ export const Order = () => {
 
   return (
     <div className="container mt-32 flex justify-center">
-      <Helmet>
-        <title>Order #{params.id} | Nuber Eats</title>
-      </Helmet>
+      <NextSeo title={`Order ${id} | Nham Avey`} />
       <div className="flex w-full max-w-screen-sm flex-col justify-center border border-gray-800">
         <h4 className="text-hite w-full bg-gray-800 py-5 text-center text-xl">
-          Order #{params.id}
+          Order #{id}
         </h4>
         <h5 className="p-5 pt-10 text-center text-3xl">${data?.getOrder.order?.total}</h5>
 

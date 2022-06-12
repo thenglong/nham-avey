@@ -13,7 +13,7 @@ interface DishProps {
   options?: restaurant_restaurant_restaurant_menu_options[] | null
   addItemToOrder?: (dishId: number) => void
   removeFromOrder?: (dishId: number) => void
-  children: ReactNode
+  children?: ReactNode
 }
 
 export const Dish = ({

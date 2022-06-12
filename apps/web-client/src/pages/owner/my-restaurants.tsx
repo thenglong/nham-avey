@@ -1,50 +1,30 @@
-import { gql, useQuery } from '@apollo/client';
-import { Restaurant } from 'components/restaurant';
-import { RESTAURANT_FRAGMENT } from 'fragments';
-import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import { myRestaurants } from '__generated__/myRestaurants';
+import { NextSeo } from "next-seo"
+import Link from "next/link"
 
-export const MY_RESTAURANTS_QUERY = gql`
-  query myRestaurants {
-    myRestaurants {
-      ok
-      error
-      restaurants {
-        ...RestaurantParts
-      }
-    }
-  }
-  ${RESTAURANT_FRAGMENT}
-`;
+import { useMyRestaurantsQuery } from "../../__generated__/types.react-apollo"
+import { Restaurant } from "../../components/restaurant"
 
-export const MyRestaurants = () => {
-  const { data } = useQuery<myRestaurants>(MY_RESTAURANTS_QUERY);
+export const MyRestaurantsPage = () => {
+  const { data } = useMyRestaurantsQuery()
 
   return (
     <div>
-      <Helmet>
-        <title>My Restaurants | Nuber Eats</title>
-      </Helmet>
-      <div className="max-w-screen-2xl mx-auto mt-32">
-        <h2 className="text-4xl font-medium mb-10">My Restaurants</h2>
-        {data?.myRestaurants.ok &&
-        data.myRestaurants.restaurants.length === 0 ? (
+      <NextSeo title="My Restaurants | Nham Avey" />
+      <div className="mx-auto mt-32 max-w-screen-2xl">
+        <h2 className="mb-10 text-4xl font-medium">My Restaurants</h2>
+        {data?.myRestaurants.ok && data.myRestaurants.restaurants.length === 0 ? (
           <>
-            <h4 className="text-xl mb-5">You have no restaurants</h4>
-            <Link
-              className="text-lime-600 hover:underline"
-              to="/add-restaurant"
-            >
+            <h4 className="mb-5 text-xl">You have no restaurants</h4>
+            <Link className="text-lime-600 hover:underline" href="/add-restaurant">
               Create one &rarr;
             </Link>
           </>
         ) : (
-          <div className="grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
-            {data?.myRestaurants.restaurants.map((restaurant) => (
+          <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
+            {data?.myRestaurants.restaurants.map(restaurant => (
               <Restaurant
                 key={restaurant.id}
-                id={restaurant.id + ''}
+                id={restaurant.id + ""}
                 coverImg={restaurant.coverImg}
                 name={restaurant.name}
                 categoryName={restaurant.category?.name}
@@ -54,5 +34,5 @@ export const MyRestaurants = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}

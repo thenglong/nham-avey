@@ -1,61 +1,51 @@
-import { gql, useMutation } from "@apollo/client"
-import { UserRole } from "__generated__/globalTypes"
-import { Button } from "components/button"
-import { FormError } from "components/form-error"
 import nuberLogo from "images/logo.svg"
-import { Helmet } from "react-helmet-async"
+import { NextSeo } from "next-seo"
+import Link from "next/link"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
 import {
-  createAccountMutation,
-  createAccountMutationVariables,
-} from "../__generated__/gql_typed"
+  CreateAccountMutation,
+  useCreateAccountMutation,
+  UserRole,
+} from "../__generated__/types.react-apollo"
+import { Button } from "../components/button"
+import { FormError } from "../components/form-error"
 
-export const CREATE_ACCOUNT_MUTATION = gql`
-  mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
-    createAccount(input: $createAccountInput) {
-      ok
-      error
-    }
-  }
-`
-
-interface ICreateAccountForm {
+interface CreateAccountForm {
   email: string
   password: string
   role: UserRole
 }
 
-export const CreateAccount = () => {
+export const CreateAccountPage = () => {
   const {
     register,
     getValues,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<ICreateAccountForm>({
+  } = useForm<CreateAccountForm>({
     mode: "onChange",
     defaultValues: {
       role: UserRole.Client,
     },
   })
 
-  const history = useHistory()
-  const onCompleted = (data: createAccountMutation) => {
+  const router = useRouter()
+
+  const onCompleted = (data: CreateAccountMutation) => {
     const {
       createAccount: { ok },
     } = data
 
     if (ok) {
       alert("Account Created! Log in now!")
-      history.push("/")
+      router.push("/")
     }
   }
 
   const [createAccountMutation, { loading, data: createAccountMutationResult }] =
-    useMutation<createAccountMutation, createAccountMutationVariables>(
-      CREATE_ACCOUNT_MUTATION,
-      { onCompleted }
-    )
+    useCreateAccountMutation({ onCompleted })
 
   const onSubmit = () => {
     if (!loading) {
@@ -70,18 +60,18 @@ export const CreateAccount = () => {
 
   return (
     <div className="mt:10 flex h-screen flex-col items-center lg:mt-28">
-      <Helmet>
-        <title>Create Account | Nuber Eats</title>
-      </Helmet>
+      <NextSeo title="Create Account | Nham Avey" />
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
         <img src={nuberLogo} className="mb-10 w-52" alt="nuberLogo" />
-        <h4 className="mb-5 w-full text-left text-3xl font-medium">Let's get started</h4>
+        <h4 className="mb-5 w-full text-left text-3xl font-medium">
+          Let&lsquo;s get started
+        </h4>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
           <input
             {...register("email", {
               required: "Email is required",
               pattern:
-                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             })}
             type="email"
             placeholder="Email"
@@ -130,7 +120,7 @@ export const CreateAccount = () => {
         </form>
         <div>
           Already have an account?{" "}
-          <Link to="/" className="text-lime-600 hover:underline">
+          <Link href="/" className="text-lime-600 hover:underline">
             Log in now
           </Link>
         </div>

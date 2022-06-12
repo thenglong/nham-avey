@@ -1,40 +1,30 @@
-import { gql, useMutation } from "@apollo/client"
-import { loginMutation, loginMutationVariables } from "__generated__/loginMutation"
 import nuberLogo from "images/logo.svg"
+import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 
+import { LoginMutation, useLoginMutation } from "../__generated__/types.react-apollo"
 import { Button } from "../components/button"
 import { FormError } from "../components/form-error"
 import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
 import { authTokenVar, isLoggedInVar } from "../graphql/apollo-config"
 
-export const LOGIN_MUTATION = gql`
-  mutation loginMutation($loginInput: LoginInput!) {
-    login(input: $loginInput) {
-      ok
-      token
-      error
-    }
-  }
-`
-
-interface ILoginForm {
+interface LoginForm {
   email: string
   password: string
 }
 
-export const Login = () => {
+export const LoginPage = () => {
   const {
     register,
     getValues,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<ILoginForm>({
+  } = useForm<LoginForm>({
     mode: "onChange",
   })
 
-  const onCompleted = (data: loginMutation) => {
+  const onCompleted = (data: LoginMutation) => {
     const {
       login: { ok, token },
     } = data
@@ -45,10 +35,7 @@ export const Login = () => {
     }
   }
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
-    loginMutation,
-    loginMutationVariables
-  >(LOGIN_MUTATION, {
+  const [loginMutation, { data: loginMutationResult, loading }] = useLoginMutation({
     onCompleted,
   })
 
@@ -63,9 +50,7 @@ export const Login = () => {
 
   return (
     <div className="mt:10 flex h-screen flex-col items-center lg:mt-28">
-      <Helmet>
-        <title>Login | Nuber Eats</title>
-      </Helmet>
+      <NextSeo title="Login | Nham Avey" />
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
         <img src={nuberLogo} className="mb-10 w-52" alt="nuberLogo" />
         <h4 className="mb-5 w-full text-left text-3xl font-medium">Welcome back</h4>
@@ -74,7 +59,7 @@ export const Login = () => {
             {...register("email", {
               required: "Email is required",
               pattern:
-                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             })}
             type="email"
             placeholder="Email"

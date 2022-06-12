@@ -1,73 +1,34 @@
-import { gql, useMutation, useSubscription } from '@apollo/client';
-import { FULL_ORDER_FRAGMENT } from 'fragments';
-import GoogleMapReact, { Position } from 'google-map-react';
-import { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { cookedOrders } from '__generated__/cookedOrders';
-import { takeOrder, takeOrderVariables } from '__generated__/takeOrder';
+import { useEffect } from "react"
 
-const COOCKE_ORDERS_SUBSCRIPTION = gql`
-  subscription cookedOrders {
-    cookedOrders {
-      ...FullOrderParts
-    }
-  }
-  ${FULL_ORDER_FRAGMENT}
-`;
+import GoogleMapReact from "google-map-react"
+import { useRouter } from "next/router"
 
-const TAKE_ORDER_MUTATION = gql`
-  mutation takeOrder($input: TakeOrderInput!) {
-    takeOrder(input: $input) {
-      ok
-      error
-    }
-  }
-`;
+import {
+  TakeOrderMutation,
+  useCookedOrdersSubscription,
+  useTakeOrderMutation,
+} from "../../__generated__/types.react-apollo"
 
-interface ICoords {
-  lat: number;
-  lng: number;
-}
-
-export const Dashboard = () => {
-  const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });
-
-  const onSuccess = (position: Position) => {
-    console.log(position);
-  };
-
-  //   const onError = (error: PositionErrorCallback){
-  //   console.log(error)
-  // }
-  //
-  // useEffect(() => {
-  //   navigator.geolocation.watchPosition(onSuccess, onError, {enableHighAccuracy: true});
-  // }, []);
-  //
-  //
-  const { data: cookedOrdersData } = useSubscription<cookedOrders>(
-    COOCKE_ORDERS_SUBSCRIPTION
-  );
+export const DashboardPage = () => {
+  const { data: cookedOrdersData } = useCookedOrdersSubscription()
 
   useEffect(() => {
     if (cookedOrdersData?.cookedOrders.id) {
+      // TODO
     }
-  }, [cookedOrdersData]);
+  }, [cookedOrdersData])
 
-  const history = useHistory();
+  const router = useRouter()
 
-  const onCompleted = (data: takeOrder) => {
+  const onCompleted = (data: TakeOrderMutation) => {
     if (data.takeOrder.ok) {
-      history.push(`/opders/${cookedOrdersData?.cookedOrders.id}`);
+      router.push(`/opders/${cookedOrdersData?.cookedOrders.id}`)
     }
-  };
+  }
 
-  const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(
-    TAKE_ORDER_MUTATION,
-    {
-      onCompleted,
-    }
-  );
+  const [takeOrderMutation] = useTakeOrderMutation({
+    onCompleted,
+  })
 
   const triggerMutation = (orderId: number) => {
     takeOrderMutation({
@@ -76,42 +37,39 @@ export const Dashboard = () => {
           id: orderId,
         },
       },
-    });
-  };
+    })
+  }
 
   return (
     <div>
       <div
         className="overflow-hidden"
-        style={{ width: window.innerWidth, height: '95vh' }}
+        style={{ width: window.innerWidth, height: "95vh" }}
       >
         <GoogleMapReact
           defaultCenter={{ lat: 37.58, lng: 126.95 }}
           defaultZoom={20}
-          bootstrapURLKeys={{ key: 'NoKEY' }}
+          bootstrapURLKeys={{ key: "NoKEY" }}
         ></GoogleMapReact>
       </div>
-      <div className="relative px-5 py-8 mx-auto bg-white max-w-screen-sm -top-10 shado-lg">
+      <div className="shado-lg relative -top-10 mx-auto max-w-screen-sm bg-white px-5 py-8">
         {cookedOrdersData?.cookedOrders.restaurant ? (
           <>
-            <h1 className="text-3xl font-medium text-center">
-              New Cooked Order
-            </h1>
-            <h1 className="my-3 text-3xl font-medium text-center">
-              Pick it up soon @{' '}
-              {cookedOrdersData?.cookedOrders.restaurant?.name}
+            <h1 className="text-center text-3xl font-medium">New Cooked Order</h1>
+            <h1 className="my-3 text-center text-3xl font-medium">
+              Pick it up soon @ {cookedOrdersData?.cookedOrders.restaurant?.name}
             </h1>
             <button
               onClick={() => triggerMutation(cookedOrdersData?.cookedOrders.id)}
-              className="block w-full mt-5 text-center btn"
+              className="btn mt-5 block w-full text-center"
             >
               Accept Challenge $rarr;
             </button>
           </>
         ) : (
-          <h1 className="text-3xl font-medium text-center">No Orders yet</h1>
+          <h1 className="text-center text-3xl font-medium">No Orders yet</h1>
         )}
       </div>
     </div>
-  );
-};
+  )
+}

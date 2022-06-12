@@ -1,55 +1,36 @@
-import { gql, useLazyQuery } from '@apollo/client';
-import { RESTAURANT_FRAGMENT } from 'fragments';
-import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useHistory, useLocation } from 'react-router';
-import {
-  searchRestaurant,
-  searchRestaurantVariables,
-} from '__generated__/searchRestaurant';
+import { useEffect } from "react"
 
-const SEARCH_RESTAURANT = gql`
-  query searchRestaurant($input: SearchRestaurantInput!) {
-    searchRestaurant(input: $input) {
-      ok
-      error
-      totalPages
-      totalResults
-      restaurants {
-        ...RestaurantParts
-      }
-    }
-  }
-  ${RESTAURANT_FRAGMENT}
-`;
+import { NextSeo } from "next-seo"
+import { useRouter } from "next/router"
 
-export const Search = () => {
-  const location = useLocation();
-  const history = useHistory();
-  const [callQuery, { loading, data }] = useLazyQuery<
-    searchRestaurant,
-    searchRestaurantVariables
-  >(SEARCH_RESTAURANT);
+import { useSearchRestaurantLazyQuery } from "../../__generated__/types.react-apollo"
+
+export const SearchPage = () => {
+  const { query } = useRouter()
+  const { term } = query
+  const router = useRouter()
+  const [
+    callQuery,
+    // { loading, data }
+  ] = useSearchRestaurantLazyQuery()
 
   useEffect(() => {
-    const [_, query] = location.search.split('?term=');
-    if (!query) {
-      return history.replace('/');
+    if (!term) {
+      router.replace("/")
+      return
     }
     callQuery({
       variables: {
         input: {
           page: 1,
-          query,
+          query: term as string, // TODO
         },
       },
-    });
-  }, [history, location]);
+    })
+  }, [router, callQuery, term])
   return (
     <h1>
-      <Helmet>
-        <title>Search | Nuber Eats</title>
-      </Helmet>
+      <NextSeo title="Search | Nham Avey" />
     </h1>
-  );
-};
+  )
+}

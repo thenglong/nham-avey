@@ -1,0 +1,11 @@
+query searchRestaurant($input: SearchRestaurantInput!) {
+  searchRestaurant(input: $input) {
+    ok
+    error
+    totalPages
+    totalResults
+    restaurants {
+      ...RestaurantParts
+    }
+  }
+}

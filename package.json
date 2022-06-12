@@ -33,6 +33,7 @@
     "class-validator": "^0.13.2",
     "core-js": "^3.22.5",
     "firebase-admin": "^10.3.0",
+    "google-map-react": "^2.1.10",
     "graphql": "^16.5.0",
     "graphql-subscriptions": "^2.0.0",
     "joi": "^17.6.0",
@@ -50,6 +51,7 @@
     "swagger-ui-express": "^4.4.0",
     "tslib": "^2.4.0",
     "typeorm": "0.3.6",
+    "victory": "^36.5.0",
     "zod": "^3.17.3"
   },
   "devDependencies": {

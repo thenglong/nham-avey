@@ -47,6 +47,7 @@ import { UsersModule } from "src/users/users.module"
       installSubscriptionHandlers: true,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      sortSchema: true,
       autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
       context: ({ req, connection }: ApolloServer["context"]) => {
         const TOKEN_KEY = "authorization"
