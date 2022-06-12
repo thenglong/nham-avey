@@ -2,121 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AllCategoriesOutput {
+  categories: [Category!]
+  error: String
+  ok: Boolean!
+}
+
 type Category {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
   coverImg: String
-  slug: String!
-  restaurants: [Restaurant!]
+  createdAt: DateTime!
+  id: Float!
+  name: String!
   restaurantCount: Int!
+  restaurants: [Restaurant!]
+  slug: String!
+  updatedAt: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+input CategoryInput {
+  page: Int = 1
+  slug: String!
+}
 
-type Restaurant {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  coverImg: String!
-  address: String!
+type CategoryOutput {
   category: Category
-  owner: User!
-  orders: [Order!]!
-  menu: [Dish!]!
-  isPromoted: Boolean!
-  promotedUntil: DateTime
+  error: String
+  ok: Boolean!
+  restaurants: [Restaurant!]
+  totalPages: Int
+  totalResults: Int
 }
 
-type DishChoice {
-  name: String!
-  extra: Int
-}
-
-type DishOption {
-  name: String!
-  choices: [DishChoice!]
-  extra: Int
-}
-
-type Dish {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  price: Int!
-  photo: String
-  description: String!
-  restaurant: Restaurant
-  options: [DishOption!]
-}
-
-type OrderItemOption {
-  name: String!
-  choice: String
-}
-
-type OrderItem {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  dish: Dish!
-  options: [OrderItemOption!]
-}
-
-type Order {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  customer: User
-  driver: User
-  restaurant: Restaurant
-  items: [OrderItem!]!
-  total: Float
-  status: OrderStatus!
-}
-
-enum OrderStatus {
-  Pending
-  Cooking
-  Cooked
-  PickedUp
-  Delivered
-}
-
-type Payment {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  transactionId: String!
-  user: User!
-  restaurant: Restaurant!
-  restaurantId: Int!
-}
-
-type User {
-  id: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+input CreateAccountInput {
   email: String!
   password: String!
   role: UserRole!
-  verified: Boolean!
-  restaurants: [Restaurant!]!
-  orders: [Order!]!
-  payments: [Payment!]!
-  rides: [Order!]!
-}
-
-enum UserRole {
-  Client
-  Owner
-  Delivery
 }
 
 type CreateAccountOutput {
@@ -124,26 +44,27 @@ type CreateAccountOutput {
   ok: Boolean!
 }
 
-type EditProfileOutput {
+input CreateDishInput {
+  description: String!
+  name: String!
+  options: [DishOptionInputType!]
+  price: Int!
+  restaurantId: Int!
+}
+
+type CreateDishOutput {
   error: String
   ok: Boolean!
 }
 
-type LoginOutput {
-  error: String
-  ok: Boolean!
-  token: String
+input CreateOrderInput {
+  items: [CreateOrderItemInput!] = []
+  restaurantId: Int!
 }
 
-type UserProfileOutput {
-  error: String
-  ok: Boolean!
-  user: User
-}
-
-type VerifyEmailOutput {
-  error: String
-  ok: Boolean!
+input CreateOrderItemInput {
+  dishId: Int!
+  options: [OrderItemOptionInputType!] = []
 }
 
 type CreateOrderOutput {
@@ -152,26 +73,9 @@ type CreateOrderOutput {
   orderId: Int
 }
 
-type EditOrderOutput {
-  error: String
-  ok: Boolean!
-}
-
-type GetOrderOutput {
-  error: String
-  ok: Boolean!
-  order: Order
-}
-
-type GetOrdersOutput {
-  error: String
-  ok: Boolean!
-  orders: [Order!]
-}
-
-type TakeOrderOutput {
-  error: String
-  ok: Boolean!
+input CreatePaymentInput {
+  restaurantId: Int!
+  transactionId: String!
 }
 
 type CreatePaymentOutput {
@@ -179,30 +83,11 @@ type CreatePaymentOutput {
   ok: Boolean!
 }
 
-type GetPaymentsOutput {
-  error: String
-  ok: Boolean!
-  payments: [Payment!]
-}
-
-type AllCategoriesOutput {
-  error: String
-  ok: Boolean!
-  categories: [Category!]
-}
-
-type CategoryOutput {
-  error: String
-  ok: Boolean!
-  totalPages: Int
-  totalResults: Int
-  restaurants: [Restaurant!]
-  category: Category
-}
-
-type CreateDishOutput {
-  error: String
-  ok: Boolean!
+input CreateRestaurantInput {
+  address: String!
+  categoryName: String!
+  coverImg: String!
+  name: String!
 }
 
 type CreateRestaurantOutput {
@@ -211,9 +96,22 @@ type CreateRestaurantOutput {
   restaurantId: Int!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input DeleteDishInput {
+  dishId: Int!
+}
+
 type DeleteDishOutput {
   error: String
   ok: Boolean!
+}
+
+input DeleteRestaurantInput {
+  restaurantId: Float!
 }
 
 type DeleteRestaurantOutput {
@@ -221,14 +119,142 @@ type DeleteRestaurantOutput {
   ok: Boolean!
 }
 
+type Dish {
+  createdAt: DateTime!
+  description: String!
+  id: Float!
+  name: String!
+  options: [DishOption!]
+  photo: String
+  price: Int!
+  restaurant: Restaurant
+  updatedAt: DateTime!
+}
+
+type DishChoice {
+  extra: Int
+  name: String!
+}
+
+input DishChoiceInputType {
+  extra: Int
+  name: String!
+}
+
+type DishOption {
+  choices: [DishChoice!]
+  extra: Int
+  name: String!
+}
+
+input DishOptionInputType {
+  choices: [DishChoiceInputType!]
+  extra: Int
+  name: String!
+}
+
+input EditDishInput {
+  description: String
+  dishId: Int!
+  name: String
+  options: [DishOptionInputType!]
+  price: Int
+}
+
 type EditDishOutput {
   error: String
   ok: Boolean!
 }
 
+input EditOrderInput {
+  id: Float!
+  status: OrderStatus!
+}
+
+type EditOrderOutput {
+  error: String
+  ok: Boolean!
+}
+
+input EditProfileInput {
+  email: String
+  password: String
+}
+
+type EditProfileOutput {
+  error: String
+  ok: Boolean!
+}
+
+input EditRestaurantInput {
+  address: String
+  categoryName: String
+  coverImg: String
+  name: String
+  restaurantId: Float!
+}
+
 type EditRestaurantOutput {
   error: String
   ok: Boolean!
+}
+
+input GetOrderInput {
+  id: Float!
+}
+
+type GetOrderOutput {
+  error: String
+  ok: Boolean!
+  order: Order
+}
+
+input GetOrdersInput {
+  status: OrderStatus
+}
+
+type GetOrdersOutput {
+  error: String
+  ok: Boolean!
+  orders: [Order!]
+}
+
+type GetPaymentsOutput {
+  error: String
+  ok: Boolean!
+  payments: [Payment!]
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginOutput {
+  error: String
+  ok: Boolean!
+  token: String
+}
+
+type Mutation {
+  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createDish(input: CreateDishInput!): CreateDishOutput!
+  createOrder(input: CreateOrderInput!): CreateOrderOutput!
+  createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
+  createRestaurant(input: CreateRestaurantInput!): CreateRestaurantOutput!
+  deleteDish(input: DeleteDishInput!): DeleteDishOutput!
+  deleteRestaurant(input: DeleteRestaurantInput!): DeleteRestaurantOutput!
+  editDish(input: EditDishInput!): EditDishOutput!
+  editOrder(input: EditOrderInput!): EditOrderOutput!
+  editProfile(input: EditProfileInput!): EditProfileOutput!
+  editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
+  login(input: LoginInput!): LoginOutput!
+  takeOrder(input: TakeOrderInput!): TakeOrderOutput!
+  verifyEmail(input: VerifyEmailInput!): VerifyEmailOutput!
+}
+
+input MyRestaurantInput {
+  id: Float!
 }
 
 type MyRestaurantOutput {
@@ -243,54 +269,109 @@ type MyRestaurantsOutput {
   restaurants: [Restaurant!]!
 }
 
+type Order {
+  createdAt: DateTime!
+  customer: User
+  driver: User
+  id: Float!
+  items: [OrderItem!]!
+  restaurant: Restaurant
+  status: OrderStatus!
+  total: Float
+  updatedAt: DateTime!
+}
+
+type OrderItem {
+  createdAt: DateTime!
+  dish: Dish!
+  id: Float!
+  options: [OrderItemOption!]
+  updatedAt: DateTime!
+}
+
+type OrderItemOption {
+  choice: String
+  name: String!
+}
+
+input OrderItemOptionInputType {
+  choice: String
+  name: String!
+}
+
+enum OrderStatus {
+  Cooked
+  Cooking
+  Delivered
+  Pending
+  PickedUp
+}
+
+input OrderUpdatesInput {
+  id: Float!
+}
+
+type Payment {
+  createdAt: DateTime!
+  id: Float!
+  restaurant: Restaurant!
+  restaurantId: Int!
+  transactionId: String!
+  updatedAt: DateTime!
+  user: User!
+}
+
+type Query {
+  allCategories: AllCategoriesOutput!
+  category(input: CategoryInput!): CategoryOutput!
+  getOrder(input: GetOrderInput!): GetOrderOutput!
+  getOrders(input: GetOrdersInput!): GetOrdersOutput!
+  getPayments: GetPaymentsOutput!
+  hi: Boolean!
+  me: User!
+  myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
+  myRestaurants: MyRestaurantsOutput!
+  restaurant(input: RestaurantInput!): RestaurantOutput!
+  restaurants(input: RestaurantsInput!): RestaurantsOutput!
+  searchRestaurant(input: SearchRestaurantInput!): SearchRestaurantOutput!
+  userProfile(userId: Float!): UserProfileOutput!
+}
+
+type Restaurant {
+  address: String!
+  category: Category
+  coverImg: String!
+  createdAt: DateTime!
+  id: Float!
+  isPromoted: Boolean!
+  menu: [Dish!]!
+  name: String!
+  orders: [Order!]!
+  owner: User!
+  promotedUntil: DateTime
+  updatedAt: DateTime!
+}
+
+input RestaurantInput {
+  restaurantId: Int!
+}
+
 type RestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
 }
 
-type RestaurantsOutput {
-  error: String
-  ok: Boolean!
-  totalPages: Int
-  totalResults: Int
-  results: [Restaurant!]
-}
-
-type SearchRestaurantOutput {
-  error: String
-  ok: Boolean!
-  totalPages: Int
-  totalResults: Int
-  restaurants: [Restaurant!]
-}
-
-type Query {
-  hi: Boolean!
-  me: User!
-  userProfile(userId: Float!): UserProfileOutput!
-  myRestaurants: MyRestaurantsOutput!
-  myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
-  restaurants(input: RestaurantsInput!): RestaurantsOutput!
-  restaurant(input: RestaurantInput!): RestaurantOutput!
-  searchRestaurant(input: SearchRestaurantInput!): SearchRestaurantOutput!
-  allCategories: AllCategoriesOutput!
-  category(input: CategoryInput!): CategoryOutput!
-  getOrders(input: GetOrdersInput!): GetOrdersOutput!
-  getOrder(input: GetOrderInput!): GetOrderOutput!
-  getPayments: GetPaymentsOutput!
-}
-
-input MyRestaurantInput {
-  id: Float!
-}
-
 input RestaurantsInput {
   page: Int = 1
 }
 
-input RestaurantInput {
-  restaurantId: Int!
+type RestaurantsOutput {
+  error: String
+  ok: Boolean!
+  results: [Restaurant!]
+  totalPages: Int
+  totalResults: Int
 }
 
 input SearchRestaurantInput {
@@ -298,141 +379,60 @@ input SearchRestaurantInput {
   query: String!
 }
 
-input CategoryInput {
-  page: Int = 1
-  slug: String!
+type SearchRestaurantOutput {
+  error: String
+  ok: Boolean!
+  restaurants: [Restaurant!]
+  totalPages: Int
+  totalResults: Int
 }
 
-input GetOrdersInput {
-  status: OrderStatus
-}
-
-input GetOrderInput {
-  id: Float!
-}
-
-type Mutation {
-  createAccount(input: CreateAccountInput!): CreateAccountOutput!
-  login(input: LoginInput!): LoginOutput!
-  editProfile(input: EditProfileInput!): EditProfileOutput!
-  verifyEmail(input: VerifyEmailInput!): VerifyEmailOutput!
-  createRestaurant(input: CreateRestaurantInput!): CreateRestaurantOutput!
-  editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
-  deleteRestaurant(input: DeleteRestaurantInput!): DeleteRestaurantOutput!
-  createDish(input: CreateDishInput!): CreateDishOutput!
-  editDish(input: EditDishInput!): EditDishOutput!
-  deleteDish(input: DeleteDishInput!): DeleteDishOutput!
-  createOrder(input: CreateOrderInput!): CreateOrderOutput!
-  editOrder(input: EditOrderInput!): EditOrderOutput!
-  takeOrder(input: TakeOrderInput!): TakeOrderOutput!
-  createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
-}
-
-input CreateAccountInput {
-  email: String!
-  password: String!
-  role: UserRole!
-}
-
-input LoginInput {
-  email: String!
-  password: String!
-}
-
-input EditProfileInput {
-  email: String
-  password: String
-}
-
-input VerifyEmailInput {
-  code: String!
-}
-
-input CreateRestaurantInput {
-  name: String!
-  coverImg: String!
-  address: String!
-  categoryName: String!
-}
-
-input EditRestaurantInput {
-  name: String
-  coverImg: String
-  address: String
-  categoryName: String
-  restaurantId: Float!
-}
-
-input DeleteRestaurantInput {
-  restaurantId: Float!
-}
-
-input CreateDishInput {
-  name: String!
-  price: Int!
-  description: String!
-  options: [DishOptionInputType!]
-  restaurantId: Int!
-}
-
-input DishOptionInputType {
-  name: String!
-  choices: [DishChoiceInputType!]
-  extra: Int
-}
-
-input DishChoiceInputType {
-  name: String!
-  extra: Int
-}
-
-input EditDishInput {
-  name: String
-  price: Int
-  description: String
-  options: [DishOptionInputType!]
-  dishId: Int!
-}
-
-input DeleteDishInput {
-  dishId: Int!
-}
-
-input CreateOrderInput {
-  restaurantId: Int!
-  items: [CreateOrderItemInput!] = []
-}
-
-input CreateOrderItemInput {
-  dishId: Int!
-  options: [OrderItemOptionInputType!] = []
-}
-
-input OrderItemOptionInputType {
-  name: String!
-  choice: String
-}
-
-input EditOrderInput {
-  id: Float!
-  status: OrderStatus!
+type Subscription {
+  cookedOrders: Order!
+  orderUpdates(input: OrderUpdatesInput!): Order!
+  pendingOrders: Order!
 }
 
 input TakeOrderInput {
   id: Float!
 }
 
-input CreatePaymentInput {
-  transactionId: String!
-  restaurantId: Int!
+type TakeOrderOutput {
+  error: String
+  ok: Boolean!
 }
 
-type Subscription {
-  pendingOrders: Order!
-  cookedOrders: Order!
-  orderUpdates(input: OrderUpdatesInput!): Order!
-}
-
-input OrderUpdatesInput {
+type User {
+  createdAt: DateTime!
+  email: String!
   id: Float!
+  orders: [Order!]!
+  password: String!
+  payments: [Payment!]!
+  restaurants: [Restaurant!]!
+  rides: [Order!]!
+  role: UserRole!
+  updatedAt: DateTime!
+  verified: Boolean!
+}
+
+type UserProfileOutput {
+  error: String
+  ok: Boolean!
+  user: User
+}
+
+enum UserRole {
+  Client
+  Delivery
+  Owner
+}
+
+input VerifyEmailInput {
+  code: String!
+}
+
+type VerifyEmailOutput {
+  error: String
+  ok: Boolean!
 }

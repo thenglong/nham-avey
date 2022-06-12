@@ -1,0 +1,12 @@
+query restaurant($input: RestaurantInput!) {
+  restaurant(input: $input) {
+    ok
+    error
+    restaurant {
+      ...RestaurantParts
+      menu {
+        ...DishParts
+      }
+    }
+  }
+}

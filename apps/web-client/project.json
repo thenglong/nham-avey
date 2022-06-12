@@ -53,6 +53,14 @@
       "options": {
         "lintFilePatterns": ["apps/web-client/**/*.{ts,tsx,js,jsx}"]
       }
+    },
+    "graphql-codegen": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "graphql-codegen --config codegen.yaml",
+        "cwd": "apps/web-client"
+      }
     }
   },
   "tags": []
