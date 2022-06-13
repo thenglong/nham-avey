@@ -1,5 +1,5 @@
 schema: http://localhost:3000/graphql
-documents: '**/*.gql'
+documents: "**/*.gql"
 overwrite: true
 generates:
   ./src/__generated__/types.react-apollo.ts:

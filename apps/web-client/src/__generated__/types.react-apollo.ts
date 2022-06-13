@@ -1,810 +1,1081 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {} as const;
+import { gql } from "@apollo/client"
+import * as Apollo from "@apollo/client"
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>
+}
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>
+}
+const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: string
+  String: string
+  Boolean: boolean
+  Int: number
+  Float: number
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: any;
-};
+  DateTime: any
+}
 
 export type AllCategoriesOutput = {
-  __typename?: 'AllCategoriesOutput';
-  categories?: Maybe<Array<Category>>;
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "AllCategoriesOutput"
+  categories?: Maybe<Array<Category>>
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type Category = {
-  __typename?: 'Category';
-  coverImg?: Maybe<Scalars['String']>;
-  createdAt: Scalars['DateTime'];
-  id: Scalars['Float'];
-  name: Scalars['String'];
-  restaurantCount: Scalars['Int'];
-  restaurants?: Maybe<Array<Restaurant>>;
-  slug: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
-};
+  __typename?: "Category"
+  coverImg?: Maybe<Scalars["String"]>
+  createdAt: Scalars["DateTime"]
+  id: Scalars["Float"]
+  name: Scalars["String"]
+  restaurantCount: Scalars["Int"]
+  restaurants?: Maybe<Array<Restaurant>>
+  slug: Scalars["String"]
+  updatedAt: Scalars["DateTime"]
+}
 
 export type CategoryInput = {
-  page?: InputMaybe<Scalars['Int']>;
-  slug: Scalars['String'];
-};
+  page?: InputMaybe<Scalars["Int"]>
+  slug: Scalars["String"]
+}
 
 export type CategoryOutput = {
-  __typename?: 'CategoryOutput';
-  category?: Maybe<Category>;
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurants?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
-};
+  __typename?: "CategoryOutput"
+  category?: Maybe<Category>
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurants?: Maybe<Array<Restaurant>>
+  totalPages?: Maybe<Scalars["Int"]>
+  totalResults?: Maybe<Scalars["Int"]>
+}
 
 export type CreateAccountInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  role: UserRole;
-};
+  email: Scalars["String"]
+  password: Scalars["String"]
+  role: UserRole
+}
 
 export type CreateAccountOutput = {
-  __typename?: 'CreateAccountOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "CreateAccountOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type CreateDishInput = {
-  description: Scalars['String'];
-  name: Scalars['String'];
-  options?: InputMaybe<Array<DishOptionInputType>>;
-  price: Scalars['Int'];
-  restaurantId: Scalars['Int'];
-};
+  description: Scalars["String"]
+  name: Scalars["String"]
+  options?: InputMaybe<Array<DishOptionInputType>>
+  price: Scalars["Int"]
+  restaurantId: Scalars["Int"]
+}
 
 export type CreateDishOutput = {
-  __typename?: 'CreateDishOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "CreateDishOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type CreateOrderInput = {
-  items?: InputMaybe<Array<CreateOrderItemInput>>;
-  restaurantId: Scalars['Int'];
-};
+  items?: InputMaybe<Array<CreateOrderItemInput>>
+  restaurantId: Scalars["Int"]
+}
 
 export type CreateOrderItemInput = {
-  dishId: Scalars['Int'];
-  options?: InputMaybe<Array<OrderItemOptionInputType>>;
-};
+  dishId: Scalars["Int"]
+  options?: InputMaybe<Array<OrderItemOptionInputType>>
+}
 
 export type CreateOrderOutput = {
-  __typename?: 'CreateOrderOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  orderId?: Maybe<Scalars['Int']>;
-};
+  __typename?: "CreateOrderOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  orderId?: Maybe<Scalars["Int"]>
+}
 
 export type CreatePaymentInput = {
-  restaurantId: Scalars['Int'];
-  transactionId: Scalars['String'];
-};
+  restaurantId: Scalars["Int"]
+  transactionId: Scalars["String"]
+}
 
 export type CreatePaymentOutput = {
-  __typename?: 'CreatePaymentOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "CreatePaymentOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type CreateRestaurantInput = {
-  address: Scalars['String'];
-  categoryName: Scalars['String'];
-  coverImg: Scalars['String'];
-  name: Scalars['String'];
-};
+  address: Scalars["String"]
+  categoryName: Scalars["String"]
+  coverImg: Scalars["String"]
+  name: Scalars["String"]
+}
 
 export type CreateRestaurantOutput = {
-  __typename?: 'CreateRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurantId: Scalars['Int'];
-};
+  __typename?: "CreateRestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurantId: Scalars["Int"]
+}
 
 export type DeleteDishInput = {
-  dishId: Scalars['Int'];
-};
+  dishId: Scalars["Int"]
+}
 
 export type DeleteDishOutput = {
-  __typename?: 'DeleteDishOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "DeleteDishOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type DeleteRestaurantInput = {
-  restaurantId: Scalars['Float'];
-};
+  restaurantId: Scalars["Float"]
+}
 
 export type DeleteRestaurantOutput = {
-  __typename?: 'DeleteRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "DeleteRestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type Dish = {
-  __typename?: 'Dish';
-  createdAt: Scalars['DateTime'];
-  description: Scalars['String'];
-  id: Scalars['Float'];
-  name: Scalars['String'];
-  options?: Maybe<Array<DishOption>>;
-  photo?: Maybe<Scalars['String']>;
-  price: Scalars['Int'];
-  restaurant?: Maybe<Restaurant>;
-  updatedAt: Scalars['DateTime'];
-};
+  __typename?: "Dish"
+  createdAt: Scalars["DateTime"]
+  description: Scalars["String"]
+  id: Scalars["Float"]
+  name: Scalars["String"]
+  options?: Maybe<Array<DishOption>>
+  photo?: Maybe<Scalars["String"]>
+  price: Scalars["Int"]
+  restaurant?: Maybe<Restaurant>
+  updatedAt: Scalars["DateTime"]
+}
 
 export type DishChoice = {
-  __typename?: 'DishChoice';
-  extra?: Maybe<Scalars['Int']>;
-  name: Scalars['String'];
-};
+  __typename?: "DishChoice"
+  extra?: Maybe<Scalars["Int"]>
+  name: Scalars["String"]
+}
 
 export type DishChoiceInputType = {
-  extra?: InputMaybe<Scalars['Int']>;
-  name: Scalars['String'];
-};
+  extra?: InputMaybe<Scalars["Int"]>
+  name: Scalars["String"]
+}
 
 export type DishOption = {
-  __typename?: 'DishOption';
-  choices?: Maybe<Array<DishChoice>>;
-  extra?: Maybe<Scalars['Int']>;
-  name: Scalars['String'];
-};
+  __typename?: "DishOption"
+  choices?: Maybe<Array<DishChoice>>
+  extra?: Maybe<Scalars["Int"]>
+  name: Scalars["String"]
+}
 
 export type DishOptionInputType = {
-  choices?: InputMaybe<Array<DishChoiceInputType>>;
-  extra?: InputMaybe<Scalars['Int']>;
-  name: Scalars['String'];
-};
+  choices?: InputMaybe<Array<DishChoiceInputType>>
+  extra?: InputMaybe<Scalars["Int"]>
+  name: Scalars["String"]
+}
 
 export type EditDishInput = {
-  description?: InputMaybe<Scalars['String']>;
-  dishId: Scalars['Int'];
-  name?: InputMaybe<Scalars['String']>;
-  options?: InputMaybe<Array<DishOptionInputType>>;
-  price?: InputMaybe<Scalars['Int']>;
-};
+  description?: InputMaybe<Scalars["String"]>
+  dishId: Scalars["Int"]
+  name?: InputMaybe<Scalars["String"]>
+  options?: InputMaybe<Array<DishOptionInputType>>
+  price?: InputMaybe<Scalars["Int"]>
+}
 
 export type EditDishOutput = {
-  __typename?: 'EditDishOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "EditDishOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type EditOrderInput = {
-  id: Scalars['Float'];
-  status: OrderStatus;
-};
+  id: Scalars["Float"]
+  status: OrderStatus
+}
 
 export type EditOrderOutput = {
-  __typename?: 'EditOrderOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "EditOrderOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type EditProfileInput = {
-  email?: InputMaybe<Scalars['String']>;
-  password?: InputMaybe<Scalars['String']>;
-};
+  email?: InputMaybe<Scalars["String"]>
+  password?: InputMaybe<Scalars["String"]>
+}
 
 export type EditProfileOutput = {
-  __typename?: 'EditProfileOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "EditProfileOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type EditRestaurantInput = {
-  address?: InputMaybe<Scalars['String']>;
-  categoryName?: InputMaybe<Scalars['String']>;
-  coverImg?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  restaurantId: Scalars['Float'];
-};
+  address?: InputMaybe<Scalars["String"]>
+  categoryName?: InputMaybe<Scalars["String"]>
+  coverImg?: InputMaybe<Scalars["String"]>
+  name?: InputMaybe<Scalars["String"]>
+  restaurantId: Scalars["Float"]
+}
 
 export type EditRestaurantOutput = {
-  __typename?: 'EditRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "EditRestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type GetOrderInput = {
-  id: Scalars['Float'];
-};
+  id: Scalars["Float"]
+}
 
 export type GetOrderOutput = {
-  __typename?: 'GetOrderOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  order?: Maybe<Order>;
-};
+  __typename?: "GetOrderOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  order?: Maybe<Order>
+}
 
 export type GetOrdersInput = {
-  status?: InputMaybe<OrderStatus>;
-};
+  status?: InputMaybe<OrderStatus>
+}
 
 export type GetOrdersOutput = {
-  __typename?: 'GetOrdersOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  orders?: Maybe<Array<Order>>;
-};
+  __typename?: "GetOrdersOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  orders?: Maybe<Array<Order>>
+}
 
 export type GetPaymentsOutput = {
-  __typename?: 'GetPaymentsOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  payments?: Maybe<Array<Payment>>;
-};
+  __typename?: "GetPaymentsOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  payments?: Maybe<Array<Payment>>
+}
 
 export type LoginInput = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
+  email: Scalars["String"]
+  password: Scalars["String"]
+}
 
 export type LoginOutput = {
-  __typename?: 'LoginOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  token?: Maybe<Scalars['String']>;
-};
+  __typename?: "LoginOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  token?: Maybe<Scalars["String"]>
+}
 
 export type Mutation = {
-  __typename?: 'Mutation';
-  createAccount: CreateAccountOutput;
-  createDish: CreateDishOutput;
-  createOrder: CreateOrderOutput;
-  createPayment: CreatePaymentOutput;
-  createRestaurant: CreateRestaurantOutput;
-  deleteDish: DeleteDishOutput;
-  deleteRestaurant: DeleteRestaurantOutput;
-  editDish: EditDishOutput;
-  editOrder: EditOrderOutput;
-  editProfile: EditProfileOutput;
-  editRestaurant: EditRestaurantOutput;
-  login: LoginOutput;
-  takeOrder: TakeOrderOutput;
-  verifyEmail: VerifyEmailOutput;
-};
-
+  __typename?: "Mutation"
+  createAccount: CreateAccountOutput
+  createDish: CreateDishOutput
+  createOrder: CreateOrderOutput
+  createPayment: CreatePaymentOutput
+  createRestaurant: CreateRestaurantOutput
+  deleteDish: DeleteDishOutput
+  deleteRestaurant: DeleteRestaurantOutput
+  editDish: EditDishOutput
+  editOrder: EditOrderOutput
+  editProfile: EditProfileOutput
+  editRestaurant: EditRestaurantOutput
+  login: LoginOutput
+  takeOrder: TakeOrderOutput
+  verifyEmail: VerifyEmailOutput
+}
 
 export type MutationCreateAccountArgs = {
-  input: CreateAccountInput;
-};
-
+  input: CreateAccountInput
+}
 
 export type MutationCreateDishArgs = {
-  input: CreateDishInput;
-};
-
+  input: CreateDishInput
+}
 
 export type MutationCreateOrderArgs = {
-  input: CreateOrderInput;
-};
-
+  input: CreateOrderInput
+}
 
 export type MutationCreatePaymentArgs = {
-  input: CreatePaymentInput;
-};
-
+  input: CreatePaymentInput
+}
 
 export type MutationCreateRestaurantArgs = {
-  input: CreateRestaurantInput;
-};
-
+  input: CreateRestaurantInput
+}
 
 export type MutationDeleteDishArgs = {
-  input: DeleteDishInput;
-};
-
+  input: DeleteDishInput
+}
 
 export type MutationDeleteRestaurantArgs = {
-  input: DeleteRestaurantInput;
-};
-
+  input: DeleteRestaurantInput
+}
 
 export type MutationEditDishArgs = {
-  input: EditDishInput;
-};
-
+  input: EditDishInput
+}
 
 export type MutationEditOrderArgs = {
-  input: EditOrderInput;
-};
-
+  input: EditOrderInput
+}
 
 export type MutationEditProfileArgs = {
-  input: EditProfileInput;
-};
-
+  input: EditProfileInput
+}
 
 export type MutationEditRestaurantArgs = {
-  input: EditRestaurantInput;
-};
-
+  input: EditRestaurantInput
+}
 
 export type MutationLoginArgs = {
-  input: LoginInput;
-};
-
+  input: LoginInput
+}
 
 export type MutationTakeOrderArgs = {
-  input: TakeOrderInput;
-};
-
+  input: TakeOrderInput
+}
 
 export type MutationVerifyEmailArgs = {
-  input: VerifyEmailInput;
-};
+  input: VerifyEmailInput
+}
 
 export type MyRestaurantInput = {
-  id: Scalars['Float'];
-};
+  id: Scalars["Float"]
+}
 
 export type MyRestaurantOutput = {
-  __typename?: 'MyRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurant?: Maybe<Restaurant>;
-};
+  __typename?: "MyRestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurant?: Maybe<Restaurant>
+}
 
 export type MyRestaurantsOutput = {
-  __typename?: 'MyRestaurantsOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurants: Array<Restaurant>;
-};
+  __typename?: "MyRestaurantsOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurants: Array<Restaurant>
+}
 
 export type Order = {
-  __typename?: 'Order';
-  createdAt: Scalars['DateTime'];
-  customer?: Maybe<User>;
-  driver?: Maybe<User>;
-  id: Scalars['Float'];
-  items: Array<OrderItem>;
-  restaurant?: Maybe<Restaurant>;
-  status: OrderStatus;
-  total?: Maybe<Scalars['Float']>;
-  updatedAt: Scalars['DateTime'];
-};
+  __typename?: "Order"
+  createdAt: Scalars["DateTime"]
+  customer?: Maybe<User>
+  driver?: Maybe<User>
+  id: Scalars["Float"]
+  items: Array<OrderItem>
+  restaurant?: Maybe<Restaurant>
+  status: OrderStatus
+  total?: Maybe<Scalars["Float"]>
+  updatedAt: Scalars["DateTime"]
+}
 
 export type OrderItem = {
-  __typename?: 'OrderItem';
-  createdAt: Scalars['DateTime'];
-  dish: Dish;
-  id: Scalars['Float'];
-  options?: Maybe<Array<OrderItemOption>>;
-  updatedAt: Scalars['DateTime'];
-};
+  __typename?: "OrderItem"
+  createdAt: Scalars["DateTime"]
+  dish: Dish
+  id: Scalars["Float"]
+  options?: Maybe<Array<OrderItemOption>>
+  updatedAt: Scalars["DateTime"]
+}
 
 export type OrderItemOption = {
-  __typename?: 'OrderItemOption';
-  choice?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-};
+  __typename?: "OrderItemOption"
+  choice?: Maybe<Scalars["String"]>
+  name: Scalars["String"]
+}
 
 export type OrderItemOptionInputType = {
-  choice?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-};
+  choice?: InputMaybe<Scalars["String"]>
+  name: Scalars["String"]
+}
 
 export enum OrderStatus {
-  Cooked = 'Cooked',
-  Cooking = 'Cooking',
-  Delivered = 'Delivered',
-  Pending = 'Pending',
-  PickedUp = 'PickedUp'
+  Cooked = "Cooked",
+  Cooking = "Cooking",
+  Delivered = "Delivered",
+  Pending = "Pending",
+  PickedUp = "PickedUp",
 }
 
 export type OrderUpdatesInput = {
-  id: Scalars['Float'];
-};
+  id: Scalars["Float"]
+}
 
 export type Payment = {
-  __typename?: 'Payment';
-  createdAt: Scalars['DateTime'];
-  id: Scalars['Float'];
-  restaurant: Restaurant;
-  restaurantId: Scalars['Int'];
-  transactionId: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
-  user: User;
-};
+  __typename?: "Payment"
+  createdAt: Scalars["DateTime"]
+  id: Scalars["Float"]
+  restaurant: Restaurant
+  restaurantId: Scalars["Int"]
+  transactionId: Scalars["String"]
+  updatedAt: Scalars["DateTime"]
+  user: User
+}
 
 export type Query = {
-  __typename?: 'Query';
-  allCategories: AllCategoriesOutput;
-  category: CategoryOutput;
-  getOrder: GetOrderOutput;
-  getOrders: GetOrdersOutput;
-  getPayments: GetPaymentsOutput;
-  hi: Scalars['Boolean'];
-  me: User;
-  myRestaurant: MyRestaurantOutput;
-  myRestaurants: MyRestaurantsOutput;
-  restaurant: RestaurantOutput;
-  restaurants: RestaurantsOutput;
-  searchRestaurant: SearchRestaurantOutput;
-  userProfile: UserProfileOutput;
-};
-
+  __typename?: "Query"
+  allCategories: AllCategoriesOutput
+  category: CategoryOutput
+  getOrder: GetOrderOutput
+  getOrders: GetOrdersOutput
+  getPayments: GetPaymentsOutput
+  hi: Scalars["Boolean"]
+  me: User
+  myRestaurant: MyRestaurantOutput
+  myRestaurants: MyRestaurantsOutput
+  restaurant: RestaurantOutput
+  restaurants: RestaurantsOutput
+  searchRestaurant: SearchRestaurantOutput
+  userProfile: UserProfileOutput
+}
 
 export type QueryCategoryArgs = {
-  input: CategoryInput;
-};
-
+  input: CategoryInput
+}
 
 export type QueryGetOrderArgs = {
-  input: GetOrderInput;
-};
-
+  input: GetOrderInput
+}
 
 export type QueryGetOrdersArgs = {
-  input: GetOrdersInput;
-};
-
+  input: GetOrdersInput
+}
 
 export type QueryMyRestaurantArgs = {
-  input: MyRestaurantInput;
-};
-
+  input: MyRestaurantInput
+}
 
 export type QueryRestaurantArgs = {
-  input: RestaurantInput;
-};
-
+  input: RestaurantInput
+}
 
 export type QueryRestaurantsArgs = {
-  input: RestaurantsInput;
-};
-
+  input: RestaurantsInput
+}
 
 export type QuerySearchRestaurantArgs = {
-  input: SearchRestaurantInput;
-};
-
+  input: SearchRestaurantInput
+}
 
 export type QueryUserProfileArgs = {
-  userId: Scalars['Float'];
-};
+  userId: Scalars["Float"]
+}
 
 export type Restaurant = {
-  __typename?: 'Restaurant';
-  address: Scalars['String'];
-  category?: Maybe<Category>;
-  coverImg: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  id: Scalars['Float'];
-  isPromoted: Scalars['Boolean'];
-  menu: Array<Dish>;
-  name: Scalars['String'];
-  orders: Array<Order>;
-  owner: User;
-  promotedUntil?: Maybe<Scalars['DateTime']>;
-  updatedAt: Scalars['DateTime'];
-};
+  __typename?: "Restaurant"
+  address: Scalars["String"]
+  category?: Maybe<Category>
+  coverImg: Scalars["String"]
+  createdAt: Scalars["DateTime"]
+  id: Scalars["Float"]
+  isPromoted: Scalars["Boolean"]
+  menu: Array<Dish>
+  name: Scalars["String"]
+  orders: Array<Order>
+  owner: User
+  promotedUntil?: Maybe<Scalars["DateTime"]>
+  updatedAt: Scalars["DateTime"]
+}
 
 export type RestaurantInput = {
-  restaurantId: Scalars['Int'];
-};
+  restaurantId: Scalars["Int"]
+}
 
 export type RestaurantOutput = {
-  __typename?: 'RestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurant?: Maybe<Restaurant>;
-};
+  __typename?: "RestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurant?: Maybe<Restaurant>
+}
 
 export type RestaurantsInput = {
-  page?: InputMaybe<Scalars['Int']>;
-};
+  page?: InputMaybe<Scalars["Int"]>
+}
 
 export type RestaurantsOutput = {
-  __typename?: 'RestaurantsOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  results?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
-};
+  __typename?: "RestaurantsOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  results?: Maybe<Array<Restaurant>>
+  totalPages?: Maybe<Scalars["Int"]>
+  totalResults?: Maybe<Scalars["Int"]>
+}
 
 export type SearchRestaurantInput = {
-  page?: InputMaybe<Scalars['Int']>;
-  query: Scalars['String'];
-};
+  page?: InputMaybe<Scalars["Int"]>
+  query: Scalars["String"]
+}
 
 export type SearchRestaurantOutput = {
-  __typename?: 'SearchRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurants?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
-};
+  __typename?: "SearchRestaurantOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  restaurants?: Maybe<Array<Restaurant>>
+  totalPages?: Maybe<Scalars["Int"]>
+  totalResults?: Maybe<Scalars["Int"]>
+}
 
 export type Subscription = {
-  __typename?: 'Subscription';
-  cookedOrders: Order;
-  orderUpdates: Order;
-  pendingOrders: Order;
-};
-
+  __typename?: "Subscription"
+  cookedOrders: Order
+  orderUpdates: Order
+  pendingOrders: Order
+}
 
 export type SubscriptionOrderUpdatesArgs = {
-  input: OrderUpdatesInput;
-};
+  input: OrderUpdatesInput
+}
 
 export type TakeOrderInput = {
-  id: Scalars['Float'];
-};
+  id: Scalars["Float"]
+}
 
 export type TakeOrderOutput = {
-  __typename?: 'TakeOrderOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "TakeOrderOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
 export type User = {
-  __typename?: 'User';
-  createdAt: Scalars['DateTime'];
-  email: Scalars['String'];
-  id: Scalars['Float'];
-  orders: Array<Order>;
-  password: Scalars['String'];
-  payments: Array<Payment>;
-  restaurants: Array<Restaurant>;
-  rides: Array<Order>;
-  role: UserRole;
-  updatedAt: Scalars['DateTime'];
-  verified: Scalars['Boolean'];
-};
+  __typename?: "User"
+  createdAt: Scalars["DateTime"]
+  email: Scalars["String"]
+  id: Scalars["Float"]
+  orders: Array<Order>
+  password: Scalars["String"]
+  payments: Array<Payment>
+  restaurants: Array<Restaurant>
+  rides: Array<Order>
+  role: UserRole
+  updatedAt: Scalars["DateTime"]
+  verified: Scalars["Boolean"]
+}
 
 export type UserProfileOutput = {
-  __typename?: 'UserProfileOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  user?: Maybe<User>;
-};
+  __typename?: "UserProfileOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+  user?: Maybe<User>
+}
 
 export enum UserRole {
-  Client = 'Client',
-  Delivery = 'Delivery',
-  Owner = 'Owner'
+  Client = "Client",
+  Delivery = "Delivery",
+  Owner = "Owner",
 }
 
 export type VerifyEmailInput = {
-  code: Scalars['String'];
-};
+  code: Scalars["String"]
+}
 
 export type VerifyEmailOutput = {
-  __typename?: 'VerifyEmailOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
+  __typename?: "VerifyEmailOutput"
+  error?: Maybe<Scalars["String"]>
+  ok: Scalars["Boolean"]
+}
 
-export type FullOrderPartsFragment = { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null };
+export type FullOrderPartsFragment = {
+  __typename?: "Order"
+  id: number
+  status: OrderStatus
+  total?: number | null
+  driver?: { __typename?: "User"; email: string } | null
+  customer?: { __typename?: "User"; email: string } | null
+  restaurant?: { __typename?: "Restaurant"; name: string } | null
+}
 
-export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null };
+export type RestaurantPartsFragment = {
+  __typename?: "Restaurant"
+  id: number
+  name: string
+  coverImg: string
+  address: string
+  isPromoted: boolean
+  category?: { __typename?: "Category"; name: string } | null
+}
 
-export type CategoryPartsFragment = { __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number };
+export type CategoryPartsFragment = {
+  __typename?: "Category"
+  id: number
+  name: string
+  coverImg?: string | null
+  slug: string
+  restaurantCount: number
+}
 
-export type DishPartsFragment = { __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null };
+export type DishPartsFragment = {
+  __typename?: "Dish"
+  id: number
+  name: string
+  price: number
+  photo?: string | null
+  description: string
+  options?: Array<{
+    __typename?: "DishOption"
+    name: string
+    extra?: number | null
+    choices?: Array<{
+      __typename?: "DishChoice"
+      name: string
+      extra?: number | null
+    }> | null
+  }> | null
+}
 
-export type OrderPartsFragment = { __typename?: 'Order', id: number, createdAt: any, total?: number | null };
+export type OrderPartsFragment = {
+  __typename?: "Order"
+  id: number
+  createdAt: any
+  total?: number | null
+}
 
 export type CreateAccountMutationVariables = Exact<{
-  createAccountInput: CreateAccountInput;
-}>;
+  createAccountInput: CreateAccountInput
+}>
 
-
-export type CreateAccountMutation = { __typename?: 'Mutation', createAccount: { __typename?: 'CreateAccountOutput', ok: boolean, error?: string | null } };
+export type CreateAccountMutation = {
+  __typename?: "Mutation"
+  createAccount: {
+    __typename?: "CreateAccountOutput"
+    ok: boolean
+    error?: string | null
+  }
+}
 
 export type CreateDishMutationVariables = Exact<{
-  input: CreateDishInput;
-}>;
+  input: CreateDishInput
+}>
 
-
-export type CreateDishMutation = { __typename?: 'Mutation', createDish: { __typename?: 'CreateDishOutput', ok: boolean, error?: string | null } };
+export type CreateDishMutation = {
+  __typename?: "Mutation"
+  createDish: { __typename?: "CreateDishOutput"; ok: boolean; error?: string | null }
+}
 
 export type CreateOrderMutationVariables = Exact<{
-  input: CreateOrderInput;
-}>;
+  input: CreateOrderInput
+}>
 
-
-export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'CreateOrderOutput', ok: boolean, error?: string | null, orderId?: number | null } };
+export type CreateOrderMutation = {
+  __typename?: "Mutation"
+  createOrder: {
+    __typename?: "CreateOrderOutput"
+    ok: boolean
+    error?: string | null
+    orderId?: number | null
+  }
+}
 
 export type EditOrderMutationVariables = Exact<{
-  input: EditOrderInput;
-}>;
+  input: EditOrderInput
+}>
 
-
-export type EditOrderMutation = { __typename?: 'Mutation', editOrder: { __typename?: 'EditOrderOutput', ok: boolean, error?: string | null } };
+export type EditOrderMutation = {
+  __typename?: "Mutation"
+  editOrder: { __typename?: "EditOrderOutput"; ok: boolean; error?: string | null }
+}
 
 export type EditProfileMutationVariables = Exact<{
-  input: EditProfileInput;
-}>;
+  input: EditProfileInput
+}>
 
-
-export type EditProfileMutation = { __typename?: 'Mutation', editProfile: { __typename?: 'EditProfileOutput', ok: boolean, error?: string | null } };
+export type EditProfileMutation = {
+  __typename?: "Mutation"
+  editProfile: { __typename?: "EditProfileOutput"; ok: boolean; error?: string | null }
+}
 
 export type LoginMutationVariables = Exact<{
-  loginInput: LoginInput;
-}>;
+  loginInput: LoginInput
+}>
 
-
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginOutput', ok: boolean, token?: string | null, error?: string | null } };
+export type LoginMutation = {
+  __typename?: "Mutation"
+  login: {
+    __typename?: "LoginOutput"
+    ok: boolean
+    token?: string | null
+    error?: string | null
+  }
+}
 
 export type TakeOrderMutationVariables = Exact<{
-  input: TakeOrderInput;
-}>;
+  input: TakeOrderInput
+}>
 
-
-export type TakeOrderMutation = { __typename?: 'Mutation', takeOrder: { __typename?: 'TakeOrderOutput', ok: boolean, error?: string | null } };
+export type TakeOrderMutation = {
+  __typename?: "Mutation"
+  takeOrder: { __typename?: "TakeOrderOutput"; ok: boolean; error?: string | null }
+}
 
 export type VerifyEmailMutationVariables = Exact<{
-  input: VerifyEmailInput;
-}>;
+  input: VerifyEmailInput
+}>
 
-
-export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'VerifyEmailOutput', ok: boolean, error?: string | null } };
+export type VerifyEmailMutation = {
+  __typename?: "Mutation"
+  verifyEmail: { __typename?: "VerifyEmailOutput"; ok: boolean; error?: string | null }
+}
 
 export type CategoryQueryVariables = Exact<{
-  input: CategoryInput;
-}>;
+  input: CategoryInput
+}>
 
+export type CategoryQuery = {
+  __typename?: "Query"
+  category: {
+    __typename?: "CategoryOutput"
+    ok: boolean
+    error?: string | null
+    totalPages?: number | null
+    totalResults?: number | null
+    restaurants?: Array<{
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      category?: { __typename?: "Category"; name: string } | null
+    }> | null
+    category?: {
+      __typename?: "Category"
+      id: number
+      name: string
+      coverImg?: string | null
+      slug: string
+      restaurantCount: number
+    } | null
+  }
+}
 
-export type CategoryQuery = { __typename?: 'Query', category: { __typename?: 'CategoryOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null, category?: { __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number } | null } };
+export type GetMeQueryVariables = Exact<{ [key: string]: never }>
 
-export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetMeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, email: string, role: UserRole, verified: boolean } };
+export type GetMeQuery = {
+  __typename?: "Query"
+  me: {
+    __typename?: "User"
+    id: number
+    email: string
+    role: UserRole
+    verified: boolean
+  }
+}
 
 export type GetOrderQueryVariables = Exact<{
-  input: GetOrderInput;
-}>;
+  input: GetOrderInput
+}>
 
-
-export type GetOrderQuery = { __typename?: 'Query', getOrder: { __typename?: 'GetOrderOutput', ok: boolean, error?: string | null, order?: { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null } | null } };
+export type GetOrderQuery = {
+  __typename?: "Query"
+  getOrder: {
+    __typename?: "GetOrderOutput"
+    ok: boolean
+    error?: string | null
+    order?: {
+      __typename?: "Order"
+      id: number
+      status: OrderStatus
+      total?: number | null
+      driver?: { __typename?: "User"; email: string } | null
+      customer?: { __typename?: "User"; email: string } | null
+      restaurant?: { __typename?: "Restaurant"; name: string } | null
+    } | null
+  }
+}
 
 export type MyRestaurantQueryVariables = Exact<{
-  input: MyRestaurantInput;
-}>;
+  input: MyRestaurantInput
+}>
 
+export type MyRestaurantQuery = {
+  __typename?: "Query"
+  myRestaurant: {
+    __typename?: "MyRestaurantOutput"
+    ok: boolean
+    error?: string | null
+    restaurant?: {
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      menu: Array<{
+        __typename?: "Dish"
+        id: number
+        name: string
+        price: number
+        photo?: string | null
+        description: string
+        options?: Array<{
+          __typename?: "DishOption"
+          name: string
+          extra?: number | null
+          choices?: Array<{
+            __typename?: "DishChoice"
+            name: string
+            extra?: number | null
+          }> | null
+        }> | null
+      }>
+      orders: Array<{
+        __typename?: "Order"
+        id: number
+        createdAt: any
+        total?: number | null
+      }>
+      category?: { __typename?: "Category"; name: string } | null
+    } | null
+  }
+}
 
-export type MyRestaurantQuery = { __typename?: 'Query', myRestaurant: { __typename?: 'MyRestaurantOutput', ok: boolean, error?: string | null, restaurant?: { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, menu: Array<{ __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null }>, orders: Array<{ __typename?: 'Order', id: number, createdAt: any, total?: number | null }>, category?: { __typename?: 'Category', name: string } | null } | null } };
+export type MyRestaurantsQueryVariables = Exact<{ [key: string]: never }>
 
-export type MyRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'MyRestaurantsOutput', ok: boolean, error?: string | null, restaurants: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> } };
+export type MyRestaurantsQuery = {
+  __typename?: "Query"
+  myRestaurants: {
+    __typename?: "MyRestaurantsOutput"
+    ok: boolean
+    error?: string | null
+    restaurants: Array<{
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      category?: { __typename?: "Category"; name: string } | null
+    }>
+  }
+}
 
 export type RestaurantQueryVariables = Exact<{
-  input: RestaurantInput;
-}>;
+  input: RestaurantInput
+}>
 
-
-export type RestaurantQuery = { __typename?: 'Query', restaurant: { __typename?: 'RestaurantOutput', ok: boolean, error?: string | null, restaurant?: { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, menu: Array<{ __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null }>, category?: { __typename?: 'Category', name: string } | null } | null } };
+export type RestaurantQuery = {
+  __typename?: "Query"
+  restaurant: {
+    __typename?: "RestaurantOutput"
+    ok: boolean
+    error?: string | null
+    restaurant?: {
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      menu: Array<{
+        __typename?: "Dish"
+        id: number
+        name: string
+        price: number
+        photo?: string | null
+        description: string
+        options?: Array<{
+          __typename?: "DishOption"
+          name: string
+          extra?: number | null
+          choices?: Array<{
+            __typename?: "DishChoice"
+            name: string
+            extra?: number | null
+          }> | null
+        }> | null
+      }>
+      category?: { __typename?: "Category"; name: string } | null
+    } | null
+  }
+}
 
 export type RestaurantsPageQueryQueryVariables = Exact<{
-  input: RestaurantsInput;
-}>;
+  input: RestaurantsInput
+}>
 
-
-export type RestaurantsPageQueryQuery = { __typename?: 'Query', allCategories: { __typename?: 'AllCategoriesOutput', ok: boolean, error?: string | null, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number }> | null }, restaurants: { __typename?: 'RestaurantsOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, results?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null } };
+export type RestaurantsPageQueryQuery = {
+  __typename?: "Query"
+  allCategories: {
+    __typename?: "AllCategoriesOutput"
+    ok: boolean
+    error?: string | null
+    categories?: Array<{
+      __typename?: "Category"
+      id: number
+      name: string
+      coverImg?: string | null
+      slug: string
+      restaurantCount: number
+    }> | null
+  }
+  restaurants: {
+    __typename?: "RestaurantsOutput"
+    ok: boolean
+    error?: string | null
+    totalPages?: number | null
+    totalResults?: number | null
+    results?: Array<{
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      category?: { __typename?: "Category"; name: string } | null
+    }> | null
+  }
+}
 
 export type SearchRestaurantQueryVariables = Exact<{
-  input: SearchRestaurantInput;
-}>;
+  input: SearchRestaurantInput
+}>
 
+export type SearchRestaurantQuery = {
+  __typename?: "Query"
+  searchRestaurant: {
+    __typename?: "SearchRestaurantOutput"
+    ok: boolean
+    error?: string | null
+    totalPages?: number | null
+    totalResults?: number | null
+    restaurants?: Array<{
+      __typename?: "Restaurant"
+      id: number
+      name: string
+      coverImg: string
+      address: string
+      isPromoted: boolean
+      category?: { __typename?: "Category"; name: string } | null
+    }> | null
+  }
+}
 
-export type SearchRestaurantQuery = { __typename?: 'Query', searchRestaurant: { __typename?: 'SearchRestaurantOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null } };
+export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never }>
 
-export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CookedOrdersSubscription = { __typename?: 'Subscription', cookedOrders: { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null } };
+export type CookedOrdersSubscription = {
+  __typename?: "Subscription"
+  cookedOrders: {
+    __typename?: "Order"
+    id: number
+    status: OrderStatus
+    total?: number | null
+    driver?: { __typename?: "User"; email: string } | null
+    customer?: { __typename?: "User"; email: string } | null
+    restaurant?: { __typename?: "Restaurant"; name: string } | null
+  }
+}
 
 export type OrderUpdatesSubscriptionVariables = Exact<{
-  input: OrderUpdatesInput;
-}>;
+  input: OrderUpdatesInput
+}>
 
+export type OrderUpdatesSubscription = {
+  __typename?: "Subscription"
+  orderUpdates: {
+    __typename?: "Order"
+    id: number
+    status: OrderStatus
+    total?: number | null
+    driver?: { __typename?: "User"; email: string } | null
+    customer?: { __typename?: "User"; email: string } | null
+    restaurant?: { __typename?: "Restaurant"; name: string } | null
+  }
+}
 
-export type OrderUpdatesSubscription = { __typename?: 'Subscription', orderUpdates: { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null } };
+export type PendingOrdersSubscriptionVariables = Exact<{ [key: string]: never }>
 
-export type PendingOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PendingOrdersSubscription = { __typename?: 'Subscription', pendingOrders: { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null } };
+export type PendingOrdersSubscription = {
+  __typename?: "Subscription"
+  pendingOrders: {
+    __typename?: "Order"
+    id: number
+    status: OrderStatus
+    total?: number | null
+    driver?: { __typename?: "User"; email: string } | null
+    customer?: { __typename?: "User"; email: string } | null
+    restaurant?: { __typename?: "Restaurant"; name: string } | null
+  }
+}
 
 export const FullOrderPartsFragmentDoc = gql`
-    fragment FullOrderParts on Order {
-  id
-  status
-  total
-  driver {
-    email
-  }
-  customer {
-    email
-  }
-  restaurant {
-    name
-  }
-}
-    `;
-export const RestaurantPartsFragmentDoc = gql`
-    fragment RestaurantParts on Restaurant {
-  id
-  name
-  coverImg
-  category {
-    name
-  }
-  address
-  isPromoted
-}
-    `;
-export const CategoryPartsFragmentDoc = gql`
-    fragment CategoryParts on Category {
-  id
-  name
-  coverImg
-  slug
-  restaurantCount
-}
-    `;
-export const DishPartsFragmentDoc = gql`
-    fragment DishParts on Dish {
-  id
-  name
-  price
-  photo
-  description
-  options {
-    name
-    extra
-    choices {
+  fragment FullOrderParts on Order {
+    id
+    status
+    total
+    driver {
+      email
+    }
+    customer {
+      email
+    }
+    restaurant {
       name
-      extra
     }
   }
-}
-    `;
-export const OrderPartsFragmentDoc = gql`
-    fragment OrderParts on Order {
-  id
-  createdAt
-  total
-}
-    `;
-export const CreateAccountDocument = gql`
-    mutation createAccount($createAccountInput: CreateAccountInput!) {
-  createAccount(input: $createAccountInput) {
-    ok
-    error
+`
+export const RestaurantPartsFragmentDoc = gql`
+  fragment RestaurantParts on Restaurant {
+    id
+    name
+    coverImg
+    category {
+      name
+    }
+    address
+    isPromoted
   }
-}
-    `;
-export type CreateAccountMutationFn = Apollo.MutationFunction<CreateAccountMutation, CreateAccountMutationVariables>;
+`
+export const CategoryPartsFragmentDoc = gql`
+  fragment CategoryParts on Category {
+    id
+    name
+    coverImg
+    slug
+    restaurantCount
+  }
+`
+export const DishPartsFragmentDoc = gql`
+  fragment DishParts on Dish {
+    id
+    name
+    price
+    photo
+    description
+    options {
+      name
+      extra
+      choices {
+        name
+        extra
+      }
+    }
+  }
+`
+export const OrderPartsFragmentDoc = gql`
+  fragment OrderParts on Order {
+    id
+    createdAt
+    total
+  }
+`
+export const CreateAccountDocument = gql`
+  mutation createAccount($createAccountInput: CreateAccountInput!) {
+    createAccount(input: $createAccountInput) {
+      ok
+      error
+    }
+  }
+`
+export type CreateAccountMutationFn = Apollo.MutationFunction<
+  CreateAccountMutation,
+  CreateAccountMutationVariables
+>
 
 /**
  * __useCreateAccountMutation__
@@ -823,22 +1094,36 @@ export type CreateAccountMutationFn = Apollo.MutationFunction<CreateAccountMutat
  *   },
  * });
  */
-export function useCreateAccountMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccountMutation, CreateAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument, options);
-      }
-export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>;
-export type CreateAccountMutationResult = Apollo.MutationResult<CreateAccountMutation>;
-export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<CreateAccountMutation, CreateAccountMutationVariables>;
-export const CreateDishDocument = gql`
-    mutation createDish($input: CreateDishInput!) {
-  createDish(input: $input) {
-    ok
-    error
-  }
+export function useCreateAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateAccountMutation,
+    CreateAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(
+    CreateAccountDocument,
+    options
+  )
 }
-    `;
-export type CreateDishMutationFn = Apollo.MutationFunction<CreateDishMutation, CreateDishMutationVariables>;
+export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>
+export type CreateAccountMutationResult = Apollo.MutationResult<CreateAccountMutation>
+export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<
+  CreateAccountMutation,
+  CreateAccountMutationVariables
+>
+export const CreateDishDocument = gql`
+  mutation createDish($input: CreateDishInput!) {
+    createDish(input: $input) {
+      ok
+      error
+    }
+  }
+`
+export type CreateDishMutationFn = Apollo.MutationFunction<
+  CreateDishMutation,
+  CreateDishMutationVariables
+>
 
 /**
  * __useCreateDishMutation__
@@ -857,23 +1142,37 @@ export type CreateDishMutationFn = Apollo.MutationFunction<CreateDishMutation, C
  *   },
  * });
  */
-export function useCreateDishMutation(baseOptions?: Apollo.MutationHookOptions<CreateDishMutation, CreateDishMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateDishMutation, CreateDishMutationVariables>(CreateDishDocument, options);
-      }
-export type CreateDishMutationHookResult = ReturnType<typeof useCreateDishMutation>;
-export type CreateDishMutationResult = Apollo.MutationResult<CreateDishMutation>;
-export type CreateDishMutationOptions = Apollo.BaseMutationOptions<CreateDishMutation, CreateDishMutationVariables>;
-export const CreateOrderDocument = gql`
-    mutation createOrder($input: CreateOrderInput!) {
-  createOrder(input: $input) {
-    ok
-    error
-    orderId
-  }
+export function useCreateDishMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateDishMutation,
+    CreateDishMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreateDishMutation, CreateDishMutationVariables>(
+    CreateDishDocument,
+    options
+  )
 }
-    `;
-export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation, CreateOrderMutationVariables>;
+export type CreateDishMutationHookResult = ReturnType<typeof useCreateDishMutation>
+export type CreateDishMutationResult = Apollo.MutationResult<CreateDishMutation>
+export type CreateDishMutationOptions = Apollo.BaseMutationOptions<
+  CreateDishMutation,
+  CreateDishMutationVariables
+>
+export const CreateOrderDocument = gql`
+  mutation createOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      ok
+      error
+      orderId
+    }
+  }
+`
+export type CreateOrderMutationFn = Apollo.MutationFunction<
+  CreateOrderMutation,
+  CreateOrderMutationVariables
+>
 
 /**
  * __useCreateOrderMutation__
@@ -892,22 +1191,36 @@ export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation,
  *   },
  * });
  */
-export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderMutation, CreateOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(CreateOrderDocument, options);
-      }
-export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
-export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
-export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
-export const EditOrderDocument = gql`
-    mutation editOrder($input: EditOrderInput!) {
-  editOrder(input: $input) {
-    ok
-    error
-  }
+export function useCreateOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateOrderMutation,
+    CreateOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(
+    CreateOrderDocument,
+    options
+  )
 }
-    `;
-export type EditOrderMutationFn = Apollo.MutationFunction<EditOrderMutation, EditOrderMutationVariables>;
+export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>
+export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>
+export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<
+  CreateOrderMutation,
+  CreateOrderMutationVariables
+>
+export const EditOrderDocument = gql`
+  mutation editOrder($input: EditOrderInput!) {
+    editOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`
+export type EditOrderMutationFn = Apollo.MutationFunction<
+  EditOrderMutation,
+  EditOrderMutationVariables
+>
 
 /**
  * __useEditOrderMutation__
@@ -926,22 +1239,33 @@ export type EditOrderMutationFn = Apollo.MutationFunction<EditOrderMutation, Edi
  *   },
  * });
  */
-export function useEditOrderMutation(baseOptions?: Apollo.MutationHookOptions<EditOrderMutation, EditOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<EditOrderMutation, EditOrderMutationVariables>(EditOrderDocument, options);
-      }
-export type EditOrderMutationHookResult = ReturnType<typeof useEditOrderMutation>;
-export type EditOrderMutationResult = Apollo.MutationResult<EditOrderMutation>;
-export type EditOrderMutationOptions = Apollo.BaseMutationOptions<EditOrderMutation, EditOrderMutationVariables>;
-export const EditProfileDocument = gql`
-    mutation editProfile($input: EditProfileInput!) {
-  editProfile(input: $input) {
-    ok
-    error
-  }
+export function useEditOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<EditOrderMutation, EditOrderMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<EditOrderMutation, EditOrderMutationVariables>(
+    EditOrderDocument,
+    options
+  )
 }
-    `;
-export type EditProfileMutationFn = Apollo.MutationFunction<EditProfileMutation, EditProfileMutationVariables>;
+export type EditOrderMutationHookResult = ReturnType<typeof useEditOrderMutation>
+export type EditOrderMutationResult = Apollo.MutationResult<EditOrderMutation>
+export type EditOrderMutationOptions = Apollo.BaseMutationOptions<
+  EditOrderMutation,
+  EditOrderMutationVariables
+>
+export const EditProfileDocument = gql`
+  mutation editProfile($input: EditProfileInput!) {
+    editProfile(input: $input) {
+      ok
+      error
+    }
+  }
+`
+export type EditProfileMutationFn = Apollo.MutationFunction<
+  EditProfileMutation,
+  EditProfileMutationVariables
+>
 
 /**
  * __useEditProfileMutation__
@@ -960,23 +1284,37 @@ export type EditProfileMutationFn = Apollo.MutationFunction<EditProfileMutation,
  *   },
  * });
  */
-export function useEditProfileMutation(baseOptions?: Apollo.MutationHookOptions<EditProfileMutation, EditProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(EditProfileDocument, options);
-      }
-export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>;
-export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>;
-export type EditProfileMutationOptions = Apollo.BaseMutationOptions<EditProfileMutation, EditProfileMutationVariables>;
-export const LoginDocument = gql`
-    mutation login($loginInput: LoginInput!) {
-  login(input: $loginInput) {
-    ok
-    token
-    error
-  }
+export function useEditProfileMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    EditProfileMutation,
+    EditProfileMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(
+    EditProfileDocument,
+    options
+  )
 }
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>
+export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>
+export type EditProfileMutationOptions = Apollo.BaseMutationOptions<
+  EditProfileMutation,
+  EditProfileMutationVariables
+>
+export const LoginDocument = gql`
+  mutation login($loginInput: LoginInput!) {
+    login(input: $loginInput) {
+      ok
+      token
+      error
+    }
+  }
+`
+export type LoginMutationFn = Apollo.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>
 
 /**
  * __useLoginMutation__
@@ -995,22 +1333,30 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   },
  * });
  */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const TakeOrderDocument = gql`
-    mutation takeOrder($input: TakeOrderInput!) {
-  takeOrder(input: $input) {
-    ok
-    error
-  }
+export function useLoginMutation(
+  baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options)
 }
-    `;
-export type TakeOrderMutationFn = Apollo.MutationFunction<TakeOrderMutation, TakeOrderMutationVariables>;
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>
+export type LoginMutationOptions = Apollo.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>
+export const TakeOrderDocument = gql`
+  mutation takeOrder($input: TakeOrderInput!) {
+    takeOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`
+export type TakeOrderMutationFn = Apollo.MutationFunction<
+  TakeOrderMutation,
+  TakeOrderMutationVariables
+>
 
 /**
  * __useTakeOrderMutation__
@@ -1029,22 +1375,33 @@ export type TakeOrderMutationFn = Apollo.MutationFunction<TakeOrderMutation, Tak
  *   },
  * });
  */
-export function useTakeOrderMutation(baseOptions?: Apollo.MutationHookOptions<TakeOrderMutation, TakeOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<TakeOrderMutation, TakeOrderMutationVariables>(TakeOrderDocument, options);
-      }
-export type TakeOrderMutationHookResult = ReturnType<typeof useTakeOrderMutation>;
-export type TakeOrderMutationResult = Apollo.MutationResult<TakeOrderMutation>;
-export type TakeOrderMutationOptions = Apollo.BaseMutationOptions<TakeOrderMutation, TakeOrderMutationVariables>;
-export const VerifyEmailDocument = gql`
-    mutation verifyEmail($input: VerifyEmailInput!) {
-  verifyEmail(input: $input) {
-    ok
-    error
-  }
+export function useTakeOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<TakeOrderMutation, TakeOrderMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<TakeOrderMutation, TakeOrderMutationVariables>(
+    TakeOrderDocument,
+    options
+  )
 }
-    `;
-export type VerifyEmailMutationFn = Apollo.MutationFunction<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export type TakeOrderMutationHookResult = ReturnType<typeof useTakeOrderMutation>
+export type TakeOrderMutationResult = Apollo.MutationResult<TakeOrderMutation>
+export type TakeOrderMutationOptions = Apollo.BaseMutationOptions<
+  TakeOrderMutation,
+  TakeOrderMutationVariables
+>
+export const VerifyEmailDocument = gql`
+  mutation verifyEmail($input: VerifyEmailInput!) {
+    verifyEmail(input: $input) {
+      ok
+      error
+    }
+  }
+`
+export type VerifyEmailMutationFn = Apollo.MutationFunction<
+  VerifyEmailMutation,
+  VerifyEmailMutationVariables
+>
 
 /**
  * __useVerifyEmailMutation__
@@ -1063,30 +1420,42 @@ export type VerifyEmailMutationFn = Apollo.MutationFunction<VerifyEmailMutation,
  *   },
  * });
  */
-export function useVerifyEmailMutation(baseOptions?: Apollo.MutationHookOptions<VerifyEmailMutation, VerifyEmailMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument, options);
-      }
-export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>;
-export type VerifyEmailMutationResult = Apollo.MutationResult<VerifyEmailMutation>;
-export type VerifyEmailMutationOptions = Apollo.BaseMutationOptions<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export function useVerifyEmailMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    VerifyEmailMutation,
+    VerifyEmailMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(
+    VerifyEmailDocument,
+    options
+  )
+}
+export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>
+export type VerifyEmailMutationResult = Apollo.MutationResult<VerifyEmailMutation>
+export type VerifyEmailMutationOptions = Apollo.BaseMutationOptions<
+  VerifyEmailMutation,
+  VerifyEmailMutationVariables
+>
 export const CategoryDocument = gql`
-    query category($input: CategoryInput!) {
-  category(input: $input) {
-    ok
-    error
-    totalPages
-    totalResults
-    restaurants {
-      ...RestaurantParts
-    }
-    category {
-      ...CategoryParts
+  query category($input: CategoryInput!) {
+    category(input: $input) {
+      ok
+      error
+      totalPages
+      totalResults
+      restaurants {
+        ...RestaurantParts
+      }
+      category {
+        ...CategoryParts
+      }
     }
   }
-}
-    ${RestaurantPartsFragmentDoc}
-${CategoryPartsFragmentDoc}`;
+  ${RestaurantPartsFragmentDoc}
+  ${CategoryPartsFragmentDoc}
+`
 
 /**
  * __useCategoryQuery__
@@ -1104,27 +1473,37 @@ ${CategoryPartsFragmentDoc}`;
  *   },
  * });
  */
-export function useCategoryQuery(baseOptions: Apollo.QueryHookOptions<CategoryQuery, CategoryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CategoryQuery, CategoryQueryVariables>(CategoryDocument, options);
-      }
-export function useCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoryQuery, CategoryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CategoryQuery, CategoryQueryVariables>(CategoryDocument, options);
-        }
-export type CategoryQueryHookResult = ReturnType<typeof useCategoryQuery>;
-export type CategoryLazyQueryHookResult = ReturnType<typeof useCategoryLazyQuery>;
-export type CategoryQueryResult = Apollo.QueryResult<CategoryQuery, CategoryQueryVariables>;
-export const GetMeDocument = gql`
-    query getMe {
-  me {
-    id
-    email
-    role
-    verified
-  }
+export function useCategoryQuery(
+  baseOptions: Apollo.QueryHookOptions<CategoryQuery, CategoryQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<CategoryQuery, CategoryQueryVariables>(CategoryDocument, options)
 }
-    `;
+export function useCategoryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<CategoryQuery, CategoryQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<CategoryQuery, CategoryQueryVariables>(
+    CategoryDocument,
+    options
+  )
+}
+export type CategoryQueryHookResult = ReturnType<typeof useCategoryQuery>
+export type CategoryLazyQueryHookResult = ReturnType<typeof useCategoryLazyQuery>
+export type CategoryQueryResult = Apollo.QueryResult<
+  CategoryQuery,
+  CategoryQueryVariables
+>
+export const GetMeDocument = gql`
+  query getMe {
+    me {
+      id
+      email
+      role
+      verified
+    }
+  }
+`
 
 /**
  * __useGetMeQuery__
@@ -1141,28 +1520,33 @@ export const GetMeDocument = gql`
  *   },
  * });
  */
-export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-      }
-export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
-export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
-export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
+export function useGetMeQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
+}
+export function useGetMeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options)
+}
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>
 export const GetOrderDocument = gql`
-    query getOrder($input: GetOrderInput!) {
-  getOrder(input: $input) {
-    ok
-    error
-    order {
-      ...FullOrderParts
+  query getOrder($input: GetOrderInput!) {
+    getOrder(input: $input) {
+      ok
+      error
+      order {
+        ...FullOrderParts
+      }
     }
   }
-}
-    ${FullOrderPartsFragmentDoc}`;
+  ${FullOrderPartsFragmentDoc}
+`
 
 /**
  * __useGetOrderQuery__
@@ -1180,36 +1564,47 @@ export const GetOrderDocument = gql`
  *   },
  * });
  */
-export function useGetOrderQuery(baseOptions: Apollo.QueryHookOptions<GetOrderQuery, GetOrderQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options);
-      }
-export function useGetOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrderQuery, GetOrderQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options);
-        }
-export type GetOrderQueryHookResult = ReturnType<typeof useGetOrderQuery>;
-export type GetOrderLazyQueryHookResult = ReturnType<typeof useGetOrderLazyQuery>;
-export type GetOrderQueryResult = Apollo.QueryResult<GetOrderQuery, GetOrderQueryVariables>;
+export function useGetOrderQuery(
+  baseOptions: Apollo.QueryHookOptions<GetOrderQuery, GetOrderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetOrderQuery, GetOrderQueryVariables>(GetOrderDocument, options)
+}
+export function useGetOrderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetOrderQuery, GetOrderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetOrderQuery, GetOrderQueryVariables>(
+    GetOrderDocument,
+    options
+  )
+}
+export type GetOrderQueryHookResult = ReturnType<typeof useGetOrderQuery>
+export type GetOrderLazyQueryHookResult = ReturnType<typeof useGetOrderLazyQuery>
+export type GetOrderQueryResult = Apollo.QueryResult<
+  GetOrderQuery,
+  GetOrderQueryVariables
+>
 export const MyRestaurantDocument = gql`
-    query myRestaurant($input: MyRestaurantInput!) {
-  myRestaurant(input: $input) {
-    ok
-    error
-    restaurant {
-      ...RestaurantParts
-      menu {
-        ...DishParts
-      }
-      orders {
-        ...OrderParts
+  query myRestaurant($input: MyRestaurantInput!) {
+    myRestaurant(input: $input) {
+      ok
+      error
+      restaurant {
+        ...RestaurantParts
+        menu {
+          ...DishParts
+        }
+        orders {
+          ...OrderParts
+        }
       }
     }
   }
-}
-    ${RestaurantPartsFragmentDoc}
-${DishPartsFragmentDoc}
-${OrderPartsFragmentDoc}`;
+  ${RestaurantPartsFragmentDoc}
+  ${DishPartsFragmentDoc}
+  ${OrderPartsFragmentDoc}
+`
 
 /**
  * __useMyRestaurantQuery__
@@ -1227,28 +1622,42 @@ ${OrderPartsFragmentDoc}`;
  *   },
  * });
  */
-export function useMyRestaurantQuery(baseOptions: Apollo.QueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(MyRestaurantDocument, options);
-      }
-export function useMyRestaurantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(MyRestaurantDocument, options);
-        }
-export type MyRestaurantQueryHookResult = ReturnType<typeof useMyRestaurantQuery>;
-export type MyRestaurantLazyQueryHookResult = ReturnType<typeof useMyRestaurantLazyQuery>;
-export type MyRestaurantQueryResult = Apollo.QueryResult<MyRestaurantQuery, MyRestaurantQueryVariables>;
+export function useMyRestaurantQuery(
+  baseOptions: Apollo.QueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(
+    MyRestaurantDocument,
+    options
+  )
+}
+export function useMyRestaurantLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(
+    MyRestaurantDocument,
+    options
+  )
+}
+export type MyRestaurantQueryHookResult = ReturnType<typeof useMyRestaurantQuery>
+export type MyRestaurantLazyQueryHookResult = ReturnType<typeof useMyRestaurantLazyQuery>
+export type MyRestaurantQueryResult = Apollo.QueryResult<
+  MyRestaurantQuery,
+  MyRestaurantQueryVariables
+>
 export const MyRestaurantsDocument = gql`
-    query myRestaurants {
-  myRestaurants {
-    ok
-    error
-    restaurants {
-      ...RestaurantParts
+  query myRestaurants {
+    myRestaurants {
+      ok
+      error
+      restaurants {
+        ...RestaurantParts
+      }
     }
   }
-}
-    ${RestaurantPartsFragmentDoc}`;
+  ${RestaurantPartsFragmentDoc}
+`
 
 /**
  * __useMyRestaurantsQuery__
@@ -1265,32 +1674,51 @@ export const MyRestaurantsDocument = gql`
  *   },
  * });
  */
-export function useMyRestaurantsQuery(baseOptions?: Apollo.QueryHookOptions<MyRestaurantsQuery, MyRestaurantsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MyRestaurantsQuery, MyRestaurantsQueryVariables>(MyRestaurantsDocument, options);
-      }
-export function useMyRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyRestaurantsQuery, MyRestaurantsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MyRestaurantsQuery, MyRestaurantsQueryVariables>(MyRestaurantsDocument, options);
-        }
-export type MyRestaurantsQueryHookResult = ReturnType<typeof useMyRestaurantsQuery>;
-export type MyRestaurantsLazyQueryHookResult = ReturnType<typeof useMyRestaurantsLazyQuery>;
-export type MyRestaurantsQueryResult = Apollo.QueryResult<MyRestaurantsQuery, MyRestaurantsQueryVariables>;
+export function useMyRestaurantsQuery(
+  baseOptions?: Apollo.QueryHookOptions<MyRestaurantsQuery, MyRestaurantsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<MyRestaurantsQuery, MyRestaurantsQueryVariables>(
+    MyRestaurantsDocument,
+    options
+  )
+}
+export function useMyRestaurantsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    MyRestaurantsQuery,
+    MyRestaurantsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<MyRestaurantsQuery, MyRestaurantsQueryVariables>(
+    MyRestaurantsDocument,
+    options
+  )
+}
+export type MyRestaurantsQueryHookResult = ReturnType<typeof useMyRestaurantsQuery>
+export type MyRestaurantsLazyQueryHookResult = ReturnType<
+  typeof useMyRestaurantsLazyQuery
+>
+export type MyRestaurantsQueryResult = Apollo.QueryResult<
+  MyRestaurantsQuery,
+  MyRestaurantsQueryVariables
+>
 export const RestaurantDocument = gql`
-    query restaurant($input: RestaurantInput!) {
-  restaurant(input: $input) {
-    ok
-    error
-    restaurant {
-      ...RestaurantParts
-      menu {
-        ...DishParts
+  query restaurant($input: RestaurantInput!) {
+    restaurant(input: $input) {
+      ok
+      error
+      restaurant {
+        ...RestaurantParts
+        menu {
+          ...DishParts
+        }
       }
     }
   }
-}
-    ${RestaurantPartsFragmentDoc}
-${DishPartsFragmentDoc}`;
+  ${RestaurantPartsFragmentDoc}
+  ${DishPartsFragmentDoc}
+`
 
 /**
  * __useRestaurantQuery__
@@ -1308,38 +1736,52 @@ ${DishPartsFragmentDoc}`;
  *   },
  * });
  */
-export function useRestaurantQuery(baseOptions: Apollo.QueryHookOptions<RestaurantQuery, RestaurantQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RestaurantQuery, RestaurantQueryVariables>(RestaurantDocument, options);
-      }
-export function useRestaurantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RestaurantQuery, RestaurantQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RestaurantQuery, RestaurantQueryVariables>(RestaurantDocument, options);
-        }
-export type RestaurantQueryHookResult = ReturnType<typeof useRestaurantQuery>;
-export type RestaurantLazyQueryHookResult = ReturnType<typeof useRestaurantLazyQuery>;
-export type RestaurantQueryResult = Apollo.QueryResult<RestaurantQuery, RestaurantQueryVariables>;
-export const RestaurantsPageQueryDocument = gql`
-    query restaurantsPageQuery($input: RestaurantsInput!) {
-  allCategories {
-    ok
-    error
-    categories {
-      ...CategoryParts
-    }
-  }
-  restaurants(input: $input) {
-    ok
-    error
-    totalPages
-    totalResults
-    results {
-      ...RestaurantParts
-    }
-  }
+export function useRestaurantQuery(
+  baseOptions: Apollo.QueryHookOptions<RestaurantQuery, RestaurantQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<RestaurantQuery, RestaurantQueryVariables>(
+    RestaurantDocument,
+    options
+  )
 }
-    ${CategoryPartsFragmentDoc}
-${RestaurantPartsFragmentDoc}`;
+export function useRestaurantLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<RestaurantQuery, RestaurantQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<RestaurantQuery, RestaurantQueryVariables>(
+    RestaurantDocument,
+    options
+  )
+}
+export type RestaurantQueryHookResult = ReturnType<typeof useRestaurantQuery>
+export type RestaurantLazyQueryHookResult = ReturnType<typeof useRestaurantLazyQuery>
+export type RestaurantQueryResult = Apollo.QueryResult<
+  RestaurantQuery,
+  RestaurantQueryVariables
+>
+export const RestaurantsPageQueryDocument = gql`
+  query restaurantsPageQuery($input: RestaurantsInput!) {
+    allCategories {
+      ok
+      error
+      categories {
+        ...CategoryParts
+      }
+    }
+    restaurants(input: $input) {
+      ok
+      error
+      totalPages
+      totalResults
+      results {
+        ...RestaurantParts
+      }
+    }
+  }
+  ${CategoryPartsFragmentDoc}
+  ${RestaurantPartsFragmentDoc}
+`
 
 /**
  * __useRestaurantsPageQueryQuery__
@@ -1357,30 +1799,54 @@ ${RestaurantPartsFragmentDoc}`;
  *   },
  * });
  */
-export function useRestaurantsPageQueryQuery(baseOptions: Apollo.QueryHookOptions<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>(RestaurantsPageQueryDocument, options);
-      }
-export function useRestaurantsPageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>(RestaurantsPageQueryDocument, options);
-        }
-export type RestaurantsPageQueryQueryHookResult = ReturnType<typeof useRestaurantsPageQueryQuery>;
-export type RestaurantsPageQueryLazyQueryHookResult = ReturnType<typeof useRestaurantsPageQueryLazyQuery>;
-export type RestaurantsPageQueryQueryResult = Apollo.QueryResult<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>;
+export function useRestaurantsPageQueryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    RestaurantsPageQueryQuery,
+    RestaurantsPageQueryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>(
+    RestaurantsPageQueryDocument,
+    options
+  )
+}
+export function useRestaurantsPageQueryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    RestaurantsPageQueryQuery,
+    RestaurantsPageQueryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<
+    RestaurantsPageQueryQuery,
+    RestaurantsPageQueryQueryVariables
+  >(RestaurantsPageQueryDocument, options)
+}
+export type RestaurantsPageQueryQueryHookResult = ReturnType<
+  typeof useRestaurantsPageQueryQuery
+>
+export type RestaurantsPageQueryLazyQueryHookResult = ReturnType<
+  typeof useRestaurantsPageQueryLazyQuery
+>
+export type RestaurantsPageQueryQueryResult = Apollo.QueryResult<
+  RestaurantsPageQueryQuery,
+  RestaurantsPageQueryQueryVariables
+>
 export const SearchRestaurantDocument = gql`
-    query searchRestaurant($input: SearchRestaurantInput!) {
-  searchRestaurant(input: $input) {
-    ok
-    error
-    totalPages
-    totalResults
-    restaurants {
-      ...RestaurantParts
+  query searchRestaurant($input: SearchRestaurantInput!) {
+    searchRestaurant(input: $input) {
+      ok
+      error
+      totalPages
+      totalResults
+      restaurants {
+        ...RestaurantParts
+      }
     }
   }
-}
-    ${RestaurantPartsFragmentDoc}`;
+  ${RestaurantPartsFragmentDoc}
+`
 
 /**
  * __useSearchRestaurantQuery__
@@ -1398,24 +1864,46 @@ export const SearchRestaurantDocument = gql`
  *   },
  * });
  */
-export function useSearchRestaurantQuery(baseOptions: Apollo.QueryHookOptions<SearchRestaurantQuery, SearchRestaurantQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<SearchRestaurantQuery, SearchRestaurantQueryVariables>(SearchRestaurantDocument, options);
-      }
-export function useSearchRestaurantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchRestaurantQuery, SearchRestaurantQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<SearchRestaurantQuery, SearchRestaurantQueryVariables>(SearchRestaurantDocument, options);
-        }
-export type SearchRestaurantQueryHookResult = ReturnType<typeof useSearchRestaurantQuery>;
-export type SearchRestaurantLazyQueryHookResult = ReturnType<typeof useSearchRestaurantLazyQuery>;
-export type SearchRestaurantQueryResult = Apollo.QueryResult<SearchRestaurantQuery, SearchRestaurantQueryVariables>;
-export const CookedOrdersDocument = gql`
-    subscription cookedOrders {
-  cookedOrders {
-    ...FullOrderParts
-  }
+export function useSearchRestaurantQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SearchRestaurantQuery,
+    SearchRestaurantQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<SearchRestaurantQuery, SearchRestaurantQueryVariables>(
+    SearchRestaurantDocument,
+    options
+  )
 }
-    ${FullOrderPartsFragmentDoc}`;
+export function useSearchRestaurantLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SearchRestaurantQuery,
+    SearchRestaurantQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<SearchRestaurantQuery, SearchRestaurantQueryVariables>(
+    SearchRestaurantDocument,
+    options
+  )
+}
+export type SearchRestaurantQueryHookResult = ReturnType<typeof useSearchRestaurantQuery>
+export type SearchRestaurantLazyQueryHookResult = ReturnType<
+  typeof useSearchRestaurantLazyQuery
+>
+export type SearchRestaurantQueryResult = Apollo.QueryResult<
+  SearchRestaurantQuery,
+  SearchRestaurantQueryVariables
+>
+export const CookedOrdersDocument = gql`
+  subscription cookedOrders {
+    cookedOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FullOrderPartsFragmentDoc}
+`
 
 /**
  * __useCookedOrdersSubscription__
@@ -1432,19 +1920,31 @@ export const CookedOrdersDocument = gql`
  *   },
  * });
  */
-export function useCookedOrdersSubscription(baseOptions?: Apollo.SubscriptionHookOptions<CookedOrdersSubscription, CookedOrdersSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<CookedOrdersSubscription, CookedOrdersSubscriptionVariables>(CookedOrdersDocument, options);
-      }
-export type CookedOrdersSubscriptionHookResult = ReturnType<typeof useCookedOrdersSubscription>;
-export type CookedOrdersSubscriptionResult = Apollo.SubscriptionResult<CookedOrdersSubscription>;
-export const OrderUpdatesDocument = gql`
-    subscription orderUpdates($input: OrderUpdatesInput!) {
-  orderUpdates(input: $input) {
-    ...FullOrderParts
-  }
+export function useCookedOrdersSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    CookedOrdersSubscription,
+    CookedOrdersSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSubscription<
+    CookedOrdersSubscription,
+    CookedOrdersSubscriptionVariables
+  >(CookedOrdersDocument, options)
 }
-    ${FullOrderPartsFragmentDoc}`;
+export type CookedOrdersSubscriptionHookResult = ReturnType<
+  typeof useCookedOrdersSubscription
+>
+export type CookedOrdersSubscriptionResult =
+  Apollo.SubscriptionResult<CookedOrdersSubscription>
+export const OrderUpdatesDocument = gql`
+  subscription orderUpdates($input: OrderUpdatesInput!) {
+    orderUpdates(input: $input) {
+      ...FullOrderParts
+    }
+  }
+  ${FullOrderPartsFragmentDoc}
+`
 
 /**
  * __useOrderUpdatesSubscription__
@@ -1462,19 +1962,31 @@ export const OrderUpdatesDocument = gql`
  *   },
  * });
  */
-export function useOrderUpdatesSubscription(baseOptions: Apollo.SubscriptionHookOptions<OrderUpdatesSubscription, OrderUpdatesSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<OrderUpdatesSubscription, OrderUpdatesSubscriptionVariables>(OrderUpdatesDocument, options);
-      }
-export type OrderUpdatesSubscriptionHookResult = ReturnType<typeof useOrderUpdatesSubscription>;
-export type OrderUpdatesSubscriptionResult = Apollo.SubscriptionResult<OrderUpdatesSubscription>;
-export const PendingOrdersDocument = gql`
-    subscription pendingOrders {
-  pendingOrders {
-    ...FullOrderParts
-  }
+export function useOrderUpdatesSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    OrderUpdatesSubscription,
+    OrderUpdatesSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSubscription<
+    OrderUpdatesSubscription,
+    OrderUpdatesSubscriptionVariables
+  >(OrderUpdatesDocument, options)
 }
-    ${FullOrderPartsFragmentDoc}`;
+export type OrderUpdatesSubscriptionHookResult = ReturnType<
+  typeof useOrderUpdatesSubscription
+>
+export type OrderUpdatesSubscriptionResult =
+  Apollo.SubscriptionResult<OrderUpdatesSubscription>
+export const PendingOrdersDocument = gql`
+  subscription pendingOrders {
+    pendingOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FullOrderPartsFragmentDoc}
+`
 
 /**
  * __usePendingOrdersSubscription__
@@ -1491,9 +2003,20 @@ export const PendingOrdersDocument = gql`
  *   },
  * });
  */
-export function usePendingOrdersSubscription(baseOptions?: Apollo.SubscriptionHookOptions<PendingOrdersSubscription, PendingOrdersSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<PendingOrdersSubscription, PendingOrdersSubscriptionVariables>(PendingOrdersDocument, options);
-      }
-export type PendingOrdersSubscriptionHookResult = ReturnType<typeof usePendingOrdersSubscription>;
-export type PendingOrdersSubscriptionResult = Apollo.SubscriptionResult<PendingOrdersSubscription>;
+export function usePendingOrdersSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    PendingOrdersSubscription,
+    PendingOrdersSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useSubscription<
+    PendingOrdersSubscription,
+    PendingOrdersSubscriptionVariables
+  >(PendingOrdersDocument, options)
+}
+export type PendingOrdersSubscriptionHookResult = ReturnType<
+  typeof usePendingOrdersSubscription
+>
+export type PendingOrdersSubscriptionResult =
+  Apollo.SubscriptionResult<PendingOrdersSubscription>
