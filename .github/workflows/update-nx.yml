@@ -33,7 +33,14 @@ jobs:
           npm i
           npm update
 
-      - name: Commit and create PR 🔀
+      - name: Create Commit 💌
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add -A
+          git commit -m "build(deps): upgrade nx (automated)" --no-verify
+
+      - name: Create PR 🔀
         uses: peter-evans/create-pull-request@v4
         with:
           title: "build(deps): Upgrade nx (automated)"
