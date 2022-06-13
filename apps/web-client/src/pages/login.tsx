@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
 import { LoginMutation, useLoginMutation } from "../__generated__/types.react-apollo"
-import nuberLogo from "../assets/logo.svg"
 import { Button } from "../components/button"
 import { FormError } from "../components/form-error"
 import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
@@ -21,7 +20,7 @@ interface LoginForm {
   password: string
 }
 
-export const LoginPage = () => {
+const LoginPage = () => {
   const {
     register,
     getValues,
@@ -60,7 +59,7 @@ export const LoginPage = () => {
     <div className="mt:10 flex h-screen flex-col items-center lg:mt-28">
       <NextSeo title="Login | Nham Avey" />
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
-        <img src={nuberLogo} className="mb-10 w-52" alt="nuberLogo" />
+        <h1 className="my-10 w-52 text-4xl font-semibold">Nham Avey</h1>
         <h4 className="mb-5 w-full text-left text-3xl font-medium">Welcome back</h4>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
           <input
@@ -70,11 +69,7 @@ export const LoginPage = () => {
             className="input "
           />
 
-          {errors.email?.message && <FormError errorMessage={errors.email?.message[0]} />}
-
-          {errors.email?.type === "pattern" && (
-            <FormError errorMessage="Please enter a valid email" />
-          )}
+          {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
 
           <input
             {...register("password")}
@@ -84,11 +79,7 @@ export const LoginPage = () => {
           />
 
           {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message[0]} />
-          )}
-
-          {errors.password?.type === "minLength" && (
-            <FormError errorMessage="Password must be more than 4 chars." />
+            <FormError errorMessage={errors.password?.message} />
           )}
 
           <Button canClick={isValid} loading={loading} actionText="Log in" />
@@ -97,7 +88,7 @@ export const LoginPage = () => {
           )}
         </form>
         <div>
-          New to Nuber ?{" "}
+          New to Nham Avey ?{" "}
           <Link href="/create-account" className="text-lime-600 hover:underline">
             Create an Account
           </Link>
@@ -106,3 +97,5 @@ export const LoginPage = () => {
     </div>
   )
 }
+
+export default LoginPage
