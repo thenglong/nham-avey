@@ -12,7 +12,7 @@ import { cert } from "firebase-admin/app"
 import * as Joi from "joi"
 import { ApiKeyMiddleware } from "src/auth/api-key.middleware"
 import { AuthModule } from "src/auth/auth.module"
-import { SWAGGER_PATH } from "src/common/common.constants"
+import { AUTHORIZATION_HEADER, SWAGGER_PATH } from "src/common/common.constants"
 import { CommonModule } from "src/common/common.module"
 import configuration from "src/config/configuration"
 import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
@@ -50,9 +50,10 @@ import { UsersModule } from "src/users/users.module"
       sortSchema: true,
       autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
       context: ({ req, connection }: ApolloServer["context"]) => {
-        const TOKEN_KEY = "authorization"
         return {
-          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
+          [AUTHORIZATION_HEADER]: req
+            ? req.headers[AUTHORIZATION_HEADER]
+            : connection.context[AUTHORIZATION_HEADER],
         }
       },
     }),

@@ -1,20 +1,27 @@
 import { gql, useApolloClient } from "@apollo/client"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { NextSeo } from "next-seo"
 import { useForm } from "react-hook-form"
+import * as yup from "yup"
 
 import {
   EditProfileMutation,
   useEditProfileMutation,
   useGetMeQuery,
-} from "../../__generated__/types.react-apollo"
-import { Button } from "../../components/button"
+} from "../__generated__/types.react-apollo"
+import { Button } from "../components/button"
 
-interface IFormProps {
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().min(8).required(),
+})
+
+interface FormProps {
   email?: string
   password?: string
 }
 
-export const EditProfilePage = () => {
+const EditProfilePage = () => {
   const { data: userData } = useGetMeQuery()
   const client = useApolloClient()
 
@@ -49,8 +56,9 @@ export const EditProfilePage = () => {
   const [editProfile, { loading }] = useEditProfileMutation({
     onCompleted,
   })
-  const { register, handleSubmit, getValues, formState } = useForm<IFormProps>({
+  const { register, handleSubmit, getValues, formState } = useForm<FormProps>({
     mode: "onChange",
+    resolver: yupResolver(schema),
     defaultValues: {
       email: userData?.me.email,
     },
@@ -75,10 +83,7 @@ export const EditProfilePage = () => {
         className="mt-5 mb-5 grid w-full max-w-screen-sm gap-3"
       >
         <input
-          {...register("email", {
-            pattern:
-              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-          })}
+          {...register("email")}
           className="input"
           type="email"
           placeholder="Email"
@@ -98,3 +103,5 @@ export const EditProfilePage = () => {
     </div>
   )
 }
+
+export default EditProfilePage

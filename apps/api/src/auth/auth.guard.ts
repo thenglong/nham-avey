@@ -1,7 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { GqlExecutionContext } from "@nestjs/graphql"
 import { AllowedRoles } from "src/auth/role.decorator"
+import { AUTHORIZATION_HEADER } from "src/common/common.constants"
 import { JwtService } from "src/jwt/jwt.service"
 import { UserService } from "src/users/users.service"
 
@@ -13,31 +19,38 @@ export class AuthGuard implements CanActivate {
     private readonly userService: UserService
   ) {}
 
+  private static validateToken(bearerToken: string): string {
+    const match = bearerToken.match(/^Bearer (.*)$/)
+    if (!match || match.length < 2) {
+      throw new UnauthorizedException(
+        "Invalid Authorization token - Token does not match Bearer schema"
+      )
+    }
+    return match[1]
+  }
+
   async canActivate(context: ExecutionContext) {
     const roles = this.reflector.get<AllowedRoles>("roles", context.getHandler())
     if (!roles) {
       return true
     }
     const gqlContext = GqlExecutionContext.create(context).getContext()
-    const token = gqlContext.token
+    const bearerToken = gqlContext[AUTHORIZATION_HEADER]
+    const token = AuthGuard.validateToken(bearerToken)
 
-    if (token) {
-      const decoded = this.jwtService.verify(token.toString())
+    const decoded = this.jwtService.verify(token)
 
-      if (typeof decoded === "object" && "id" in decoded) {
-        const { user } = await this.userService.findById(decoded["id"])
-        if (!user) {
-          return false
-        }
-        gqlContext["user"] = user
-        if (roles.includes("Any")) {
-          return true
-        }
-        return roles.includes(user.role)
+    if (typeof decoded === "object" && "id" in decoded) {
+      const { user } = await this.userService.findById(decoded["id"])
+      if (!user) {
+        return false
       }
-      return false
-    } else {
-      return false
+      gqlContext["user"] = user
+      if (roles.includes("Any")) {
+        return true
+      }
+      return roles.includes(user.role)
     }
+    return false
   }
 }

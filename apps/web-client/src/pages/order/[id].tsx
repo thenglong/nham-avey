@@ -14,7 +14,7 @@ import {
   UserRole,
 } from "../../__generated__/types.react-apollo"
 
-export const OrderPage: NextPage = () => {
+const OrderPage: NextPage = () => {
   const router = useRouter()
   const id = +router.query.id
 
@@ -147,3 +147,5 @@ export const OrderPage: NextPage = () => {
     </div>
   )
 }
+
+export default OrderPage

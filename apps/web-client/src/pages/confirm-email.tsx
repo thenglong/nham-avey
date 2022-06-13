@@ -8,7 +8,7 @@ import {
   useGetMeQuery,
   useVerifyEmailMutation,
   VerifyEmailMutation,
-} from "../../__generated__/types.react-apollo"
+} from "../__generated__/types.react-apollo"
 
 export const ConfirmEmailPage = () => {
   const { data: userData } = useGetMeQuery()
