@@ -22,7 +22,16 @@ interface FormProps {
 }
 
 const EditProfilePage = () => {
-  const { data: userData } = useGetMeQuery()
+  const { register, handleSubmit, getValues, formState, setValue } = useForm<FormProps>({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+  })
+
+  const { data: userData } = useGetMeQuery({
+    onCompleted: data => {
+      setValue("email", data.me.email)
+    },
+  })
   const client = useApolloClient()
 
   const onCompleted = (data: EditProfileMutation) => {
@@ -56,13 +65,7 @@ const EditProfilePage = () => {
   const [editProfile, { loading }] = useEditProfileMutation({
     onCompleted,
   })
-  const { register, handleSubmit, getValues, formState } = useForm<FormProps>({
-    mode: "onChange",
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: userData?.me.email,
-    },
-  })
+
   const onSubmit = () => {
     const { email, password } = getValues()
     editProfile({

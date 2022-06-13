@@ -45,7 +45,7 @@ const RestaurantPage = () => {
   const removeFromOrder = (dishId: number) => {
     setOrderItems(current => current.filter(dish => dish.dishId !== dishId))
   }
-  const addOptionToItem = (dishId: number, optionName: any) => {
+  const addOptionToItem = (dishId: number, optionName: string) => {
     if (!isSelected(dishId)) {
       return
     }
@@ -57,7 +57,7 @@ const RestaurantPage = () => {
       if (!hasOption) {
         removeFromOrder(dishId)
         setOrderItems(current => [
-          { dishId, options: [{ name: optionName }, ...oldItem.options!] },
+          { dishId, options: [{ name: optionName }, ...oldItem.options] },
           ...current,
         ])
       }
