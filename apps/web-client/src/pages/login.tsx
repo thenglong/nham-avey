@@ -1,13 +1,20 @@
-import nuberLogo from "images/logo.svg"
+import { yupResolver } from "@hookform/resolvers/yup"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
+import * as yup from "yup"
 
 import { LoginMutation, useLoginMutation } from "../__generated__/types.react-apollo"
+import nuberLogo from "../assets/logo.svg"
 import { Button } from "../components/button"
 import { FormError } from "../components/form-error"
 import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
 import { authTokenVar, isLoggedInVar } from "../graphql/apollo-config"
+
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().min(8).required(),
+})
 
 interface LoginForm {
   email: string
@@ -22,6 +29,7 @@ export const LoginPage = () => {
     formState: { errors, isValid },
   } = useForm<LoginForm>({
     mode: "onChange",
+    resolver: yupResolver(schema),
   })
 
   const onCompleted = (data: LoginMutation) => {
@@ -56,11 +64,7 @@ export const LoginPage = () => {
         <h4 className="mb-5 w-full text-left text-3xl font-medium">Welcome back</h4>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
           <input
-            {...register("email", {
-              required: "Email is required",
-              pattern:
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            })}
+            {...register("email")}
             type="email"
             placeholder="Email"
             className="input "
@@ -73,10 +77,7 @@ export const LoginPage = () => {
           )}
 
           <input
-            {...register("password", {
-              required: "Password is required",
-              minLength: 4,
-            })}
+            {...register("password")}
             type="password"
             placeholder="Password"
             className="input"

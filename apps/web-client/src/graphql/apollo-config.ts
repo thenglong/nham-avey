@@ -11,7 +11,11 @@ import { getMainDefinition } from "@apollo/client/utilities"
 
 import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
 
-const token = localStorage.getItem(LOCAL_STORAGE_TOKEN)
+const isClient = typeof window !== "undefined"
+
+const localStorage = isClient ? window.localStorage : null
+
+const token = localStorage?.getItem(LOCAL_STORAGE_TOKEN)
 const bearerToken = token ? `Bearer ${token}` : ""
 
 export const isLoggedInVar = makeVar(Boolean(token))

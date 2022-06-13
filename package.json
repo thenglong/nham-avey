@@ -15,6 +15,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
+    "@hookform/resolvers": "^2.9.1",
     "@nestjs-modules/mailer": "^1.6.1",
     "@nestjs/apollo": "^10.0.14",
     "@nestjs/common": "^8.4.6",
@@ -52,6 +53,7 @@
     "tslib": "^2.4.0",
     "typeorm": "0.3.6",
     "victory": "^36.5.0",
+    "yup": "^0.32.11",
     "zod": "^3.17.3"
   },
   "devDependencies": {

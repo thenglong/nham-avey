@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { Header } from "apps/web-client/src/components/header"
+import { Header } from "../header"
 
 interface LoggedInRouterProps {
   children: ReactNode
