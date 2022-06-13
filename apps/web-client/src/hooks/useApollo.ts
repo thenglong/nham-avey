@@ -1,7 +1,6 @@
 import { useMemo } from "react"
 
 import { ApolloClient, NormalizedCacheObject } from "@apollo/client"
-
 import {
   APOLLO_STATE_PROP_NAME,
   initializeApollo,

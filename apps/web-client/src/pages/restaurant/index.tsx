@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import { useRestaurantsPageQueryQuery } from "../../__generated__/types.react-apollo"
 import { Restaurant } from "../../components/restaurant"
 
-export const RestaurantsPage = () => {
+const RestaurantsPage = () => {
   const [page, setPage] = useState(1)
   const { data, loading } = useRestaurantsPageQueryQuery({
     variables: {
@@ -110,3 +110,5 @@ export const RestaurantsPage = () => {
     </div>
   )
 }
+
+export default RestaurantsPage

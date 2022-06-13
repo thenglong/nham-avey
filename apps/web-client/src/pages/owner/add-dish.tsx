@@ -131,6 +131,7 @@ export const AddDish = () => {
                 <span
                   className="ml-3 mt-5 cursor-pointer bg-red-500 py-3 px-4 text-white"
                   onClick={() => onDeleteClick(id)}
+                  role="button"
                 >
                   Delete Option
                 </span>

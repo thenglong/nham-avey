@@ -5,16 +5,18 @@ import { useRouter } from "next/router"
 
 import { useSearchRestaurantLazyQuery } from "../../__generated__/types.react-apollo"
 
-export const SearchPage = () => {
-  const { query } = useRouter()
+/**
+ * @todo Implement this component.
+ */
+const SearchPage = () => {
+  const { query, isReady } = useRouter()
   const { term } = query
   const router = useRouter()
-  const [
-    callQuery,
-    // { loading, data }
-  ] = useSearchRestaurantLazyQuery()
+  const [callQuery, { loading, data }] = useSearchRestaurantLazyQuery()
 
   useEffect(() => {
+    if (!isReady || loading) return
+
     if (!term) {
       router.replace("/")
       return
@@ -27,10 +29,16 @@ export const SearchPage = () => {
         },
       },
     })
-  }, [router, callQuery, term])
+  }, [router, callQuery, term, isReady, loading])
+
+  if (loading) return <p>Loading...</p>
+
   return (
     <h1>
       <NextSeo title="Search | Nham Avey" />
+      <pre>{JSON.stringify(data || {}, null, 2)}</pre>
     </h1>
   )
 }
+
+export default SearchPage

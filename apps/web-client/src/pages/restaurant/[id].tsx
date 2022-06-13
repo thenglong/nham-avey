@@ -12,16 +12,13 @@ import {
 import { Dish } from "../../components/dish"
 import { DishOption } from "../../components/dish-option"
 
-interface RestaurantProps {
-  id: string
-}
-
-export const Restaurant = () => {
-  const params = useParams<RestaurantProps>()
+const RestaurantPage = () => {
+  const { query } = useRouter()
+  const { id } = query
   const { data } = useRestaurantQuery({
     variables: {
       input: {
-        restaurantId: +params.id,
+        restaurantId: +id,
       },
     },
   })
@@ -127,7 +124,7 @@ export const Restaurant = () => {
       createOrderMutation({
         variables: {
           input: {
-            restaurantId: +params.id,
+            restaurantId: +id,
             items: orderItems,
           },
         },
@@ -206,3 +203,5 @@ export const Restaurant = () => {
     </div>
   )
 }
+
+export default RestaurantPage

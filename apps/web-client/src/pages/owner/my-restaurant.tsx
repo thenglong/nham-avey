@@ -97,7 +97,7 @@ export const MyRestaurantPage = () => {
               <VictoryLine
                 labels={({ datum }) => `$${datum.y}`}
                 labelComponent={
-                  <VictoryLabel style={{ fontSize: 18 } as any} renderInPortal dy={-20} />
+                  <VictoryLabel style={{ fontSize: 18 }} renderInPortal dy={-20} />
                 }
                 data={data?.myRestaurant.restaurant?.orders.map(order => ({
                   x: order.createdAt,
@@ -113,7 +113,7 @@ export const MyRestaurantPage = () => {
               />
               <VictoryAxis
                 style={{
-                  tickLabels: { fontSize: 20, fill: "#3d7c0f" } as any,
+                  tickLabels: { fontSize: 20, fill: "#3d7c0f" },
                 }}
                 dependentAxis
                 tickFormat={tick => `$${tick}`}
@@ -125,7 +125,7 @@ export const MyRestaurantPage = () => {
                     fontSize: 20,
                     fill: "#3d7c0f",
                     angle: 45,
-                  } as any,
+                  },
                 }}
                 tickFormat={tick => new Date(tick).toLocaleDateString("ru")}
               />
