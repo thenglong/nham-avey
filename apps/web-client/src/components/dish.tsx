@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { restaurant_restaurant_restaurant_menu_options } from "__generated__/restaurant"
+import { DishOption } from "../__generated__/types.react-apollo"
 
 interface DishProps {
   id?: number
@@ -10,7 +10,7 @@ interface DishProps {
   price: number
   isCustomer?: boolean
   orderStarted?: boolean
-  options?: restaurant_restaurant_restaurant_menu_options[] | null
+  options?: DishOption[] | null
   addItemToOrder?: (dishId: number) => void
   removeFromOrder?: (dishId: number) => void
   children?: ReactNode

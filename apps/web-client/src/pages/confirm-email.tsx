@@ -10,7 +10,7 @@ import {
   VerifyEmailMutation,
 } from "../__generated__/types.react-apollo"
 
-export const ConfirmEmailPage = () => {
+const ConfirmEmailPage = () => {
   const { data: userData } = useGetMeQuery()
   const client = useApolloClient()
   const router = useRouter()
@@ -58,3 +58,5 @@ export const ConfirmEmailPage = () => {
     </div>
   )
 }
+
+export default ConfirmEmailPage
