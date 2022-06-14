@@ -73,7 +73,7 @@
     "@nrwl/linter": "14.3.1",
     "@nrwl/nest": "14.3.1",
     "@nrwl/node": "14.3.1",
-    "@nrwl/react": "14.3.1",
+    "@nrwl/react": "14.3.2",
     "@nrwl/web": "14.3.1",
     "@nrwl/workspace": "14.3.1",
     "@testing-library/react": "13.3.0",
