@@ -53,13 +53,13 @@ export class RestaurantResolver {
     return await this.restaurantService.createRestaurant(authUser, createRestaurantInput)
   }
 
-  @Query(() => MyRestaurantsOutput)
+  @Query(returns => MyRestaurantsOutput)
   @Role([UserRole.Owner])
   myRestaurants(@AuthUser() owner: User): Promise<MyRestaurantsOutput> {
     return this.restaurantService.myRestaurants(owner)
   }
 
-  @Query(() => MyRestaurantOutput)
+  @Query(returns => MyRestaurantOutput)
   @Role([UserRole.Owner])
   myRestaurant(
     @AuthUser() owner: User,
@@ -86,19 +86,20 @@ export class RestaurantResolver {
     return this.restaurantService.deleteRestaurant(owner, deleteRestaurantInput)
   }
 
-  @Query(() => RestaurantsOutput)
+  @Query(returns => RestaurantsOutput)
   restaurants(
-    @Args("input") RestaurantsInput: RestaurantsInput
+    @Args("input") restaurantsInput: RestaurantsInput
   ): Promise<RestaurantsOutput> {
-    return this.restaurantService.allRestaurants(RestaurantsInput)
+    console.log(restaurantsInput)
+    return this.restaurantService.allRestaurants(restaurantsInput)
   }
 
-  @Query(() => RestaurantOutput)
+  @Query(returns => RestaurantOutput)
   restaurant(@Args("input") RestaurantInput: RestaurantInput): Promise<RestaurantOutput> {
     return this.restaurantService.findRestaurantById(RestaurantInput)
   }
 
-  @Query(() => SearchRestaurantOutput)
+  @Query(returns => SearchRestaurantOutput)
   searchRestaurant(
     @Args("input") searchRestaurantInput: SearchRestaurantInput
   ): Promise<SearchRestaurantOutput> {
@@ -115,12 +116,12 @@ export class CategoryResolver {
     return this.restaurantService.countRestaurants(category)
   }
 
-  @Query(() => AllCategoriesOutput)
+  @Query(returns => AllCategoriesOutput)
   allCategories(): Promise<AllCategoriesOutput> {
     return this.restaurantService.allCategories()
   }
 
-  @Query(() => CategoryOutput)
+  @Query(returns => CategoryOutput)
   category(@Args("input") categoryInput: CategoryInput): Promise<CategoryOutput> {
     return this.restaurantService.findCategoryBySlug(categoryInput)
   }

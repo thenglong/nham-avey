@@ -28,7 +28,6 @@ import {
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { CategoryRepository } from "src/restaurants/repositories/category.repository"
 import { User } from "src/users/entities/user.entity"
 import { ILike, Repository, Equal } from "typeorm"
 
@@ -39,8 +38,24 @@ export class RestaurantService {
     private readonly restaurantRepo: Repository<Restaurant>,
     @InjectRepository(Dish)
     private readonly dishRepo: Repository<Dish>,
-    private readonly categoryRepo: CategoryRepository
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>
   ) {}
+
+  private async getOrCreateCategory(name: string): Promise<Category> {
+    const categoryName = name.trim().toLowerCase()
+    const categorySlug = categoryName.replace(/ /g, "-")
+    let category = await this.categoryRepo.findOneBy({ slug: categorySlug })
+    if (!category) {
+      category = await this.categoryRepo.save(
+        this.categoryRepo.create({
+          slug: categorySlug,
+          name: categoryName,
+        })
+      )
+    }
+    return category
+  }
 
   async createRestaurant(
     owner: User,
@@ -49,7 +64,7 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurantRepo.create(createRestaurantInput)
       newRestaurant.owner = owner
-      newRestaurant.category = await this.categoryRepo.getOrCreate(
+      newRestaurant.category = await this.getOrCreateCategory(
         createRestaurantInput.categoryName
       )
 
@@ -90,7 +105,7 @@ export class RestaurantService {
 
       let category: Category | null = null
       if (editRestaurantInput.categoryName) {
-        category = await this.categoryRepo.getOrCreate(editRestaurantInput.categoryName)
+        category = await this.getOrCreateCategory(editRestaurantInput.categoryName)
       }
 
       await this.restaurantRepo.save([
@@ -217,7 +232,9 @@ export class RestaurantService {
         totalPages: Math.ceil(totalResults / 3),
         totalResults,
       }
-    } catch {
+    } catch (err) {
+      console.log(err)
+
       return {
         ok: false,
         error: "[App] Could not load restaurantRepo",

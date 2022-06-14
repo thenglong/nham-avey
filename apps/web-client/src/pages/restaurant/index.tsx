@@ -30,7 +30,7 @@ const RestaurantsPage = () => {
   const onSearchSubmit = () => {
     const { searchTerm } = getValues()
     router.push({
-      pathname: "/search",
+      pathname: "/restaurant/search",
       search: `?term=${searchTerm}`,
     })
   }
