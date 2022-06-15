@@ -19,11 +19,6 @@ type Category {
   updatedAt: DateTime!
 }
 
-input CategoryInput {
-  page: Int = 1
-  slug: String!
-}
-
 type CategoryOutput {
   category: Category
   error: String
@@ -323,7 +318,7 @@ type Payment {
 
 type Query {
   allCategories: AllCategoriesOutput!
-  category(input: CategoryInput!): CategoryOutput!
+  category(page: Int = 1, slug: String!): CategoryOutput!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
@@ -331,9 +326,9 @@ type Query {
   me: User!
   myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
   myRestaurants: MyRestaurantsOutput!
-  restaurant(input: RestaurantInput!): RestaurantOutput!
-  restaurants(input: RestaurantsInput!): RestaurantsOutput!
-  searchRestaurant(input: SearchRestaurantInput!): SearchRestaurantOutput!
+  restaurant(restaurantId: Int!): RestaurantOutput!
+  restaurants(page: Int = 1): RestaurantsOutput!
+  searchRestaurant(page: Int = 1, query: String!): SearchRestaurantOutput!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
@@ -352,18 +347,10 @@ type Restaurant {
   updatedAt: DateTime!
 }
 
-input RestaurantInput {
-  restaurantId: Int!
-}
-
 type RestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
-}
-
-input RestaurantsInput {
-  page: Int = 1
 }
 
 type RestaurantsOutput {
@@ -372,11 +359,6 @@ type RestaurantsOutput {
   results: [Restaurant!]
   totalPages: Int
   totalResults: Int
-}
-
-input SearchRestaurantInput {
-  page: Int = 1
-  query: String!
 }
 
 type SearchRestaurantOutput {

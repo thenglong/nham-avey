@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const globalPrefix = "api/v1"
   app.setGlobalPrefix(globalPrefix)
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }))
+  app.useGlobalPipes(new ValidationPipe({ transform: true }))
   app.enableCors()
 
   const configService: ConfigService = app.get(ConfigService)

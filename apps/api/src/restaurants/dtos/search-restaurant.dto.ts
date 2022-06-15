@@ -1,9 +1,9 @@
-import { Field, InputType, ObjectType } from "@nestjs/graphql"
-import { PaginationInput, PaginationOutput } from "src/common/dtos/pagination.dto"
+import { ArgsType, Field, ObjectType } from "@nestjs/graphql"
+import { PaginationArgs, PaginationOutput } from "src/common/dtos/pagination.dto"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
-@InputType()
-export class SearchRestaurantInput extends PaginationInput {
+@ArgsType()
+export class SearchRestaurantArgs extends PaginationArgs {
   @Field(type => String)
   query: string
 }

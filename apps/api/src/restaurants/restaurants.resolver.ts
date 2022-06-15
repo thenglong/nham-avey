@@ -28,17 +28,17 @@ import {
 } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { RestaurantInput, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { RestaurantsInput, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
+import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
+import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
 import {
-  SearchRestaurantInput,
+  SearchRestaurantArgs,
   SearchRestaurantOutput,
 } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { RestaurantService } from "src/restaurants/restaurants.service"
-import { UserRole, User } from "src/users/entities/user.entity"
+import { User, UserRole } from "src/users/entities/user.entity"
 
 @Resolver(() => Restaurant)
 export class RestaurantResolver {
@@ -87,22 +87,20 @@ export class RestaurantResolver {
   }
 
   @Query(() => RestaurantsOutput)
-  restaurants(
-    @Args("input") RestaurantsInput: RestaurantsInput
-  ): Promise<RestaurantsOutput> {
-    return this.restaurantService.allRestaurants(RestaurantsInput)
+  restaurants(@Args() restaurantsArgs: RestaurantsArgs): Promise<RestaurantsOutput> {
+    return this.restaurantService.allRestaurants(restaurantsArgs)
   }
 
   @Query(() => RestaurantOutput)
-  restaurant(@Args("input") RestaurantInput: RestaurantInput): Promise<RestaurantOutput> {
-    return this.restaurantService.findRestaurantById(RestaurantInput)
+  restaurant(@Args() restaurantArgs: RestaurantArgs): Promise<RestaurantOutput> {
+    return this.restaurantService.findRestaurantById(restaurantArgs)
   }
 
   @Query(() => SearchRestaurantOutput)
   searchRestaurant(
-    @Args("input") searchRestaurantInput: SearchRestaurantInput
+    @Args() searchRestaurantArgs: SearchRestaurantArgs
   ): Promise<SearchRestaurantOutput> {
-    return this.restaurantService.searchRestaurantByName(searchRestaurantInput)
+    return this.restaurantService.searchRestaurantByName(searchRestaurantArgs)
   }
 }
 
@@ -121,7 +119,7 @@ export class CategoryResolver {
   }
 
   @Query(() => CategoryOutput)
-  category(@Args("input") categoryInput: CategoryInput): Promise<CategoryOutput> {
+  category(@Args() categoryInput: CategoryInput): Promise<CategoryOutput> {
     return this.restaurantService.findCategoryBySlug(categoryInput)
   }
 }

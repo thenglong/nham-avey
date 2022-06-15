@@ -19,10 +19,10 @@ import {
 } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { RestaurantInput, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { RestaurantsInput, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
+import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
+import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
 import {
-  SearchRestaurantInput,
+  SearchRestaurantArgs,
   SearchRestaurantOutput,
 } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
@@ -201,7 +201,7 @@ export class RestaurantService {
     }
   }
 
-  async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
+  async allRestaurants({ page }: RestaurantsArgs): Promise<RestaurantsOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
         skip: (page - 1) * 3,
@@ -217,7 +217,7 @@ export class RestaurantService {
         totalPages: Math.ceil(totalResults / 3),
         totalResults,
       }
-    } catch {
+    } catch (err) {
       return {
         ok: false,
         error: "[App] Could not load restaurantRepo",
@@ -225,7 +225,7 @@ export class RestaurantService {
     }
   }
 
-  async findRestaurantById({ restaurantId }: RestaurantInput): Promise<RestaurantOutput> {
+  async findRestaurantById({ restaurantId }: RestaurantArgs): Promise<RestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: { id: restaurantId },
@@ -253,7 +253,7 @@ export class RestaurantService {
   async searchRestaurantByName({
     query,
     page,
-  }: SearchRestaurantInput): Promise<SearchRestaurantOutput> {
+  }: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
         where: {
