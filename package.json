@@ -72,7 +72,7 @@
     "@nrwl/jest": "14.3.5",
     "@nrwl/linter": "14.3.5",
     "@nrwl/nest": "14.3.5",
-    "@nrwl/node": "14.3.5",
+    "@nrwl/node": "14.3.6",
     "@nrwl/react": "14.3.5",
     "@nrwl/web": "14.3.5",
     "@nrwl/workspace": "14.3.5",
