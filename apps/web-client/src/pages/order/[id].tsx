@@ -16,7 +16,7 @@ import {
 
 const OrderPage: NextPage = () => {
   const router = useRouter()
-  const id = +router.query.id
+  const id = +(router.query.id as string)
 
   const { data: userData } = useGetMeQuery()
   const [editOrderMutation] = useEditOrderMutation()

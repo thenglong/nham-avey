@@ -7,7 +7,12 @@ interface SignInArgs {
 }
 
 const useSignIn = (
-  options?: Omit<UseMutationOptions<SignInResponse, unknown, SignInArgs>, "mutationFn">
+  options?:
+    | Omit<
+        UseMutationOptions<SignInResponse | undefined, unknown, SignInArgs, unknown>,
+        "mutationFn"
+      >
+    | undefined
 ) => {
   return useMutation(
     ({ email, password }: SignInArgs) =>

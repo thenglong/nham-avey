@@ -20,8 +20,9 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined
 
 const getBearerToken = async () => {
   try {
-    const { user } = await getSession()
-    return user?.accessToken ? `Bearer ${user.accessToken}` : ""
+    const session = await getSession()
+    const accessToken = session?.user?.accessToken
+    return accessToken ? `Bearer ${accessToken}` : ""
   } catch (e) {
     return ""
   }
@@ -31,7 +32,7 @@ const getWsLink = () => {
   if (!isClient) return null
 
   return new WebSocketLink({
-    uri: process.env.NX_WS_GRAPHQL_URI,
+    uri: process.env.NX_WS_GRAPHQL_URI as string,
     options: {
       reconnect: true,
       connectionParams: async () => {
@@ -65,7 +66,7 @@ const splitLink = isClient
           definition.operation === "subscription"
         )
       },
-      getWsLink(),
+      getWsLink() as WebSocketLink,
       authMiddleware.concat(httpLink)
     )
   : authMiddleware.concat(httpLink)
