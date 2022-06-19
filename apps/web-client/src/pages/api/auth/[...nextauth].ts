@@ -55,6 +55,9 @@ export default NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       async authorize(credentials) {
         const { email, password } = credentials as Record<"email" | "password", string>
 
@@ -89,9 +92,13 @@ export default NextAuth({
   callbacks: {
     // async signIn({ user, account, profile, email, credentials }) { return true },
     // async redirect({ url, baseUrl }) { return baseUrl },
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     async session({ session, token }) {
       return {
         ...session,
+        expires: token?.expires,
         user: {
           ...session.user,
           ...token,
