@@ -2,7 +2,6 @@ import {
   ApolloClient,
   createHttpLink,
   InMemoryCache,
-  makeVar,
   NormalizedCacheObject,
   split,
 } from "@apollo/client"
@@ -11,46 +10,48 @@ import { WebSocketLink } from "@apollo/client/link/ws"
 import { getMainDefinition } from "@apollo/client/utilities"
 import merge from "deepmerge"
 import isEqual from "lodash-es/isEqual"
-
-import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
+import { getSession } from "next-auth/react"
 
 const isClient = typeof window !== "undefined"
-
-const localStorage = isClient ? window.localStorage : null
-
-const token = localStorage?.getItem(LOCAL_STORAGE_TOKEN)
-const bearerToken = token ? `Bearer ${token}` : ""
-
-export const isLoggedInVar = makeVar(Boolean(token))
-export const authTokenVar = makeVar(bearerToken)
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__"
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined
 
+const getBearerToken = async () => {
+  try {
+    const { user } = await getSession()
+    return user?.accessToken ? `Bearer ${user.accessToken}` : ""
+  } catch (e) {
+    return ""
+  }
+}
+
 const getWsLink = () => {
-  if (isClient)
-    return new WebSocketLink({
-      uri: process.env.NX_WS_GRAPHQL_URI,
-      options: {
-        reconnect: true,
-        connectionParams: {
-          Authorization: authTokenVar() || "",
-        },
+  if (!isClient) return null
+
+  return new WebSocketLink({
+    uri: process.env.NX_WS_GRAPHQL_URI,
+    options: {
+      reconnect: true,
+      connectionParams: async () => {
+        return {
+          Authorization: await getBearerToken(),
+        }
       },
-    })
-  return null
+    },
+  })
 }
 
 const httpLink = createHttpLink({
   uri: process.env.NX_HTTP_GRAPHQL_URI,
 })
 
-const authLink = setContext((_, { headers }) => {
+const authMiddleware = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      Authorization: authTokenVar() || "",
+      Authorization: await getBearerToken(),
     },
   }
 })
@@ -65,31 +66,14 @@ const splitLink = isClient
         )
       },
       getWsLink(),
-      authLink.concat(httpLink)
+      authMiddleware.concat(httpLink)
     )
-  : authLink.concat(httpLink)
+  : authMiddleware.concat(httpLink)
 
 export const createApolloClient = () => {
   return new ApolloClient({
     link: splitLink,
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            isLoggedIn: {
-              read() {
-                return isLoggedInVar()
-              },
-            },
-            token: {
-              read() {
-                return authTokenVar()
-              },
-            },
-          },
-        },
-      },
-    }),
+    cache: new InMemoryCache(),
   })
 }
 

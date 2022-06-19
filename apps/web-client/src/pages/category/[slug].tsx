@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 
-import { useCategoryQuery } from "../../__generated__/types.react-apollo"
+import { useCategoryQuery } from "src/__generated__/types.react-apollo"
 
 /**
  * @todo Implement this component.

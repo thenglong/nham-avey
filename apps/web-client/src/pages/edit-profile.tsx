@@ -38,6 +38,7 @@ const EditProfilePage = () => {
       setValue("email", data.me.email)
     },
   })
+
   const client = useApolloClient()
 
   const onCompleted = (data: EditProfileMutation) => {

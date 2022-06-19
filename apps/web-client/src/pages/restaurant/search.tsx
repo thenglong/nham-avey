@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useSearchRestaurantLazyQuery } from "../../__generated__/types.react-apollo"
+import { useSearchRestaurantLazyQuery } from "src/__generated__/types.react-apollo"
 
 /**
  * @todo Implement this component.

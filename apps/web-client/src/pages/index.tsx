@@ -5,8 +5,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
-import { useRestaurantsPageQueryQuery } from "apps/web-client/src/__generated__/types.react-apollo"
-import { Restaurant } from "apps/web-client/src/components/restaurant"
+import { useRestaurantsPageQueryQuery } from "../__generated__/types.react-apollo"
+import { Restaurant } from "../components/restaurant"
 
 const RestaurantsPage = () => {
   const [page, setPage] = useState(1)

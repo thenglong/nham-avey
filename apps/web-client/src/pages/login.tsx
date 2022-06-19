@@ -5,10 +5,8 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-import { LoginMutation, useLoginMutation } from "../__generated__/types.react-apollo"
-import { FormError } from "../components/form-error"
-import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
-import { authTokenVar, isLoggedInVar } from "../graphql/apollo-config"
+import { FormError } from "src/components/form-error"
+import useSignIn from "src/hooks/use-sign-in"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -25,34 +23,21 @@ const LoginPage = () => {
     register,
     getValues,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<LoginForm>({
-    mode: "onTouched",
     resolver: yupResolver(schema),
   })
 
-  const onCompleted = (data: LoginMutation) => {
-    const {
-      login: { ok, token },
-    } = data
-    if (ok && token) {
-      localStorage.setItem(LOCAL_STORAGE_TOKEN, token)
-      authTokenVar(token)
-      isLoggedInVar(true)
-    }
-  }
+  const {
+    mutate: signIn,
+    data,
+    error: _, // not used, use data.error instead
+    isLoading: isSigningIn,
+  } = useSignIn()
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useLoginMutation({
-    onCompleted,
-  })
-
-  const onSubmit = () => {
-    if (!loading) {
-      const { email, password } = getValues()
-      loginMutation({
-        variables: { loginInput: { email, password } },
-      })
-    }
+  const onSubmit = async () => {
+    const { email, password } = getValues()
+    signIn({ email, password })
   }
 
   return (
@@ -96,15 +81,14 @@ const LoginPage = () => {
 
           <button
             className={clsx("btn btn-primary", {
-              loading,
+              loading: isSigningIn,
             })}
-            disabled={!isValid}
           >
             Log in
           </button>
-          {loginMutationResult?.login.error && (
-            <FormError errorMessage={loginMutationResult?.login.error} />
-          )}
+          <div className="text-center">
+            {data?.error && <FormError errorMessage={data.error} />}
+          </div>
         </form>
 
         <Link href="/create-account">

@@ -8,7 +8,6 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:jsx-a11y/recommended"
   ],
   "ignorePatterns": ["!**/*", "**/__generated__/**"],
@@ -16,7 +15,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "apps/web-client/pages"]
+        "@next/next/no-html-link-for-pages": ["error", "apps/web-client/src/pages"]
       }
     },
     {
