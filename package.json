@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "@hookform/resolvers": "^2.9.1",
-    "@nestjs-modules/mailer": "^1.6.1",
+    "@nestjs-modules/mailer": "^1.7.0",
     "@nestjs/apollo": "^10.0.16",
     "@nestjs/common": "^8.4.7",
     "@nestjs/config": "^2.1.0",
