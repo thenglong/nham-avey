@@ -1,5 +1,6 @@
 import { gql, useApolloClient } from "@apollo/client"
 import { yupResolver } from "@hookform/resolvers/yup"
+import clsx from "clsx"
 import { NextSeo } from "next-seo"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
@@ -9,7 +10,6 @@ import {
   useEditProfileMutation,
   useGetMeQuery,
 } from "../__generated__/types.react-apollo"
-import { Button } from "../components/button"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -22,7 +22,13 @@ interface FormProps {
 }
 
 const EditProfilePage = () => {
-  const { register, handleSubmit, getValues, formState, setValue } = useForm<FormProps>({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { isValid },
+    setValue,
+  } = useForm<FormProps>({
     mode: "onChange",
     resolver: yupResolver(schema),
   })
@@ -97,11 +103,15 @@ const EditProfilePage = () => {
           type="password"
           placeholder="Password"
         />
-        <Button
-          loading={loading}
-          canClick={formState.isValid}
-          actionText="Save Profile"
-        />
+
+        <button
+          className={clsx("btn btn-primary", {
+            loading,
+          })}
+          disabled={!isValid}
+        >
+          Save Profile
+        </button>
       </form>
     </div>
   )
