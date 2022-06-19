@@ -5,12 +5,17 @@ const { join } = require("path")
 module.exports = {
   content: [join(__dirname, "src/**/*.{js,ts,jsx,tsx}")],
   theme: {
-    fontFamily: {
-      sans: ["Nunito", "sans-serif"],
-      serif: ["ui-serif", "Georgia"],
-      mono: ["FMono-Regular", "Menlo", "Monaco", "monospace"],
-    },
     extend: {},
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    styled: true,
+    themes: ["light", "dark"],
+    base: true,
+    utils: true,
+    logs: true,
+    rtl: false,
+    prefix: "",
+    darkTheme: "light",
+  },
 }

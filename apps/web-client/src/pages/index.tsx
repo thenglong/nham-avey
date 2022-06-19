@@ -1,7 +1,5 @@
-import { Button } from "../components/button"
-
 export function Index() {
-  return <Button>Buy now</Button>
+  return "index page"
 }
 
 export default Index
