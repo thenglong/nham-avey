@@ -1,15 +1,16 @@
+import { ReactNode } from "react"
+
+import clsx from "clsx"
+
 interface ButtonProps {
-  canClick: boolean
-  loading: boolean
+  isLoading: boolean
   actionText: string
+  children: ReactNode
 }
 
-export const Button = ({ canClick, loading, actionText }: ButtonProps) => (
-  <button
-    className={`py-4 text-lg font-medium text-white transition-colors focus:outline-none  ${
-      canClick ? " bg-lime-600 hover:bg-lime-700 " : " pointer-events-none bg-gray-300 "
-    } `}
-  >
-    {loading ? "Loading..." : actionText}
-  </button>
+const baseClass =
+  "inline-flex text-xs font-bold mx-5 my-3 justify-center tracking-wide outline-none"
+
+export const Button = ({ children }: ButtonProps) => (
+  <button className={baseClass}>{children}</button>
 )

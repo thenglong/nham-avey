@@ -1,9 +1,7 @@
+import { Button } from "../components/button"
+
 export function Index() {
-  return (
-    <h1 className="">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga, explicabo.
-    </h1>
-  )
+  return <Button>Buy now</Button>
 }
 
 export default Index

@@ -9,6 +9,7 @@ import { Button } from "../components/button"
 import { FormError } from "../components/form-error"
 import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
 import { authTokenVar, isLoggedInVar } from "../graphql/apollo-config"
+import useOnlyUnauthPage from "../hooks/use-only-unauth-page"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -21,6 +22,7 @@ interface LoginForm {
 }
 
 const LoginPage = () => {
+  useOnlyUnauthPage()
   const {
     register,
     getValues,
@@ -82,7 +84,9 @@ const LoginPage = () => {
             <FormError errorMessage={errors.password?.message} />
           )}
 
-          <Button canClick={isValid} loading={loading} actionText="Log in" />
+          <Button canClick={isValid} loading={loading}>
+            Login in
+          </Button>
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult?.login.error} />
           )}
