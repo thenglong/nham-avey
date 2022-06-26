@@ -1,12 +1,13 @@
 import { LockOutlined, MailOutlined } from "@ant-design/icons"
 import { Alert, Button, Form, Input } from "antd"
 import { motion } from "framer-motion"
+import useSignInWithEmailAndPassword from "src/hooks/firebase/use-sign-in-with-email-and-password"
+import firebaseService from "src/services/firebase-service"
 
-const { getErrorMessage, auth } = firebaseService
+const { getErrorMessage } = firebaseService
 
 export const LoginForm = () => {
-  const [signInWithEmailAndPassword, _user, loading, error] =
-    useSignInWithEmailAndPassword(auth)
+  const { error, signIn, isLoading: isSigningIn } = useSignInWithEmailAndPassword()
 
   const initialCredential = {
     email: "",
@@ -15,9 +16,10 @@ export const LoginForm = () => {
 
   /**
    * @todo fix unmount memory leak
+   * @todo add remember me
    */
   const onLogin = async ({ email, password }: { email: string; password: string }) => {
-    await signInWithEmailAndPassword(email, password)
+    await signIn({ email, password })
   }
 
   return (
@@ -66,7 +68,7 @@ export const LoginForm = () => {
           <Input.Password prefix={<LockOutlined className="text-primary" />} />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={loading}>
+          <Button type="primary" htmlType="submit" block loading={isSigningIn}>
             Sign In
           </Button>
         </Form.Item>
