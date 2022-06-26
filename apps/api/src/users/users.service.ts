@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { JwtService } from "src/jwt/jwt.service"
 import { MailService } from "src/mail/mail.service"
 import { CreateAccountInput } from "src/users/dtos/create-account.dto"
 import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
-import { LoginInput } from "src/users/dtos/login.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
 import { VerifyEmailOutput } from "src/users/dtos/verify-email.dto"
 import { User } from "src/users/entities/user.entity"
@@ -17,7 +15,6 @@ export class UserService {
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Verification)
     private readonly verifications: Repository<Verification>,
-    private readonly jwtService: JwtService,
     private readonly mailService: MailService
   ) {}
 
@@ -48,45 +45,6 @@ export class UserService {
       return { ok: true }
     } catch (err) {
       return { ok: false, error: "[App] Couldn't create account" }
-    }
-  }
-
-  async login({
-    email,
-    password,
-  }: LoginInput): Promise<{ ok: boolean; error?: string | unknown; token?: string }> {
-    try {
-      const user = await this.users.findOne({
-        where: { email },
-        select: ["id", "password"],
-      })
-
-      if (!user) {
-        return {
-          ok: false,
-          error: "[App] User not found!",
-        }
-      }
-
-      const passwordCorrect = await user.checkPassword(password)
-      if (!passwordCorrect) {
-        return {
-          ok: false,
-          error: "[App] Wrong password",
-        }
-      }
-
-      const token = this.jwtService.sign(user.id)
-
-      return {
-        ok: true,
-        token,
-      }
-    } catch (error) {
-      return {
-        ok: false,
-        error,
-      }
     }
   }
 

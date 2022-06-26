@@ -15,7 +15,7 @@ export class PaymentResolver {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Mutation(() => CreatePaymentOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   createPayment(
     @AuthUser() owner: User,
     @Args("input") createPaymentInput: CreatePaymentInput
@@ -24,7 +24,7 @@ export class PaymentResolver {
   }
 
   @Query(() => GetPaymentsOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   getPayments(@AuthUser() user: User): Promise<GetPaymentsOutput> {
     return this.paymentService.getPayments(user)
   }
