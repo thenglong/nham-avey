@@ -2,7 +2,6 @@ import { useMemo } from "react"
 
 import { bindActionCreators } from "@reduxjs/toolkit"
 import { useDispatch } from "react-redux"
-
 import themeSlice from "src/redux/slice/theme-slice"
 import { AppDispatch } from "src/redux/store"
 

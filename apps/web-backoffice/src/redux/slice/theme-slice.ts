@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-
 import { THEME_CONFIG } from "src/config/app-config"
 
 // TODO: extract from i18next
