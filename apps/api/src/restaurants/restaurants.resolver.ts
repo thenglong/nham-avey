@@ -45,7 +45,7 @@ export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Mutation(() => CreateRestaurantOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   async createRestaurant(
     @AuthUser() authUser: User,
     @Args("input") createRestaurantInput: CreateRestaurantInput
@@ -54,13 +54,13 @@ export class RestaurantResolver {
   }
 
   @Query(() => MyRestaurantsOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   myRestaurants(@AuthUser() owner: User): Promise<MyRestaurantsOutput> {
     return this.restaurantService.myRestaurants(owner)
   }
 
   @Query(() => MyRestaurantOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   myRestaurant(
     @AuthUser() owner: User,
     @Args("input") myRestaurantInput: MyRestaurantInput
@@ -69,7 +69,7 @@ export class RestaurantResolver {
   }
 
   @Mutation(() => EditRestaurantOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   editRestaurant(
     @AuthUser() owner: User,
     @Args("input") editRestaurantInput: EditRestaurantInput
@@ -78,7 +78,7 @@ export class RestaurantResolver {
   }
 
   @Mutation(() => DeleteRestaurantOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   deleteRestaurant(
     @AuthUser() owner: User,
     @Args("input") deleteRestaurantInput: DeleteRestaurantInput
@@ -129,7 +129,7 @@ export class DishResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Mutation(() => CreateDishOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   createDish(
     @AuthUser() owner: User,
     @Args("input") createDishInput: CreateDishInput
@@ -138,7 +138,7 @@ export class DishResolver {
   }
 
   @Mutation(() => EditDishOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   editDish(
     @AuthUser() owner: User,
     @Args("input") editDishInput: EditDishInput
@@ -147,7 +147,7 @@ export class DishResolver {
   }
 
   @Mutation(() => DeleteDishOutput)
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   deleteDish(
     @AuthUser() owner: User,
     @Args("input") deleteDishInput: DeleteDishInput

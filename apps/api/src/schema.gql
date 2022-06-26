@@ -220,17 +220,6 @@ type GetPaymentsOutput {
   payments: [Payment!]
 }
 
-input LoginInput {
-  email: String!
-  password: String!
-}
-
-type LoginOutput {
-  error: String
-  ok: Boolean!
-  token: String
-}
-
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
@@ -243,7 +232,6 @@ type Mutation {
   editOrder(input: EditOrderInput!): EditOrderOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
-  login(input: LoginInput!): LoginOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
   verifyEmail(input: VerifyEmailInput!): VerifyEmailOutput!
 }
@@ -322,7 +310,6 @@ type Query {
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  hi: Boolean!
   me: User!
   myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
   myRestaurants: MyRestaurantsOutput!
