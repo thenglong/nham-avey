@@ -1,15 +1,14 @@
 import { Col, Row } from "antd"
 import Lottie from "lottie-react"
 import { Helmet } from "react-helmet-async"
-
 import adminLottie from "src/assets/lottie/66374-lottie-admin.json"
 import logo from "src/assets/pixel-images/logo-large.png"
-import { LoginForm } from "src/components/form/login-form"
+import { SignInForm } from "src/components/form/sign-in-form"
 import { APP_NAME } from "src/config/app-config"
 
 const PAGE_TITLE = `${APP_NAME} - Login`
 
-const LoginTwo = () => {
+const SignInPage = () => {
   return (
     <div className="h-screen">
       <Helmet title={PAGE_TITLE} />
@@ -20,7 +19,7 @@ const LoginTwo = () => {
               <Col xs={24} sm={24} md={20} lg={12} xl={8}>
                 <h1>Sign In</h1>
                 <div className="mt-4">
-                  <LoginForm />
+                  <SignInForm />
                 </div>
               </Col>
             </Row>
@@ -44,4 +43,4 @@ const LoginTwo = () => {
   )
 }
 
-export default LoginTwo
+export default SignInPage

@@ -1,6 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup, Auth } from "firebase/auth"
 import { useMutation } from "react-query"
-
 import firebaseService from "src/services/firebase-service"
 
 const { auth: fallbackAuth } = firebaseService

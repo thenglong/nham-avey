@@ -6,7 +6,7 @@ import firebaseService from "src/services/firebase-service"
 
 const { getErrorMessage } = firebaseService
 
-export const LoginForm = () => {
+export const SignInForm = () => {
   const { error, signIn, isLoading: isSigningIn } = useSignInWithEmailAndPassword()
 
   const initialCredential = {
@@ -18,7 +18,7 @@ export const LoginForm = () => {
    * @todo fix unmount memory leak
    * @todo add remember me
    */
-  const onLogin = async ({ email, password }: { email: string; password: string }) => {
+  const onSignIn = async ({ email, password }: { email: string; password: string }) => {
     await signIn({ email, password })
   }
 
@@ -35,9 +35,9 @@ export const LoginForm = () => {
       </motion.div>
       <Form
         layout="vertical"
-        name="login-form"
+        name="sign-in-form"
         initialValues={initialCredential}
-        onFinish={onLogin}
+        onFinish={onSignIn}
       >
         <Form.Item
           name="email"
@@ -77,4 +77,4 @@ export const LoginForm = () => {
   )
 }
 
-export default LoginForm
+export default SignInForm

@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app"
 import {
   browserLocalPersistence,
   browserSessionPersistence,
@@ -6,9 +7,7 @@ import {
   UserCredential,
 } from "firebase/auth"
 import { MutationFunction, useMutation } from "react-query"
-
 import firebaseService from "src/services/firebase-service"
-import { FirebaseError } from "firebase/app"
 
 const { auth: fallbackAuth } = firebaseService
 
