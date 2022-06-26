@@ -49,8 +49,6 @@
     "graphql-subscriptions": "^2.0.0",
     "i18next-browser-languagedetector": "^6.1.4",
     "initials": "^3.1.2",
-    "joi": "^17.6.0",
-    "jsonwebtoken": "^8.5.1",
     "lodash-es": "^4.17.21",
     "lottie-react": "^2.3.1",
     "moment": "^2.29.3",
