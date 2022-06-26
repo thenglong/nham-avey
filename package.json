@@ -40,8 +40,6 @@
     "google-map-react": "^2.1.10",
     "graphql": "^16.5.0",
     "graphql-subscriptions": "^2.0.0",
-    "joi": "^17.6.0",
-    "jsonwebtoken": "^8.5.1",
     "lodash-es": "^4.17.21",
     "next": "12.1.6",
     "next-auth": "^4.6.1",
@@ -59,9 +57,7 @@
     "theme-change": "^2.0.2",
     "tslib": "^2.4.0",
     "typeorm": "0.3.6",
-    "victory": "^36.5.2",
-    "yup": "^0.32.11",
-    "zod": "^3.17.3"
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",

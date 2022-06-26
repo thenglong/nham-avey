@@ -27,7 +27,7 @@ export class OrderResolver {
   ) {}
 
   @Mutation(() => CreateOrderOutput)
-  @Role([UserRole.Client])
+  @Role(UserRole.Client)
   async createOrder(
     @AuthUser() customer: User,
     @Args("input") createOrderInput: CreateOrderInput
@@ -36,7 +36,6 @@ export class OrderResolver {
   }
 
   @Query(() => GetOrdersOutput)
-  @Role(["Any"])
   async getOrders(
     @AuthUser() user: User,
     @Args("input") getOrdersInput: GetOrdersInput
@@ -45,7 +44,6 @@ export class OrderResolver {
   }
 
   @Query(() => GetOrderOutput)
-  @Role(["Any"])
   async getOrder(
     @AuthUser() user: User,
     @Args("input") getOrderInput: GetOrderInput
@@ -54,7 +52,6 @@ export class OrderResolver {
   }
 
   @Mutation(() => EditOrderOutput)
-  @Role(["Any"])
   async editOrder(
     @AuthUser() user: User,
     @Args("input") editOrderInput: EditOrderInput
@@ -70,13 +67,13 @@ export class OrderResolver {
       return order
     },
   })
-  @Role([UserRole.Owner])
+  @Role(UserRole.Owner)
   pendingOrders() {
     return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
   }
 
   @Subscription(() => Order)
-  @Role([UserRole.Delivery])
+  @Role(UserRole.Delivery)
   cookedOrders() {
     return this.pubSub.asyncIterator(NEW_COOKED_ORDER)
   }
@@ -97,13 +94,12 @@ export class OrderResolver {
       return order.id === input.id
     },
   })
-  @Role(["Any"])
   orderUpdates(@Args("input") _orderUpdatesInput: OrderUpdatesInput) {
     return this.pubSub.asyncIterator(NEW_ORDER_UPDATE)
   }
 
   @Mutation(() => TakeOrderOutput)
-  @Role([UserRole.Delivery])
+  @Role(UserRole.Delivery)
   takeOrder(
     @AuthUser() driver: User,
     @Args("input") takeOrderInput: TakeOrderInput
