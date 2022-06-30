@@ -80,7 +80,7 @@
     "swagger-ui-express": "^4.4.0",
     "theme-change": "^2.0.2",
     "tslib": "^2.4.0",
-    "typeorm": "0.3.6",
+    "typeorm": "0.3.7",
     "yup": "^0.32.11"
   },
   "devDependencies": {
