@@ -93,6 +93,7 @@ export class AppModule implements NestModule {
       .exclude({ path: "graphql", method: RequestMethod.ALL }) // TODO: remove this line when include api key from the frontend
       .forRoutes({ path: "*", method: RequestMethod.ALL })
       .apply(AuthMiddleware)
+      .exclude({ path: "graphql", method: RequestMethod.ALL })
       .forRoutes({ path: "*", method: RequestMethod.ALL })
   }
 }
