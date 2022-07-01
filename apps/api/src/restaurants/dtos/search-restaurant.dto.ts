@@ -4,7 +4,7 @@ import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @ArgsType()
 export class SearchRestaurantArgs extends PaginationArgs {
-  @Field(type => String)
+  @Field(type => String, { defaultValue: "", nullable: true })
   query: string
 }
 

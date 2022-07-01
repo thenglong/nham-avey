@@ -315,7 +315,7 @@ type Query {
   myRestaurants: MyRestaurantsOutput!
   restaurant(restaurantId: Int!): RestaurantOutput!
   restaurants(page: Int = 1): RestaurantsOutput!
-  searchRestaurant(page: Int = 1, query: String!): SearchRestaurantOutput!
+  searchRestaurant(page: Int = 1, query: String = ""): SearchRestaurantOutput!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
