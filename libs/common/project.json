@@ -18,6 +18,14 @@
         "jestConfig": "libs/common/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "graphql-codegen": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "graphql-codegen --config codegen.yaml",
+        "cwd": "libs/common"
+      }
     }
   }
 }
