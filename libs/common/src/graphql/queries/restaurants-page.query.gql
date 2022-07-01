@@ -1,0 +1,18 @@
+query restaurantsPageQuery($page: Int) {
+  allCategories {
+    ok
+    error
+    categories {
+      ...CategoryParts
+    }
+  }
+  restaurants(page: $page) {
+    ok
+    error
+    totalPages
+    totalResults
+    results {
+      ...RestaurantParts
+    }
+  }
+}

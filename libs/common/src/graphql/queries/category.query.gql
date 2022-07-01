@@ -1,0 +1,14 @@
+query category($page: Int, $slug: String!) {
+  category(page: $page, slug: $slug) {
+    ok
+    error
+    totalPages
+    totalResults
+    restaurants {
+      ...RestaurantParts
+    }
+    category {
+      ...CategoryParts
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "sourceRoot": "libs/common/src",
+  "projectType": "library",
+  "tags": ["@nham-avey/common"],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common"],
+      "options": {
+        "jestConfig": "libs/common/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "graphql-codegen": {
+      "builder": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "graphql-codegen --config codegen.yaml",
+        "cwd": "libs/common"
+      }
+    }
+  }
+}

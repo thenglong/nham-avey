@@ -1,0 +1,12 @@
+query restaurant($restaurantId: Int!) {
+  restaurant(restaurantId: $restaurantId) {
+    ok
+    error
+    restaurant {
+      ...RestaurantParts
+      menu {
+        ...DishParts
+      }
+    }
+  }
+}

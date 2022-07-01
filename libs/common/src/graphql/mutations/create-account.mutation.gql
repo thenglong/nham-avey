@@ -1,0 +1,6 @@
+mutation createAccount($createAccountInput: CreateAccountInput!) {
+  createAccount(input: $createAccountInput) {
+    ok
+    error
+  }
+}

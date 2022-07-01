@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "common": "libs/common",
     "web-backoffice": "apps/web-backoffice",
     "web-backoffice-e2e": "apps/web-backoffice-e2e",
     "web-client": "apps/web-client",

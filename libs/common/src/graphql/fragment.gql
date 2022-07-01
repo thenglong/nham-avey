@@ -1,0 +1,55 @@
+fragment FullOrderParts on Order {
+  id
+  status
+  total
+  driver {
+    email
+  }
+  customer {
+    email
+  }
+  restaurant {
+    name
+  }
+}
+
+fragment RestaurantParts on Restaurant {
+  id
+  name
+  coverImg
+  category {
+    name
+  }
+  address
+  isPromoted
+}
+
+fragment CategoryParts on Category {
+  id
+  name
+  coverImg
+  slug
+  restaurantCount
+}
+
+fragment DishParts on Dish {
+  id
+  name
+  price
+  photo
+  description
+  options {
+    name
+    extra
+    choices {
+      name
+      extra
+    }
+  }
+}
+
+fragment OrderParts on Order {
+  id
+  createdAt
+  total
+}
