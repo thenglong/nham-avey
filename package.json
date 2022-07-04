@@ -98,7 +98,7 @@
     "@nrwl/linter": "14.3.6",
     "@nrwl/nest": "14.3.6",
     "@nrwl/node": "14.3.6",
-    "@nrwl/react": "14.3.6",
+    "@nrwl/react": "14.4.1",
     "@nrwl/web": "14.3.6",
     "@nrwl/workspace": "14.3.6",
     "@swc/core": "^1.2.173",
