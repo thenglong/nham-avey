@@ -19,10 +19,10 @@ const authRoutes: RouteObject[] = [
     children: [
       {
         path: "",
-        element: <Navigate to={SIGN_IN_PATH} />,
+        element: <Navigate to="sign-in" />,
       },
       {
-        path: `${AUTH_PREFIX_PATH}${SIGN_IN_PATH}`,
+        path: "sign-in",
         element: <SignInPage />,
       },
       {

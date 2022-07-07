@@ -23,7 +23,40 @@ export const SignInForm = () => {
   }
 
   return (
-    <>
+    <Form
+      layout="vertical"
+      name="sign-in-form"
+      initialValues={initialCredential}
+      onFinish={onSignIn}
+    >
+      <Form.Item
+        name="email"
+        label="Email"
+        rules={[
+          {
+            required: true,
+            message: "Please input your email",
+          },
+          {
+            type: "email",
+            message: "Please enter a validate email!",
+          },
+        ]}
+      >
+        <Input prefix={<MailOutlined className="text-primary" />} />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        label="Password"
+        rules={[
+          {
+            required: true,
+            message: "Please input your password",
+          },
+        ]}
+      >
+        <Input.Password prefix={<LockOutlined className="text-primary" />} />
+      </Form.Item>
       <motion.div
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
@@ -33,47 +66,12 @@ export const SignInForm = () => {
       >
         <Alert type="error" showIcon message={error && getErrorMessage(error)} />
       </motion.div>
-      <Form
-        layout="vertical"
-        name="sign-in-form"
-        initialValues={initialCredential}
-        onFinish={onSignIn}
-      >
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            {
-              required: true,
-              message: "Please input your email",
-            },
-            {
-              type: "email",
-              message: "Please enter a validate email!",
-            },
-          ]}
-        >
-          <Input prefix={<MailOutlined className="text-primary" />} />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          label="Password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password",
-            },
-          ]}
-        >
-          <Input.Password prefix={<LockOutlined className="text-primary" />} />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={isSigningIn}>
-            Sign In
-          </Button>
-        </Form.Item>
-      </Form>
-    </>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" block loading={isSigningIn}>
+          Sign In
+        </Button>
+      </Form.Item>
+    </Form>
   )
 }
 

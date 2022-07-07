@@ -1,7 +1,5 @@
 import { createContext, ReactNode, useContext, useRef } from "react"
 
-import alertSound from "assets/sounds/alert.mp3"
-
 interface AudioAlertContext {
   playAlert: () => Promise<void>
 }
@@ -11,7 +9,7 @@ const AudioAlertContext = createContext<AudioAlertContext>({
 })
 
 const AudioAlertContextProvider = ({ children }: { children: ReactNode }) => {
-  const audio = useRef(new Audio(alertSound))
+  const audio = useRef(new Audio("/assets/sounds/alert.mp3"))
 
   return (
     <AudioAlertContext.Provider

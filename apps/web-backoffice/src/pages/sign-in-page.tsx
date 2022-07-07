@@ -2,7 +2,6 @@ import { Col, Row } from "antd"
 import Lottie from "lottie-react"
 import { Helmet } from "react-helmet-async"
 import adminLottie from "src/assets/lottie/66374-lottie-admin.json"
-import logo from "src/assets/pixel-images/logo-large.png"
 import { SignInForm } from "src/components/form/sign-in-form"
 import { APP_NAME } from "src/config/app-config"
 
@@ -18,7 +17,7 @@ const SignInPage = () => {
             <Row justify="center" className="w-full">
               <Col xs={24} sm={24} md={20} lg={12} xl={8}>
                 <h1>Sign In</h1>
-                <div className="mt-4">
+                <div>
                   <SignInForm />
                 </div>
               </Col>
@@ -28,7 +27,7 @@ const SignInPage = () => {
         <Col xs={0} sm={0} md={0} lg={8} className="bg-primary h-full">
           <div className="flex h-full flex-col justify-center px-4">
             <div className="text-center text-white">
-              <img src={logo} className="w-40" alt="YEAKSA LOGO" />
+              <h1>Nham Avey Back Office</h1>
             </div>
             <Row justify="center">
               <Col xs={0} sm={0} md={0} lg={20}>

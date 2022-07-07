@@ -7,12 +7,10 @@ import firebaseService from "src/services/firebase-service"
 const { auth: fallbackAuth } = firebaseService
 
 interface UseFirebaseAuthStateParams {
-  onStateChanged?: (user: User | null) => void
   auth?: Auth
 }
 
 const useFirebaseAuthState = ({
-  onStateChanged,
   auth = fallbackAuth,
 }: UseFirebaseAuthStateParams = {}) => {
   const getCurrentUser = useCallback(() => auth.currentUser, [auth.currentUser])
@@ -25,17 +23,10 @@ const useFirebaseAuthState = ({
   } = useLoadingValue<User | null, Error>(getCurrentUser)
 
   useEffect(() => {
-    return onAuthStateChanged(
-      auth,
-      user => {
-        setUser(user)
-        onStateChanged?.(user)
-      },
-      setError
-    )
-  }, [setError, setUser])
+    return onAuthStateChanged(auth, setUser, setError)
+  }, [auth, setError, setUser])
 
-  return useMemo(() => ({ error, isLoading: isLoading, user }), [error, isLoading, user])
+  return useMemo(() => ({ error, isLoading, user }), [error, isLoading, user])
 }
 
 export default useFirebaseAuthState

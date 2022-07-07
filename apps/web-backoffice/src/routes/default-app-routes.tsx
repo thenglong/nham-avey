@@ -1,6 +1,9 @@
 import { RouteObject, Navigate, Outlet } from "react-router-dom"
 import AppLayout from "src/components/layout/app-layout"
 import { APP_PREFIX_PATH } from "src/config/app-config"
+import AdminsPage from "src/pages/admins-page"
+import CustomersPage from "src/pages/customers-page"
+import DriversPage from "src/pages/drivers-page"
 
 const defaultAppRoutes: RouteObject[] = [
   {
