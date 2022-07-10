@@ -1,0 +1,50 @@
+name: Deploy BO to Netlify
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+
+      - name: Cache dependencies ⚙️
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies 🔀
+        run: npm i
+
+      - name: Run build 🔀
+        run: npx nx run web-backoffice:build
+        env:
+          NX_BO_FIREBASE_CONFIG_JSON: ${{secrets.NX_BO_FIREBASE_CONFIG_JSON}}
+
+      - name: Add _redirect to serve SPA 🔀
+        run:  echo "/*    /index.html   200" > ./dist/apps/web-backoffice/_redirects
+
+      - name: Deploy to Netlify 🔀
+        uses: nwtgck/actions-netlify@v1.2.3
+        with:
+          publish-dir: './dist/apps/web-backoffice'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.BO_NETLIFY_SITE_ID }}
+        timeout-minutes: 5
