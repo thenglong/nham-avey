@@ -12,10 +12,10 @@ export const MobileNav = () => {
 
   const { mobileNav } = themeState
 
-  const { onMobileNavToggle } = useThemeActions()
+  const { toggleMobileNav } = useThemeActions()
 
   const onClose = () => {
-    onMobileNavToggle(false)
+    toggleMobileNav(false)
   }
 
   return (

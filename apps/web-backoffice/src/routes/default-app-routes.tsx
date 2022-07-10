@@ -1,9 +1,9 @@
-import { RouteObject, Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet, RouteObject } from "react-router-dom"
 import AppLayout from "src/components/layout/app-layout"
 import { APP_PREFIX_PATH } from "src/config/app-config"
-import AdminsPage from "src/pages/admins-page"
-import CustomersPage from "src/pages/customers-page"
-import DriversPage from "src/pages/drivers-page"
+import userRoutes from "src/routes/user-routes"
+
+export const USER_PREFIX_PATH = "users"
 
 const defaultAppRoutes: RouteObject[] = [
   {
@@ -15,26 +15,13 @@ const defaultAppRoutes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       {
-        path: "users",
+        path: "*",
+        element: <Navigate to={USER_PREFIX_PATH} />,
+      },
+      {
+        path: USER_PREFIX_PATH,
         element: <Outlet />,
-        children: [
-          {
-            path: "customers",
-            element: <CustomersPage />,
-          },
-          {
-            path: "drivers",
-            element: <DriversPage />,
-          },
-          {
-            path: "admins",
-            element: <AdminsPage />,
-          },
-          {
-            path: "",
-            element: <Navigate to="customers" />,
-          },
-        ],
+        children: userRoutes,
       },
     ],
   },

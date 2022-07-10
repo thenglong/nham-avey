@@ -20,10 +20,10 @@ const { useBreakpoint } = Grid
 
 export const AppLayout = () => {
   const breakpoint = useBreakpoint()
-  const navCollapsed = useTypedSelector(state => state.theme.navCollapsed)
+  const { navCollapsed } = useTypedSelector(state => state.theme)
 
   const getLayoutGutter = (): number => {
-    if (breakpoint.sm) return 0
+    if (!breakpoint.lg) return 0
     return navCollapsed ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH
   }
 

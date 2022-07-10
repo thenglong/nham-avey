@@ -18,15 +18,15 @@ export const HeaderNav = () => {
 
   const { navCollapsed, mobileNav } = themeState
 
-  const { onMobileNavToggle, toggleCollapsedNav } = useThemeActions()
+  const { toggleMobileNav, toggleCollapsedNav } = useThemeActions()
 
   const isMobile = !breakpoint.lg
 
   const onToggle = () => {
-    if (!isMobile) {
-      toggleCollapsedNav(!navCollapsed)
+    if (isMobile) {
+      toggleMobileNav(!mobileNav)
     } else {
-      onMobileNavToggle(!mobileNav)
+      toggleCollapsedNav(!navCollapsed)
     }
   }
 

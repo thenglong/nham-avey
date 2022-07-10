@@ -21,7 +21,7 @@ export const themeSlice = createSlice({
     onLocaleChange: (state, action: PayloadAction<Locale>) => {
       state.locale = action.payload
     },
-    onMobileNavToggle: (state, action: PayloadAction<boolean>) => {
+    toggleMobileNav: (state, action: PayloadAction<boolean>) => {
       state.mobileNav = action.payload
     },
     onSwitchTheme: (state, payload: PayloadAction<"light" | "dark">) => {
