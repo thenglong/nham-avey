@@ -20,7 +20,6 @@ const { useBreakpoint } = Grid
 
 export const AppLayout = () => {
   const breakpoint = useBreakpoint()
-
   const navCollapsed = useTypedSelector(state => state.theme.navCollapsed)
 
   const getLayoutGutter = (): number => {
@@ -34,9 +33,9 @@ export const AppLayout = () => {
 
   return (
     <Layout>
-      <HeaderNav isMobile={breakpoint.sm} />
+      <HeaderNav />
       <Layout>
-        {!breakpoint.sm && <SideNav />}
+        {breakpoint.lg && <SideNav />}
         <Layout
           style={{
             ...getLayoutDirectionGutter(),
@@ -58,7 +57,7 @@ export const AppLayout = () => {
           <Footer />
         </Layout>
       </Layout>
-      {breakpoint.sm && <MobileNav />}
+      {!breakpoint.lg && <MobileNav />}
     </Layout>
   )
 }

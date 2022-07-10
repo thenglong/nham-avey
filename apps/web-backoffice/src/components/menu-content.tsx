@@ -1,6 +1,8 @@
 import { Menu } from "antd"
+import { useNavigate } from "react-router-dom"
 
 const MenuContent = () => {
+  const navigate = useNavigate()
   return (
     <Menu
       theme="light"
@@ -9,7 +11,14 @@ const MenuContent = () => {
       selectedKeys={[""]}
       defaultOpenKeys={[""]}
       className="h-max border-r-0"
-      items={[]}
+      items={[
+        {
+          key: "restaurants",
+          title: "Restaurants",
+          label: "Restaurants",
+          onClick: () => navigate("/app/restaurants"),
+        },
+      ]}
     />
   )
 }

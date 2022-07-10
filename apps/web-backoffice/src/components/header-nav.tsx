@@ -1,5 +1,5 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons"
-import { Layout } from "antd"
+import { Grid, Layout } from "antd"
 import Clock from "react-live-clock"
 import { Link } from "react-router-dom"
 import Logo from "src/components/logo"
@@ -10,16 +10,17 @@ import { NavProfile } from "./nav-profile"
 
 const { Header } = Layout
 
-interface HeaderNavProps {
-  isMobile?: boolean
-}
+const { useBreakpoint } = Grid
 
-export const HeaderNav = ({ isMobile = false }: HeaderNavProps) => {
+export const HeaderNav = () => {
+  const breakpoint = useBreakpoint()
   const themeState = useTypedSelector(state => state.theme)
 
   const { navCollapsed, mobileNav } = themeState
 
   const { onMobileNavToggle, toggleCollapsedNav } = useThemeActions()
+
+  const isMobile = !breakpoint.lg
 
   const onToggle = () => {
     if (!isMobile) {
@@ -53,7 +54,7 @@ export const HeaderNav = ({ isMobile = false }: HeaderNavProps) => {
               </li>
             </ul>
           </div>
-          <div className="flex px-[1rem]">
+          <div className="hidden px-[1rem] lg:flex">
             <Clock
               ticking
               format="dddd, MMMM Do, YYYY, h:mm:ss A"
