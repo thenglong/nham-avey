@@ -138,7 +138,7 @@
     "nx": "14.4.2",
     "postcss": "^8.4.14",
     "prettier": "2.6.2",
-    "prettier-plugin-tailwindcss": "^0.1.11",
+    "prettier-plugin-tailwindcss": "^0.1.12",
     "react-test-renderer": "18.2.0",
     "rimraf": "^3.0.2",
     "swc-loader": "0.1.15",
