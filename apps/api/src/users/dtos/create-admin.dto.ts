@@ -18,7 +18,7 @@ export class CreateAdminArgs {
 
 @ObjectType()
 export class CreateAdminOutput extends CoreOutput {
-  @Field(type => Boolean, { nullable: true })
+  @Field(type => User, { nullable: true })
   user?: User
 
   @Field(type => String, { nullable: true })

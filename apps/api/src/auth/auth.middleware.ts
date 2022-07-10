@@ -17,7 +17,7 @@ export class AuthMiddleware implements NestMiddleware {
   @Inject(FirebaseAuthenticationService)
   private readonly firebaseAuthService: FirebaseAuthenticationService
 
-  private static validateAndGetToken(bearerToken: string): string {
+  public static validateAndGetToken(bearerToken: string): string {
     const match = bearerToken.match(/^Bearer (.*)$/)
     if (!match || match.length < 2) {
       throw new UnauthorizedException("Invalid Authorization token - Token does not match Bearer schema")

@@ -4,7 +4,7 @@ import { CoreOutput } from "src/common/dtos/output.dto"
 import { User } from "src/users/entities/user.entity"
 
 @InputType()
-export class CreateAccountInput extends PickType(User, ["email", "role"]) {
+export class CreateAccountInput extends PickType(User, ["email", "roles"]) {
   @Field(() => String)
   @MinLength(8)
   password: string

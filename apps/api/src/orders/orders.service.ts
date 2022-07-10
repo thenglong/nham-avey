@@ -1,23 +1,18 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { PubSub } from "graphql-subscriptions"
-import {
-  NEW_COOKED_ORDER,
-  NEW_ORDER_UPDATE,
-  NEW_PENDING_ORDER,
-  PUB_SUB,
-} from "src/common/common.constants"
+import { NEW_COOKED_ORDER, NEW_ORDER_UPDATE, NEW_PENDING_ORDER, PUB_SUB } from "src/common/common.constants"
 import { CreateOrderInput, CreateOrderOutput } from "src/orders/dtos/create-order.dto"
 import { EditOrderInput, EditOrderOutput } from "src/orders/dtos/edit-order.dto"
 import { GetOrderInput, GetOrderOutput } from "src/orders/dtos/get-order.dto"
 import { GetOrdersInput, GetOrdersOutput } from "src/orders/dtos/get-orders.dto"
 import { TakeOrderInput, TakeOrderOutput } from "src/orders/dtos/take-order.dto"
 import { OrderItem } from "src/orders/entities/order-item.entity"
-import { OrderStatus, Order } from "src/orders/entities/order.entity"
+import { Order, OrderStatus } from "src/orders/entities/order.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { UserRole, User } from "src/users/entities/user.entity"
-import { Repository, Equal } from "typeorm"
+import { User, UserRole } from "src/users/entities/user.entity"
+import { Equal, Repository } from "typeorm"
 
 @Injectable()
 export class OrderService {
@@ -30,13 +25,10 @@ export class OrderService {
     private readonly restaurants: Repository<Restaurant>,
     @InjectRepository(Dish)
     private readonly dishes: Repository<Dish>,
-    @Inject(PUB_SUB) private readonly pubSub: PubSub
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
-  async createOrder(
-    customer: User,
-    { restaurantId, items }: CreateOrderInput
-  ): Promise<CreateOrderOutput> {
+  async createOrder(customer: User, { restaurantId, items }: CreateOrderInput): Promise<CreateOrderOutput> {
     try {
       const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
       if (!restaurant) {
@@ -60,16 +52,12 @@ export class OrderService {
         let dishFinalPrice = dish.price
 
         for (const itemOption of item.options) {
-          const dishOption = dish.options?.find(
-            dishOption => dishOption.name === itemOption.name
-          )
+          const dishOption = dish.options?.find(dishOption => dishOption.name === itemOption.name)
           if (dishOption) {
             if (dishOption.extra) {
               dishFinalPrice = dishFinalPrice + dishOption.extra
             } else {
-              const dishOptionChoice = dishOption.choices?.find(
-                optionChoice => optionChoice.name === itemOption.choice
-              )
+              const dishOptionChoice = dishOption.choices?.find(optionChoice => optionChoice.name === itemOption.choice)
               if (dishOptionChoice) {
                 if (dishOptionChoice.extra) {
                   dishFinalPrice = dishFinalPrice + dishOptionChoice.extra
@@ -85,7 +73,7 @@ export class OrderService {
           this.orderItems.create({
             dish,
             options: item.options,
-          })
+          }),
         )
 
         orderItems.push(orderItem)
@@ -97,7 +85,7 @@ export class OrderService {
           restaurant,
           total: orderFinalPrice,
           items: orderItems,
-        })
+        }),
       )
 
       await this.pubSub.publish(NEW_PENDING_ORDER, {
@@ -120,21 +108,21 @@ export class OrderService {
     try {
       let orders: Order[] = []
 
-      if (user.role === UserRole.Customer) {
+      if (user.roles.includes(UserRole.Customer)) {
         orders = await this.orders.find({
           where: {
             customer: Equal(user),
             ...(status && { status }),
           },
         })
-      } else if (user.role === UserRole.Driver) {
+      } else if (user.roles.includes(UserRole.Driver)) {
         orders = await this.orders.find({
           where: {
             driver: Equal(user),
             ...(status && { status }),
           },
         })
-      } else if (user.role === UserRole.Vendor) {
+      } else if (user.roles.includes(UserRole.Vendor)) {
         const restaurants = await this.restaurants.find({
           where: {
             owner: Equal(user),
@@ -161,15 +149,15 @@ export class OrderService {
 
   canSeeOrder(user: User, order: Order): boolean {
     let canSee = true
-    if (user.role === UserRole.Customer && order.customerId !== user.id) {
+    if (user.roles.includes(UserRole.Customer) && order.customerId !== user.id) {
       canSee = false
     }
 
-    if (user.role === UserRole.Driver && order.driverId !== user.id) {
+    if (user.roles.includes(UserRole.Driver) && order.driverId !== user.id) {
       canSee = false
     }
 
-    if (user.role === UserRole.Vendor && order.restaurant?.ownerId !== user.id) {
+    if (user.roles.includes(UserRole.Vendor) && order.restaurant?.ownerId !== user.id) {
       canSee = false
     }
     return canSee
@@ -207,10 +195,7 @@ export class OrderService {
     }
   }
 
-  async editOrder(
-    user: User,
-    { id: orderId, status }: EditOrderInput
-  ): Promise<EditOrderOutput> {
+  async editOrder(user: User, { id: orderId, status }: EditOrderInput): Promise<EditOrderOutput> {
     try {
       const order = await this.orders.findOneBy({ id: orderId })
 
@@ -230,17 +215,17 @@ export class OrderService {
 
       let canEdit = true
 
-      if (user.role === UserRole.Customer) {
+      if (user.roles.includes(UserRole.Customer)) {
         canEdit = false
       }
 
-      if (user.role === UserRole.Vendor) {
+      if (user.roles.includes(UserRole.Vendor)) {
         if (status !== OrderStatus.Cooking && status !== OrderStatus.Cooked) {
           canEdit = false
         }
       }
 
-      if (user.role === UserRole.Driver) {
+      if (user.roles.includes(UserRole.Driver)) {
         if (status !== OrderStatus.PickedUp && status !== OrderStatus.Delivered) {
           canEdit = false
         }
@@ -260,7 +245,7 @@ export class OrderService {
 
       const newOrder = { ...order, status }
 
-      if (user.role === UserRole.Vendor) {
+      if (user.roles.includes(UserRole.Vendor)) {
         if (status === OrderStatus.Cooked) {
           await this.pubSub.publish(NEW_COOKED_ORDER, {
             cookedOrders: newOrder,
@@ -281,10 +266,7 @@ export class OrderService {
     }
   }
 
-  async takeOrder(
-    driver: User,
-    { id: orderId }: TakeOrderInput
-  ): Promise<TakeOrderOutput> {
+  async takeOrder(driver: User, { id: orderId }: TakeOrderInput): Promise<TakeOrderOutput> {
     try {
       const order = await this.orders.findOneBy({ id: orderId })
 

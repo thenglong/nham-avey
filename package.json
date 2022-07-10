@@ -81,6 +81,7 @@
     "theme-change": "^2.1.0",
     "tslib": "^2.4.0",
     "typeorm": "0.3.7",
+    "typeorm-naming-strategies": "^4.1.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

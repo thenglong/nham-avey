@@ -9,7 +9,7 @@ type AllCategoriesOutput {
 }
 
 type Category {
-  coverImg: String
+  coverImageUrl: String
   createdAt: DateTime!
   id: Float!
   name: String!
@@ -31,7 +31,7 @@ type CategoryOutput {
 input CreateAccountInput {
   email: String!
   password: String!
-  role: UserRole!
+  roles: [UserRole!]!
 }
 
 type CreateAccountOutput {
@@ -45,7 +45,7 @@ type CreateAdminOutput {
   error: String
   ok: Boolean!
   token: String
-  user: Boolean
+  user: User
 }
 
 input CreateDishInput {
@@ -381,13 +381,15 @@ type TakeOrderOutput {
 }
 
 type User {
+  createdAt: DateTime!
   email: String!
   id: String!
   orders: [Order!]!
   payments: [Payment!]!
   restaurants: [Restaurant!]!
   rides: [Order!]!
-  role: UserRole!
+  roles: [UserRole!]!
+  updatedAt: DateTime!
   verified: Boolean!
 }
 

@@ -1,10 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
+import { CanActivate, ExecutionContext, Inject, Injectable } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { RequestWithUser } from "src/auth/auth.middleware"
+import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
 import { UserRole } from "src/users/entities/user.entity"
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class RestAuthGuard implements CanActivate {
+  @Inject(FirebaseAuthenticationService)
+  private readonly firebaseAuthService: FirebaseAuthenticationService
   constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext) {

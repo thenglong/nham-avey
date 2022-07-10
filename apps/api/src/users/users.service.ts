@@ -32,7 +32,7 @@ export class UserService {
   }
 
   private async createUser(id: string, input: CreateAccountInput | CreateAdminArgs): Promise<User> {
-    const userEntity = this.userRepo.create({ id, ...input, role: UserRole.Admin })
+    const userEntity = this.userRepo.create({ id, ...input, roles: [UserRole.Admin] })
     return this.userRepo.save(userEntity)
   }
 
@@ -68,6 +68,7 @@ export class UserService {
 
       return { ok: true, user, token }
     } catch (err) {
+      console.log(err)
       return {
         ok: false,
         error: "[App] Couldn't create account",

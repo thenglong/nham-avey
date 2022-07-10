@@ -1,7 +1,6 @@
-import { ArgsType, Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql"
-import { OmitType } from "@nestjs/swagger"
+import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql"
 import { IsBoolean, IsEmail, IsEnum } from "class-validator"
-import { CoreEntity } from "src/common/entities/core.entity"
+import { CoreWithoutIdEntity } from "src/common/entities/core.entity"
 import { Order } from "src/orders/entities/order.entity"
 import { Payment } from "src/payments/entities/payment.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -19,7 +18,7 @@ registerEnumType(UserRole, { name: "UserRole" })
 @InputType("UserInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
-export class User extends OmitType(CoreEntity, ["id"] as const) {
+export class User extends CoreWithoutIdEntity {
   @PrimaryColumn()
   @Field(() => String)
   id: string
@@ -33,9 +32,17 @@ export class User extends OmitType(CoreEntity, ["id"] as const) {
     type: "enum",
     enum: UserRole,
   })
-  @Field(type => UserRole)
-  @IsEnum(UserRole)
-  role: UserRole
+  @Field(type => [UserRole])
+  @IsEnum(UserRole, { each: true })
+  @Column({
+    name: "roles",
+    enumName: "user_roles_enum",
+    type: "enum",
+    enum: UserRole,
+    array: true,
+    default: [UserRole.Customer],
+  })
+  roles: UserRole[]
 
   @Column({ default: false })
   @Field(type => Boolean)
