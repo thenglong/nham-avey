@@ -20,9 +20,7 @@ export class AuthMiddleware implements NestMiddleware {
   private static validateAndGetToken(bearerToken: string): string {
     const match = bearerToken.match(/^Bearer (.*)$/)
     if (!match || match.length < 2) {
-      throw new UnauthorizedException(
-        "Invalid Authorization token - Token does not match Bearer schema"
-      )
+      throw new UnauthorizedException("Invalid Authorization token - Token does not match Bearer schema")
     }
     return match[1]
   }
@@ -30,7 +28,7 @@ export class AuthMiddleware implements NestMiddleware {
   async use(req: RequestWithUser, res: Response, next: NextFunction) {
     const { authorization } = req.headers
     if (!authorization) {
-      next()
+      return next()
     }
     const accessToken = AuthMiddleware.validateAndGetToken(authorization as string)
     const decodedIdToken = await this.firebaseAuthService.auth.verifyIdToken(accessToken)

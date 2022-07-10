@@ -37,6 +37,15 @@ input CreateAccountInput {
 type CreateAccountOutput {
   error: String
   ok: Boolean!
+  token: String
+  user: Boolean
+}
+
+type CreateAdminOutput {
+  error: String
+  ok: Boolean!
+  token: String
+  user: Boolean
 }
 
 input CreateDishInput {
@@ -173,7 +182,7 @@ type EditOrderOutput {
 
 input EditProfileInput {
   email: String
-  password: String
+  password: String!
 }
 
 type EditProfileOutput {
@@ -221,7 +230,7 @@ type GetPaymentsOutput {
 }
 
 type Mutation {
-  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createAdmin(email: String!, password: String!): CreateAdminOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
@@ -232,8 +241,8 @@ type Mutation {
   editOrder(input: EditOrderInput!): EditOrderOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
+  signUp(input: CreateAccountInput!): CreateAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
-  verifyEmail(input: VerifyEmailInput!): VerifyEmailOutput!
 }
 
 input MyRestaurantInput {
@@ -307,10 +316,10 @@ type Payment {
 type Query {
   allCategories: AllCategoriesOutput!
   category(page: Int = 1, slug: String!): CategoryOutput!
+  getMe: User!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  me: User!
   myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
   myRestaurants: MyRestaurantsOutput!
   restaurant(restaurantId: Int!): RestaurantOutput!
@@ -372,16 +381,13 @@ type TakeOrderOutput {
 }
 
 type User {
-  createdAt: DateTime!
   email: String!
-  id: Float!
+  id: String!
   orders: [Order!]!
-  password: String!
   payments: [Payment!]!
   restaurants: [Restaurant!]!
   rides: [Order!]!
   role: UserRole!
-  updatedAt: DateTime!
   verified: Boolean!
 }
 
@@ -392,16 +398,8 @@ type UserProfileOutput {
 }
 
 enum UserRole {
-  Client
-  Delivery
-  Owner
-}
-
-input VerifyEmailInput {
-  code: String!
-}
-
-type VerifyEmailOutput {
-  error: String
-  ok: Boolean!
+  Admin
+  Customer
+  Driver
+  Vendor
 }

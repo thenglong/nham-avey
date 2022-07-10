@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
 import { AuthUser } from "src/auth/auth-user.decorator"
-import { Role } from "src/auth/role.decorator"
+import { Roles } from "src/auth/role.decorator"
 import {
   CreatePaymentInput,
   CreatePaymentOutput,
@@ -15,7 +15,7 @@ export class PaymentResolver {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Mutation(() => CreatePaymentOutput)
-  @Role(UserRole.Owner)
+  @Roles(UserRole.Vendor)
   createPayment(
     @AuthUser() owner: User,
     @Args("input") createPaymentInput: CreatePaymentInput
@@ -24,7 +24,7 @@ export class PaymentResolver {
   }
 
   @Query(() => GetPaymentsOutput)
-  @Role(UserRole.Owner)
+  @Roles(UserRole.Vendor)
   getPayments(@AuthUser() user: User): Promise<GetPaymentsOutput> {
     return this.paymentService.getPayments(user)
   }

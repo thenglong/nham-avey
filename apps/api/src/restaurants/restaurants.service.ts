@@ -3,28 +3,16 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
 import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
 import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import {
-  CreateRestaurantInput,
-  CreateRestaurantOutput,
-} from "src/restaurants/dtos/create-restaurant.dto"
+import { CreateRestaurantInput, CreateRestaurantOutput } from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import {
-  DeleteRestaurantInput,
-  DeleteRestaurantOutput,
-} from "src/restaurants/dtos/delete-restaurant.dto"
+import { DeleteRestaurantInput, DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import {
-  EditRestaurantInput,
-  EditRestaurantOutput,
-} from "src/restaurants/dtos/edit.restaurant.dto"
+import { EditRestaurantInput, EditRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
 import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
-import {
-  SearchRestaurantArgs,
-  SearchRestaurantOutput,
-} from "src/restaurants/dtos/search-restaurant.dto"
+import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -39,19 +27,14 @@ export class RestaurantService {
     private readonly restaurantRepo: Repository<Restaurant>,
     @InjectRepository(Dish)
     private readonly dishRepo: Repository<Dish>,
-    private readonly categoryRepo: CategoryRepository
+    private readonly categoryRepo: CategoryRepository,
   ) {}
 
-  async createRestaurant(
-    owner: User,
-    createRestaurantInput: CreateRestaurantInput
-  ): Promise<CreateRestaurantOutput> {
+  async createRestaurant(owner: User, createRestaurantInput: CreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
       const newRestaurant = this.restaurantRepo.create(createRestaurantInput)
       newRestaurant.owner = owner
-      newRestaurant.category = await this.categoryRepo.getOrCreate(
-        createRestaurantInput.categoryName
-      )
+      newRestaurant.category = await this.categoryRepo.getOrCreate(createRestaurantInput.categoryName)
 
       await this.restaurantRepo.save(newRestaurant)
       return {
@@ -66,10 +49,7 @@ export class RestaurantService {
     }
   }
 
-  async editRestaurant(
-    owner: User,
-    editRestaurantInput: EditRestaurantInput
-  ): Promise<EditRestaurantOutput> {
+  async editRestaurant(owner: User, editRestaurantInput: EditRestaurantInput): Promise<EditRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneByOrFail({
         id: editRestaurantInput.restaurantId,
@@ -111,10 +91,7 @@ export class RestaurantService {
     }
   }
 
-  async deleteRestaurant(
-    owner: User,
-    { restaurantId }: DeleteRestaurantInput
-  ): Promise<DeleteRestaurantOutput> {
+  async deleteRestaurant(owner: User, { restaurantId }: DeleteRestaurantInput): Promise<DeleteRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
 
@@ -250,10 +227,7 @@ export class RestaurantService {
     }
   }
 
-  async searchRestaurantByName({
-    query,
-    page,
-  }: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
+  async searchRestaurantByName({ query, page }: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
         where: {
@@ -276,10 +250,7 @@ export class RestaurantService {
     }
   }
 
-  async createDish(
-    owner: User,
-    createDishInput: CreateDishInput
-  ): Promise<CreateDishOutput> {
+  async createDish(owner: User, createDishInput: CreateDishInput): Promise<CreateDishOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({
         id: createDishInput.restaurantId,
@@ -399,10 +370,7 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurant(
-    owner: User,
-    { id }: MyRestaurantInput
-  ): Promise<MyRestaurantOutput> {
+  async myRestaurant(owner: User, { id }: MyRestaurantInput): Promise<MyRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: {

@@ -8,7 +8,6 @@ import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { User } from "src/users/entities/user.entity"
-import { Verification } from "src/users/entities/verification.entity"
 
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
@@ -22,16 +21,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       database: this.config.get<string>("db.name"),
       username: this.config.get<string>("db.username"),
       password: this.config.get<string>("db.password"),
-      entities: [
-        User,
-        Verification,
-        Restaurant,
-        Category,
-        Dish,
-        Order,
-        OrderItem,
-        Payment,
-      ],
+      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment],
       migrations: [],
       migrationsTableName: "typeorm_migrations",
       logger: "advanced-console",

@@ -50,9 +50,7 @@ import * as Yup from "yup"
       autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
       context: ({ req, connection }: ApolloServer["context"]) => {
         return {
-          [AUTHORIZATION_HEADER]: req
-            ? req.headers[AUTHORIZATION_HEADER]
-            : connection.context[AUTHORIZATION_HEADER],
+          [AUTHORIZATION_HEADER]: req ? req.headers[AUTHORIZATION_HEADER] : connection.context[AUTHORIZATION_HEADER],
         }
       },
     }),
@@ -93,7 +91,7 @@ export class AppModule implements NestModule {
       .exclude({ path: "graphql", method: RequestMethod.ALL }) // TODO: remove this line when include api key from the frontend
       .forRoutes({ path: "*", method: RequestMethod.ALL })
       .apply(AuthMiddleware)
-      .exclude({ path: "graphql", method: RequestMethod.ALL })
+      // .exclude({ path: "graphql", method: RequestMethod.ALL })
       .forRoutes({ path: "*", method: RequestMethod.ALL })
   }
 }

@@ -2,7 +2,7 @@ import { Inject } from "@nestjs/common"
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql"
 import { PubSub } from "graphql-subscriptions"
 import { AuthUser } from "src/auth/auth-user.decorator"
-import { Role } from "src/auth/role.decorator"
+import { Roles } from "src/auth/role.decorator"
 import {
   NEW_COOKED_ORDER,
   NEW_ORDER_UPDATE,
@@ -27,7 +27,7 @@ export class OrderResolver {
   ) {}
 
   @Mutation(() => CreateOrderOutput)
-  @Role(UserRole.Client)
+  @Roles(UserRole.Customer)
   async createOrder(
     @AuthUser() customer: User,
     @Args("input") createOrderInput: CreateOrderInput
@@ -67,13 +67,13 @@ export class OrderResolver {
       return order
     },
   })
-  @Role(UserRole.Owner)
+  @Roles(UserRole.Vendor)
   pendingOrders() {
     return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
   }
 
   @Subscription(() => Order)
-  @Role(UserRole.Delivery)
+  @Roles(UserRole.Driver)
   cookedOrders() {
     return this.pubSub.asyncIterator(NEW_COOKED_ORDER)
   }
@@ -99,7 +99,7 @@ export class OrderResolver {
   }
 
   @Mutation(() => TakeOrderOutput)
-  @Role(UserRole.Delivery)
+  @Roles(UserRole.Driver)
   takeOrder(
     @AuthUser() driver: User,
     @Args("input") takeOrderInput: TakeOrderInput

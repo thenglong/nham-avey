@@ -1,39 +1,19 @@
-import {
-  Args,
-  Int,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from "@nestjs/graphql"
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
 import { AuthUser } from "src/auth/auth-user.decorator"
-import { Role } from "src/auth/role.decorator"
+import { Roles } from "src/auth/role.decorator"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
 import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
 import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import {
-  CreateRestaurantInput,
-  CreateRestaurantOutput,
-} from "src/restaurants/dtos/create-restaurant.dto"
+import { CreateRestaurantInput, CreateRestaurantOutput } from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import {
-  DeleteRestaurantInput,
-  DeleteRestaurantOutput,
-} from "src/restaurants/dtos/delete-restaurant.dto"
+import { DeleteRestaurantInput, DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import {
-  EditRestaurantInput,
-  EditRestaurantOutput,
-} from "src/restaurants/dtos/edit.restaurant.dto"
+import { EditRestaurantInput, EditRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
 import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
-import {
-  SearchRestaurantArgs,
-  SearchRestaurantOutput,
-} from "src/restaurants/dtos/search-restaurant.dto"
+import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -45,44 +25,35 @@ export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Mutation(() => CreateRestaurantOutput)
-  @Role(UserRole.Owner)
+  @Roles(UserRole.Vendor)
   async createRestaurant(
     @AuthUser() authUser: User,
-    @Args("input") createRestaurantInput: CreateRestaurantInput
+    @Args("input") createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
     return await this.restaurantService.createRestaurant(authUser, createRestaurantInput)
   }
 
   @Query(() => MyRestaurantsOutput)
-  @Role(UserRole.Owner)
+  @Roles(UserRole.Vendor)
   myRestaurants(@AuthUser() owner: User): Promise<MyRestaurantsOutput> {
     return this.restaurantService.myRestaurants(owner)
   }
 
   @Query(() => MyRestaurantOutput)
-  @Role(UserRole.Owner)
-  myRestaurant(
-    @AuthUser() owner: User,
-    @Args("input") myRestaurantInput: MyRestaurantInput
-  ): Promise<MyRestaurantOutput> {
+  @Roles(UserRole.Vendor)
+  myRestaurant(@AuthUser() owner: User, @Args("input") myRestaurantInput: MyRestaurantInput): Promise<MyRestaurantOutput> {
     return this.restaurantService.myRestaurant(owner, myRestaurantInput)
   }
 
   @Mutation(() => EditRestaurantOutput)
-  @Role(UserRole.Owner)
-  editRestaurant(
-    @AuthUser() owner: User,
-    @Args("input") editRestaurantInput: EditRestaurantInput
-  ): Promise<EditRestaurantOutput> {
+  @Roles(UserRole.Vendor)
+  editRestaurant(@AuthUser() owner: User, @Args("input") editRestaurantInput: EditRestaurantInput): Promise<EditRestaurantOutput> {
     return this.restaurantService.editRestaurant(owner, editRestaurantInput)
   }
 
   @Mutation(() => DeleteRestaurantOutput)
-  @Role(UserRole.Owner)
-  deleteRestaurant(
-    @AuthUser() owner: User,
-    @Args("input") deleteRestaurantInput: DeleteRestaurantInput
-  ): Promise<DeleteRestaurantOutput> {
+  @Roles(UserRole.Vendor)
+  deleteRestaurant(@AuthUser() owner: User, @Args("input") deleteRestaurantInput: DeleteRestaurantInput): Promise<DeleteRestaurantOutput> {
     return this.restaurantService.deleteRestaurant(owner, deleteRestaurantInput)
   }
 
@@ -97,9 +68,7 @@ export class RestaurantResolver {
   }
 
   @Query(() => SearchRestaurantOutput)
-  searchRestaurant(
-    @Args() searchRestaurantArgs: SearchRestaurantArgs
-  ): Promise<SearchRestaurantOutput> {
+  searchRestaurant(@Args() searchRestaurantArgs: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
     return this.restaurantService.searchRestaurantByName(searchRestaurantArgs)
   }
 }
@@ -129,29 +98,20 @@ export class DishResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Mutation(() => CreateDishOutput)
-  @Role(UserRole.Owner)
-  createDish(
-    @AuthUser() owner: User,
-    @Args("input") createDishInput: CreateDishInput
-  ): Promise<CreateDishOutput> {
+  @Roles(UserRole.Vendor)
+  createDish(@AuthUser() owner: User, @Args("input") createDishInput: CreateDishInput): Promise<CreateDishOutput> {
     return this.restaurantService.createDish(owner, createDishInput)
   }
 
   @Mutation(() => EditDishOutput)
-  @Role(UserRole.Owner)
-  editDish(
-    @AuthUser() owner: User,
-    @Args("input") editDishInput: EditDishInput
-  ): Promise<EditDishOutput> {
+  @Roles(UserRole.Vendor)
+  editDish(@AuthUser() owner: User, @Args("input") editDishInput: EditDishInput): Promise<EditDishOutput> {
     return this.restaurantService.editDish(owner, editDishInput)
   }
 
   @Mutation(() => DeleteDishOutput)
-  @Role(UserRole.Owner)
-  deleteDish(
-    @AuthUser() owner: User,
-    @Args("input") deleteDishInput: DeleteDishInput
-  ): Promise<EditDishOutput> {
+  @Roles(UserRole.Vendor)
+  deleteDish(@AuthUser() owner: User, @Args("input") deleteDishInput: DeleteDishInput): Promise<EditDishOutput> {
     return this.restaurantService.deleteDish(owner, deleteDishInput)
   }
 }

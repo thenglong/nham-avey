@@ -120,21 +120,21 @@ export class OrderService {
     try {
       let orders: Order[] = []
 
-      if (user.role === UserRole.Client) {
+      if (user.role === UserRole.Customer) {
         orders = await this.orders.find({
           where: {
             customer: Equal(user),
             ...(status && { status }),
           },
         })
-      } else if (user.role === UserRole.Delivery) {
+      } else if (user.role === UserRole.Driver) {
         orders = await this.orders.find({
           where: {
             driver: Equal(user),
             ...(status && { status }),
           },
         })
-      } else if (user.role === UserRole.Owner) {
+      } else if (user.role === UserRole.Vendor) {
         const restaurants = await this.restaurants.find({
           where: {
             owner: Equal(user),
@@ -161,15 +161,15 @@ export class OrderService {
 
   canSeeOrder(user: User, order: Order): boolean {
     let canSee = true
-    if (user.role === UserRole.Client && order.customerId !== user.id) {
+    if (user.role === UserRole.Customer && order.customerId !== user.id) {
       canSee = false
     }
 
-    if (user.role === UserRole.Delivery && order.driverId !== user.id) {
+    if (user.role === UserRole.Driver && order.driverId !== user.id) {
       canSee = false
     }
 
-    if (user.role === UserRole.Owner && order.restaurant?.ownerId !== user.id) {
+    if (user.role === UserRole.Vendor && order.restaurant?.ownerId !== user.id) {
       canSee = false
     }
     return canSee
@@ -230,17 +230,17 @@ export class OrderService {
 
       let canEdit = true
 
-      if (user.role === UserRole.Client) {
+      if (user.role === UserRole.Customer) {
         canEdit = false
       }
 
-      if (user.role === UserRole.Owner) {
+      if (user.role === UserRole.Vendor) {
         if (status !== OrderStatus.Cooking && status !== OrderStatus.Cooked) {
           canEdit = false
         }
       }
 
-      if (user.role === UserRole.Delivery) {
+      if (user.role === UserRole.Driver) {
         if (status !== OrderStatus.PickedUp && status !== OrderStatus.Delivered) {
           canEdit = false
         }
@@ -260,7 +260,7 @@ export class OrderService {
 
       const newOrder = { ...order, status }
 
-      if (user.role === UserRole.Owner) {
+      if (user.role === UserRole.Vendor) {
         if (status === OrderStatus.Cooked) {
           await this.pubSub.publish(NEW_COOKED_ORDER, {
             cookedOrders: newOrder,

@@ -29,7 +29,7 @@ export class Order extends CoreEntity {
   customer?: User
 
   @RelationId((order: Order) => order.customer)
-  customerId: number
+  customerId: string
 
   @Field(type => User, { nullable: true })
   @ManyToOne(type => User, user => user.rides, {
@@ -40,7 +40,7 @@ export class Order extends CoreEntity {
   driver?: User
 
   @RelationId((order: Order) => order.driver)
-  driverId: number
+  driverId: string
 
   @Field(type => Restaurant, { nullable: true })
   @ManyToOne(type => Restaurant, restaurant => restaurant.orders, {
