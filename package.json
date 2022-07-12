@@ -150,6 +150,7 @@
   "overrides": {
     "react": "$react",
     "react-dom": "$react-dom",
-    "@nestjs/core": "$@nestjs/core"
+    "@nestjs/core": "$@nestjs/core",
+    "@nestjs/common": "$@nestjs/common"
   }
 }
