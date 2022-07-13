@@ -85,6 +85,14 @@ type CreatePaymentOutput {
   ok: Boolean!
 }
 
+input CreateRestaurantByAdminInput {
+  address: String!
+  categoryName: String!
+  coverImg: String!
+  name: String!
+  ownerId: String!
+}
+
 input CreateRestaurantInput {
   address: String!
   categoryName: String!
@@ -233,6 +241,7 @@ type Mutation {
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
   createRestaurant(input: CreateRestaurantInput!): CreateRestaurantOutput!
+  createRestaurantByAdmin(input: CreateRestaurantByAdminInput!): CreateRestaurantOutput!
   deleteDish(input: DeleteDishInput!): DeleteDishOutput!
   deleteRestaurant(input: DeleteRestaurantInput!): DeleteRestaurantOutput!
   editDish(input: EditDishInput!): EditDishOutput!

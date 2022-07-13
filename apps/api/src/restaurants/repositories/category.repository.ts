@@ -13,7 +13,7 @@ export class CategoryRepository extends Repository<Category> {
         this.create({
           slug: categorySlug,
           name: categoryName,
-        })
+        }),
       )
     }
     return category
