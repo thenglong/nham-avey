@@ -49,19 +49,19 @@ export class User extends CoreWithoutIdEntity {
   @IsBoolean()
   verified: boolean
 
-  @Field(type => [Restaurant])
+  @Field(type => [Restaurant], { nullable: true })
   @OneToMany(() => Restaurant, restaurant => restaurant.owner)
   restaurants: Restaurant[]
 
-  @Field(type => [Order])
+  @Field(type => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.customer)
   orders: Order[]
 
-  @Field(type => [Payment])
+  @Field(type => [Payment], { nullable: true })
   @OneToMany(() => Payment, payment => payment.user, { eager: true })
   payments: Payment[]
 
-  @Field(type => [Order])
+  @Field(type => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.driver)
   rides: Order[]
 }

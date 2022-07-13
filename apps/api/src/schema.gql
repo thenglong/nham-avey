@@ -31,16 +31,9 @@ type CategoryOutput {
 input CreateAccountInput {
   email: String!
   password: String!
-  roles: [UserRole!]!
 }
 
 type CreateAccountOutput {
-  error: String
-  ok: Boolean!
-  user: User
-}
-
-type CreateAdminOutput {
   error: String
   ok: Boolean!
   user: User
@@ -103,7 +96,7 @@ input CreateRestaurantInput {
 type CreateRestaurantOutput {
   error: String
   ok: Boolean!
-  restaurantId: Int!
+  restaurant: Restaurant
 }
 
 """
@@ -236,7 +229,7 @@ type GetPaymentsOutput {
 }
 
 type Mutation {
-  createAdmin(email: String!, password: String!): CreateAdminOutput!
+  createAdmin(input: CreateAccountInput!): CreateAccountOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
@@ -248,7 +241,8 @@ type Mutation {
   editOrder(input: EditOrderInput!): EditOrderOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
-  signUp(input: CreateAccountInput!): CreateAccountOutput!
+  signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!
+  signUpVendor(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
 }
 
@@ -342,9 +336,9 @@ type Restaurant {
   createdAt: DateTime!
   id: Float!
   isPromoted: Boolean!
-  menu: [Dish!]!
+  menu: [Dish!]
   name: String!
-  orders: [Order!]!
+  orders: [Order!]
   owner: User!
   promotedUntil: DateTime
   updatedAt: DateTime!
@@ -372,6 +366,18 @@ type SearchRestaurantOutput {
   totalResults: Int
 }
 
+input SignUpAccountInput {
+  email: String!
+  password: String!
+}
+
+type SignUpAccountOutput {
+  error: String
+  ok: Boolean!
+  signInToken: String
+  user: User
+}
+
 type Subscription {
   cookedOrders: Order!
   orderUpdates(input: OrderUpdatesInput!): Order!
@@ -391,10 +397,10 @@ type User {
   createdAt: DateTime!
   email: String!
   id: String!
-  orders: [Order!]!
-  payments: [Payment!]!
-  restaurants: [Restaurant!]!
-  rides: [Order!]!
+  orders: [Order!]
+  payments: [Payment!]
+  restaurants: [Restaurant!]
+  rides: [Order!]
   roles: [UserRole!]!
   updatedAt: DateTime!
   verified: Boolean!

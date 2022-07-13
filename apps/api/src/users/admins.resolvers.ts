@@ -1,6 +1,6 @@
 import { Args, Mutation, Resolver } from "@nestjs/graphql"
 import { Roles } from "src/auth/role.decorator"
-import { CreateAdminArgs, CreateAdminOutput } from "src/users/dtos/create-admin.dto"
+import { CreateAccountInput, CreateAccountOutput } from "src/users/dtos/create-account.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
 
@@ -9,8 +9,8 @@ export class AdminsResolver {
   constructor(private readonly UserService: UserService) {}
 
   @Roles(UserRole.Admin)
-  @Mutation(() => CreateAdminOutput)
-  async createAdmin(@Args() createAccountInput: CreateAdminArgs): Promise<CreateAdminOutput> {
+  @Mutation(() => CreateAccountOutput)
+  async createAdmin(@Args("input") createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
     return this.UserService.createAdmin(createAccountInput)
   }
 }

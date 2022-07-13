@@ -37,17 +37,18 @@ export class Restaurant extends CoreEntity {
   @Field(() => User)
   @ManyToOne(() => User, user => user.restaurants, {
     onDelete: "CASCADE",
+    nullable: false,
   })
   owner: User
 
   @RelationId((restaurant: Restaurant) => restaurant.owner)
   ownerId: string
 
-  @Field(() => [Order])
+  @Field(() => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.restaurant)
   orders: Order[]
 
-  @Field(() => [Dish])
+  @Field(() => [Dish], { nullable: true })
   @OneToMany(() => Dish, dish => dish.restaurant)
   menu: Dish[]
 

@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Inject, Injectable } from "@nestjs/common"
+import { CanActivate, ExecutionContext, Inject, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { GqlExecutionContext } from "@nestjs/graphql"
 import { AuthMiddleware } from "src/auth/auth.middleware"
@@ -26,9 +26,13 @@ export class GraphqlAuthGuard implements CanActivate {
     }
 
     const accessToken = AuthMiddleware.validateAndGetToken(authorization as string)
-    const decodedIdToken = await this.firebaseAuthService.verifyIdToken(accessToken)
-    gqlContext["user"] = decodedIdToken
-
-    return decodedIdToken?.roles?.some((role: UserRole) => roles.includes(role)) || false
+    try {
+      const decodedIdToken = await this.firebaseAuthService.verifyIdToken(accessToken)
+      gqlContext["user"] = decodedIdToken
+      return decodedIdToken?.roles?.some((role: UserRole) => roles.includes(role)) || false
+    } catch (err: any) {
+      if (err?.code === "auth/id-token-expired") throw new UnauthorizedException(err, err?.message)
+      throw new InternalServerErrorException(err, (err as Error)?.message)
+    }
   }
 }

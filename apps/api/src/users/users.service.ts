@@ -1,9 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { UserRecord, CreateRequest } from "firebase-admin/auth"
+import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
-import { CreateAccountInput, CreateAccountOutput } from "src/users/dtos/create-account.dto"
-import { CreateAdminArgs, CreateAdminOutput } from "src/users/dtos/create-admin.dto"
+import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
 import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
@@ -23,34 +22,55 @@ export class UserService {
     return firebaseUser
   }
 
-  private async checkIfUserExist(email: string): Promise<boolean> {
+  private async checkIfUserExistByEmail(email: string): Promise<boolean> {
     const user = await this.userRepo.findOne({ where: { email } })
     return user !== null
   }
 
-  private async createUser(id: string, input: CreateAccountInput | CreateAdminArgs): Promise<User> {
-    const userEntity = this.userRepo.create({ id, ...input, roles: [UserRole.Admin] })
+  private async createUser(id: string, input: CreateAccountInput, roles: UserRole[]): Promise<User> {
+    const userEntity = this.userRepo.create({ id, ...input, roles })
     return this.userRepo.save(userEntity)
   }
 
-  async createCustomer(createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
-    const exist = await this.checkIfUserExist(createAccountInput.email)
+  async findUserById(id: string) {
+    return this.userRepo.findOneBy({ id })
+  }
+
+  async signUpCustomer(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const exist = await this.checkIfUserExistByEmail(signUpAccountInput.email)
     if (exist) {
       return {
         ok: false,
-        error: `[App] User with email ${createAccountInput.email} already exist!`,
+        error: `[App] User with email ${signUpAccountInput.email} already exist!`,
       }
     }
 
-    const firebaseUser = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Customer] })
-    const user = await this.createUser(firebaseUser.uid, createAccountInput)
+    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Customer] })
+    const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
+    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Customer])
 
-    return { ok: true, user }
+    return { ok: true, user, signInToken }
   }
 
-  async createAdmin(createAdminArgs: CreateAdminArgs): Promise<CreateAdminOutput> {
+  async signUpVendor(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const exist = await this.checkIfUserExistByEmail(signUpAccountInput.email)
+    if (exist) {
+      return {
+        ok: false,
+        error: `[App] User with email ${signUpAccountInput.email} already exist!`,
+      }
+    }
+
+    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Vendor] })
+    const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
+    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Vendor])
+
+    return { ok: true, user, signInToken }
+  }
+
+  async createAdmin(createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
     try {
-      const exist = await this.checkIfUserExist(createAdminArgs.email)
+      const exist = await this.checkIfUserExistByEmail(createAccountInput.email)
       if (exist) {
         return {
           ok: false,
@@ -58,14 +78,13 @@ export class UserService {
         }
       }
 
-      const firebaseUser = await this.createFirebaseUser(createAdminArgs, { roles: [UserRole.Admin] })
-      const user = await this.createUser(firebaseUser.uid, createAdminArgs)
+      const firebaseUser = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Admin] })
+      const user = await this.createUser(firebaseUser.uid, createAccountInput, [UserRole.Admin])
 
       // TODO: send verify email here
 
       return { ok: true, user }
     } catch (err) {
-      console.log(err)
       return {
         ok: false,
         error: "[App] Couldn't create account",

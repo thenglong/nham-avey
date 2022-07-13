@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
 import { DecodedIdToken } from "firebase-admin/auth"
-import { AuthUser } from "src/auth/auth-user.decorator"
+import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
 import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
@@ -28,7 +28,7 @@ export class RestaurantResolver {
   @Mutation(() => CreateRestaurantOutput)
   @Roles(UserRole.Vendor)
   async createRestaurant(
-    @AuthUser() owner: DecodedIdToken,
+    @GraphqlAuthUser() owner: DecodedIdToken,
     @Args("input") createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
     return await this.restaurantService.createRestaurant(owner, createRestaurantInput)
@@ -37,7 +37,7 @@ export class RestaurantResolver {
   @Mutation(() => CreateRestaurantOutput)
   @Roles(UserRole.Admin)
   async createRestaurantByAdmin(
-    @AuthUser() admin: DecodedIdToken,
+    @GraphqlAuthUser() admin: DecodedIdToken,
     @Args("input") createRestaurantByAdminInput: CreateRestaurantByAdminInput,
   ): Promise<CreateRestaurantOutput> {
     return await this.restaurantService.createRestaurantByAdmin(admin, createRestaurantByAdminInput)
@@ -45,20 +45,20 @@ export class RestaurantResolver {
 
   @Query(() => MyRestaurantsOutput)
   @Roles(UserRole.Vendor)
-  myRestaurants(@AuthUser() owner: DecodedIdToken): Promise<MyRestaurantsOutput> {
+  myRestaurants(@GraphqlAuthUser() owner: DecodedIdToken): Promise<MyRestaurantsOutput> {
     return this.restaurantService.myRestaurants(owner)
   }
 
   @Query(() => MyRestaurantOutput)
   @Roles(UserRole.Vendor)
-  myRestaurant(@AuthUser() owner: DecodedIdToken, @Args("input") myRestaurantInput: MyRestaurantInput): Promise<MyRestaurantOutput> {
+  myRestaurant(@GraphqlAuthUser() owner: DecodedIdToken, @Args("input") myRestaurantInput: MyRestaurantInput): Promise<MyRestaurantOutput> {
     return this.restaurantService.myRestaurant(owner, myRestaurantInput)
   }
 
   @Mutation(() => EditRestaurantOutput)
   @Roles(UserRole.Vendor)
   editRestaurant(
-    @AuthUser() owner: DecodedIdToken,
+    @GraphqlAuthUser() owner: DecodedIdToken,
     @Args("input") editRestaurantInput: EditRestaurantInput,
   ): Promise<EditRestaurantOutput> {
     return this.restaurantService.updateRestaurant(owner, editRestaurantInput)
@@ -67,7 +67,7 @@ export class RestaurantResolver {
   @Mutation(() => DeleteRestaurantOutput)
   @Roles(UserRole.Vendor)
   deleteRestaurant(
-    @AuthUser() owner: DecodedIdToken,
+    @GraphqlAuthUser() owner: DecodedIdToken,
     @Args("input") deleteRestaurantInput: DeleteRestaurantInput,
   ): Promise<DeleteRestaurantOutput> {
     return this.restaurantService.deleteRestaurant(owner, deleteRestaurantInput)
@@ -115,19 +115,19 @@ export class DishResolver {
 
   @Mutation(() => CreateDishOutput)
   @Roles(UserRole.Vendor)
-  createDish(@AuthUser() owner: DecodedIdToken, @Args("input") createDishInput: CreateDishInput): Promise<CreateDishOutput> {
+  createDish(@GraphqlAuthUser() owner: DecodedIdToken, @Args("input") createDishInput: CreateDishInput): Promise<CreateDishOutput> {
     return this.restaurantService.createDish(owner, createDishInput)
   }
 
   @Mutation(() => EditDishOutput)
   @Roles(UserRole.Vendor)
-  editDish(@AuthUser() owner: DecodedIdToken, @Args("input") editDishInput: EditDishInput): Promise<EditDishOutput> {
+  editDish(@GraphqlAuthUser() owner: DecodedIdToken, @Args("input") editDishInput: EditDishInput): Promise<EditDishOutput> {
     return this.restaurantService.editDish(owner, editDishInput)
   }
 
   @Mutation(() => DeleteDishOutput)
   @Roles(UserRole.Vendor)
-  deleteDish(@AuthUser() owner: DecodedIdToken, @Args("input") deleteDishInput: DeleteDishInput): Promise<EditDishOutput> {
+  deleteDish(@GraphqlAuthUser() owner: DecodedIdToken, @Args("input") deleteDishInput: DeleteDishInput): Promise<EditDishOutput> {
     return this.restaurantService.deleteDish(owner, deleteDishInput)
   }
 }

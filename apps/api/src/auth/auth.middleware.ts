@@ -1,4 +1,4 @@
-import { Inject, Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common"
+import { Inject, Injectable, InternalServerErrorException, NestMiddleware, UnauthorizedException } from "@nestjs/common"
 import { NextFunction, Request, Response } from "express"
 import { DecodedIdToken } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
@@ -30,9 +30,15 @@ export class AuthMiddleware implements NestMiddleware {
     if (!authorization) {
       return next()
     }
-    const accessToken = AuthMiddleware.validateAndGetToken(authorization as string)
-    const decodedIdToken = await this.firebaseAuthService.auth.verifyIdToken(accessToken)
-    req.user = decodedIdToken
-    next()
+
+    try {
+      const accessToken = AuthMiddleware.validateAndGetToken(authorization as string)
+      const decodedIdToken = await this.firebaseAuthService.auth.verifyIdToken(accessToken)
+      req.user = decodedIdToken
+      next()
+    } catch (err: any) {
+      if (err?.code === "auth/id-token-expired") throw new UnauthorizedException(err, err?.message)
+      throw new InternalServerErrorException(err, (err as Error)?.message)
+    }
   }
 }

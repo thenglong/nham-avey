@@ -17,9 +17,8 @@ import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dt
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { CategoryRepository } from "src/restaurants/repositories/category.repository"
-import { User } from "src/users/entities/user.entity"
-import { ILike, Repository, Equal } from "typeorm"
+import { UserService } from "src/users/users.service"
+import { Equal, ILike, Repository } from "typeorm"
 
 @Injectable()
 export class RestaurantService {
@@ -28,19 +27,40 @@ export class RestaurantService {
     private readonly restaurantRepo: Repository<Restaurant>,
     @InjectRepository(Dish)
     private readonly dishRepo: Repository<Dish>,
-    private readonly categoryRepo: CategoryRepository,
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>,
+    private readonly userService: UserService,
   ) {}
+
+  private async getOrCreateCategory(name: string): Promise<Category> {
+    const categoryName = name.trim().toLowerCase()
+    const categorySlug = categoryName.replace(/ /g, "-")
+    let category = await this.categoryRepo.findOneBy({ slug: categorySlug })
+    if (!category) {
+      category = await this.categoryRepo.save(
+        this.categoryRepo.create({
+          slug: categorySlug,
+          name: categoryName,
+        }),
+      )
+    }
+    return category
+  }
 
   async createRestaurant(owner: DecodedIdToken, createRestaurantInput: CreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
-      const newRestaurant = this.restaurantRepo.create(createRestaurantInput)
-      newRestaurant.ownerId = owner.uid
-      newRestaurant.category = await this.categoryRepo.getOrCreate(createRestaurantInput.categoryName)
+      const ownerEntity = await this.userService.findUserById(owner.uid)
+      if (!ownerEntity) {
+        throw new Error(`Owner with id ${owner.uid} not found`)
+      }
+      const restaurant = this.restaurantRepo.create(createRestaurantInput)
+      restaurant.owner = ownerEntity
+      restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
 
-      await this.restaurantRepo.save(newRestaurant)
+      await this.restaurantRepo.save(restaurant)
       return {
         ok: true,
-        restaurantId: newRestaurant.id,
+        restaurant,
       }
     } catch {
       return {
@@ -55,18 +75,23 @@ export class RestaurantService {
     createRestaurantInput: CreateRestaurantByAdminInput,
   ): Promise<CreateRestaurantOutput> {
     try {
-      const newRestaurant = this.restaurantRepo.create(createRestaurantInput)
-      newRestaurant.category = await this.categoryRepo.getOrCreate(createRestaurantInput.categoryName)
+      const ownerEntity = await this.userService.findUserById(createRestaurantInput.ownerId)
+      if (!ownerEntity) {
+        throw new Error(`Owner with id ${createRestaurantInput.ownerId} not found`)
+      }
 
-      await this.restaurantRepo.save(newRestaurant)
+      const restaurant = this.restaurantRepo.create(createRestaurantInput)
+      restaurant.owner = ownerEntity
+      restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
+      await this.restaurantRepo.save(restaurant)
       return {
         ok: true,
-        restaurantId: newRestaurant.id,
+        restaurant,
       }
-    } catch {
+    } catch (err) {
       return {
         ok: false,
-        error: "[App] Could not create restaurant",
+        error: `[App] Could not create restaurant`,
       }
     }
   }
@@ -92,7 +117,7 @@ export class RestaurantService {
 
       let category: Category | null = null
       if (editRestaurantInput.categoryName) {
-        category = await this.categoryRepo.getOrCreate(editRestaurantInput.categoryName)
+        category = await this.getOrCreateCategory(editRestaurantInput.categoryName)
       }
 
       await this.restaurantRepo.save([
