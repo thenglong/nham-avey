@@ -17,13 +17,10 @@ export class UserService {
     private readonly firebaseAuthService: FirebaseAuthenticationService,
   ) {}
 
-  private async createFirebaseUser(createRequest: CreateRequest, customClaims: object): Promise<{ token: string; user: UserRecord }> {
+  private async createFirebaseUser(createRequest: CreateRequest, customClaims: object): Promise<UserRecord> {
     const firebaseUser = await this.firebaseAuthService.createUser(createRequest)
-    const token = await this.firebaseAuthService.createCustomToken(firebaseUser.uid, customClaims)
-    return {
-      token,
-      user: firebaseUser,
-    }
+    await this.firebaseAuthService.setCustomUserClaims(firebaseUser.uid, customClaims)
+    return firebaseUser
   }
 
   private async checkIfUserExist(email: string): Promise<boolean> {
@@ -45,10 +42,10 @@ export class UserService {
       }
     }
 
-    const { user: firebaseUser, token } = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Customer] })
+    const firebaseUser = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Customer] })
     const user = await this.createUser(firebaseUser.uid, createAccountInput)
 
-    return { ok: true, user, token }
+    return { ok: true, user }
   }
 
   async createAdmin(createAdminArgs: CreateAdminArgs): Promise<CreateAdminOutput> {
@@ -61,12 +58,12 @@ export class UserService {
         }
       }
 
-      const { token, user: firebaseUser } = await this.createFirebaseUser(createAdminArgs, { roles: [UserRole.Admin] })
+      const firebaseUser = await this.createFirebaseUser(createAdminArgs, { roles: [UserRole.Admin] })
       const user = await this.createUser(firebaseUser.uid, createAdminArgs)
 
       // TODO: send verify email here
 
-      return { ok: true, user, token }
+      return { ok: true, user }
     } catch (err) {
       console.log(err)
       return {

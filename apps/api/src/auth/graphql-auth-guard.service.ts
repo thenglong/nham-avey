@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
+import { CanActivate, ExecutionContext, Inject, Injectable } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { GqlExecutionContext } from "@nestjs/graphql"
 import { AuthMiddleware } from "src/auth/auth.middleware"
@@ -8,6 +8,7 @@ import { UserRole } from "src/users/entities/user.entity"
 
 @Injectable()
 export class GraphqlAuthGuard implements CanActivate {
+  @Inject(FirebaseAuthenticationService)
   private readonly firebaseAuthService: FirebaseAuthenticationService
 
   constructor(private readonly reflector: Reflector) {}

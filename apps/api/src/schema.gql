@@ -37,14 +37,12 @@ input CreateAccountInput {
 type CreateAccountOutput {
   error: String
   ok: Boolean!
-  token: String
-  user: Boolean
+  user: User
 }
 
 type CreateAdminOutput {
   error: String
   ok: Boolean!
-  token: String
   user: User
 }
 

@@ -20,7 +20,4 @@ export class CreateAdminArgs {
 export class CreateAdminOutput extends CoreOutput {
   @Field(type => User, { nullable: true })
   user?: User
-
-  @Field(type => String, { nullable: true })
-  token?: string
 }
