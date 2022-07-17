@@ -7,6 +7,7 @@ import { Payment } from "src/payments/entities/payment.entity"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { CategoryRepository } from "src/restaurants/repositories/category.repository"
 import { User } from "src/users/entities/user.entity"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 

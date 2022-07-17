@@ -98,7 +98,7 @@ export class CategoryResolver {
     return this.restaurantService.countRestaurants(category)
   }
 
-  @Query(() => AllCategoriesOutput)
+  @Query(returns => AllCategoriesOutput)
   allCategories(): Promise<AllCategoriesOutput> {
     return this.restaurantService.allCategories()
   }
