@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import clsx from "clsx"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -10,13 +11,11 @@ import {
   useCreateAccountMutation,
   UserRole,
 } from "../__generated__/types.react-apollo"
-import { Button } from "../components/button"
 import { FormError } from "../components/form-error"
 
 interface CreateAccountForm {
   email: string
   password: string
-  role: UserRole
 }
 
 const schema = yup.object().shape({
@@ -33,9 +32,6 @@ const CreateAccountPage = () => {
   } = useForm<CreateAccountForm>({
     mode: "onChange",
     resolver: yupResolver(schema),
-    defaultValues: {
-      role: UserRole.Client,
-    },
   })
 
   const router = useRouter()
@@ -56,10 +52,10 @@ const CreateAccountPage = () => {
 
   const onSubmit = () => {
     if (!loading) {
-      const { email, password, role } = getValues()
+      const { email, password } = getValues()
       createAccountMutation({
         variables: {
-          createAccountInput: { email, password, role },
+          createAccountInput: { email, password, role: UserRole.Client },
         },
       })
     }
@@ -74,48 +70,53 @@ const CreateAccountPage = () => {
           Let&lsquo;s get started
         </h4>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
-          <input
-            {...register("email")}
-            type="email"
-            placeholder="Email"
-            className="input "
-          />
+          <div className="form-control w-full">
+            <label htmlFor="email" className="label">
+              <span className="label-text">Your Email Address</span>
+            </label>
+            <input
+              id="email"
+              {...register("email")}
+              type="email"
+              className="input input-primary w-full"
+            />
+            <label htmlFor="email" className="label">
+              <span className="label-text-alt text-error">{errors.email?.message}</span>
+            </label>
+          </div>
 
-          {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
+          <div className="form-control w-full">
+            <label htmlFor="password" className="label">
+              <span className="label-text">Your Password</span>
+            </label>
+            <input
+              {...register("password")}
+              type="password"
+              id="password"
+              className="input input-primary w-full"
+            />
+            <label htmlFor="password" className="label">
+              <span className="label-text-alt text-error">
+                {errors.password?.message}
+              </span>
+            </label>
+          </div>
 
-          <input
-            {...register("password")}
-            type="password"
-            placeholder="Password"
-            className="input"
-          />
-
-          {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message} />
-          )}
-
-          <select
-            className="input"
-            {...register("role", {
-              required: true,
+          <button
+            disabled={isValid}
+            className={clsx("btn btn-primary", {
+              loading,
             })}
           >
-            {Object.keys(UserRole).map((role, index) => (
-              <option key={index}>{role}</option>
-            ))}
-          </select>
-
-          <Button canClick={isValid} loading={loading} actionText="Create Account" />
+            Create Account
+          </button>
           {createAccountMutationResult?.createAccount.error && (
             <FormError errorMessage={createAccountMutationResult.createAccount.error} />
           )}
         </form>
-        <div>
-          Already have an account?{" "}
-          <Link href="/login" className="text-lime-600 hover:underline">
-            Log in now
-          </Link>
-        </div>
+        <Link href="/login">
+          <a className="link">Log In Instead</a>
+        </Link>
       </div>
     </div>
   )

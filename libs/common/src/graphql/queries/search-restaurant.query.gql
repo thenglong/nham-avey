@@ -1,0 +1,11 @@
+query searchRestaurant($page: Int, $query: String) {
+  searchRestaurant(page: $page, query: $query) {
+    ok
+    error
+    totalPages
+    totalResults
+    restaurants {
+      ...RestaurantParts
+    }
+  }
+}

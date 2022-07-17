@@ -1,17 +1,28 @@
 import { Field, ObjectType } from "@nestjs/graphql"
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { Exclude } from "class-transformer"
+import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 
 @ObjectType()
-export class CoreEntity {
-  @PrimaryGeneratedColumn()
-  @Field(() => Number)
-  id: number
-
+export abstract class CoreWithoutIdEntity {
   @CreateDateColumn()
   @Field(() => Date)
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date
 
   @UpdateDateColumn()
   @Field(() => Date)
+  @UpdateDateColumn({ type: "timestamptz" })
+  @Exclude()
   updatedAt: Date
+
+  @DeleteDateColumn({ type: "timestamptz" })
+  @Exclude()
+  deletedAt: Date
+}
+
+@ObjectType()
+export abstract class CoreEntity extends CoreWithoutIdEntity {
+  @PrimaryGeneratedColumn()
+  @Field(() => Number)
+  id: number
 }

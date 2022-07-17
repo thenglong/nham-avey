@@ -9,7 +9,7 @@ type AllCategoriesOutput {
 }
 
 type Category {
-  coverImg: String
+  coverImageUrl: String
   createdAt: DateTime!
   id: Float!
   name: String!
@@ -17,11 +17,6 @@ type Category {
   restaurants: [Restaurant!]
   slug: String!
   updatedAt: DateTime!
-}
-
-input CategoryInput {
-  page: Int = 1
-  slug: String!
 }
 
 type CategoryOutput {
@@ -36,12 +31,12 @@ type CategoryOutput {
 input CreateAccountInput {
   email: String!
   password: String!
-  role: UserRole!
 }
 
 type CreateAccountOutput {
   error: String
   ok: Boolean!
+  user: User
 }
 
 input CreateDishInput {
@@ -83,6 +78,14 @@ type CreatePaymentOutput {
   ok: Boolean!
 }
 
+input CreateRestaurantByAdminInput {
+  address: String!
+  categoryName: String!
+  coverImg: String!
+  name: String!
+  ownerId: String!
+}
+
 input CreateRestaurantInput {
   address: String!
   categoryName: String!
@@ -93,7 +96,7 @@ input CreateRestaurantInput {
 type CreateRestaurantOutput {
   error: String
   ok: Boolean!
-  restaurantId: Int!
+  restaurant: Restaurant
 }
 
 """
@@ -178,7 +181,7 @@ type EditOrderOutput {
 
 input EditProfileInput {
   email: String
-  password: String
+  password: String!
 }
 
 type EditProfileOutput {
@@ -225,32 +228,22 @@ type GetPaymentsOutput {
   payments: [Payment!]
 }
 
-input LoginInput {
-  email: String!
-  password: String!
-}
-
-type LoginOutput {
-  error: String
-  ok: Boolean!
-  token: String
-}
-
 type Mutation {
-  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createAdmin(input: CreateAccountInput!): CreateAccountOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
   createRestaurant(input: CreateRestaurantInput!): CreateRestaurantOutput!
+  createRestaurantByAdmin(input: CreateRestaurantByAdminInput!): CreateRestaurantOutput!
   deleteDish(input: DeleteDishInput!): DeleteDishOutput!
   deleteRestaurant(input: DeleteRestaurantInput!): DeleteRestaurantOutput!
   editDish(input: EditDishInput!): EditDishOutput!
   editOrder(input: EditOrderInput!): EditOrderOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   editRestaurant(input: EditRestaurantInput!): EditRestaurantOutput!
-  login(input: LoginInput!): LoginOutput!
+  signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!
+  signUpVendor(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
-  verifyEmail(input: VerifyEmailInput!): VerifyEmailOutput!
 }
 
 input MyRestaurantInput {
@@ -323,17 +316,16 @@ type Payment {
 
 type Query {
   allCategories: AllCategoriesOutput!
-  category(input: CategoryInput!): CategoryOutput!
+  category(page: Int = 1, slug: String!): CategoryOutput!
+  getMe: User!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  hi: Boolean!
-  me: User!
   myRestaurant(input: MyRestaurantInput!): MyRestaurantOutput!
   myRestaurants: MyRestaurantsOutput!
-  restaurant(input: RestaurantInput!): RestaurantOutput!
-  restaurants(input: RestaurantsInput!): RestaurantsOutput!
-  searchRestaurant(input: SearchRestaurantInput!): SearchRestaurantOutput!
+  restaurant(restaurantId: Int!): RestaurantOutput!
+  restaurants(page: Int = 1): RestaurantsOutput!
+  searchRestaurant(page: Int = 1, query: String = ""): SearchRestaurantOutput!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
@@ -344,26 +336,18 @@ type Restaurant {
   createdAt: DateTime!
   id: Float!
   isPromoted: Boolean!
-  menu: [Dish!]!
+  menu: [Dish!]
   name: String!
-  orders: [Order!]!
+  orders: [Order!]
   owner: User!
   promotedUntil: DateTime
   updatedAt: DateTime!
-}
-
-input RestaurantInput {
-  restaurantId: Int!
 }
 
 type RestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
-}
-
-input RestaurantsInput {
-  page: Int = 1
 }
 
 type RestaurantsOutput {
@@ -374,17 +358,24 @@ type RestaurantsOutput {
   totalResults: Int
 }
 
-input SearchRestaurantInput {
-  page: Int = 1
-  query: String!
-}
-
 type SearchRestaurantOutput {
   error: String
   ok: Boolean!
   restaurants: [Restaurant!]
   totalPages: Int
   totalResults: Int
+}
+
+input SignUpAccountInput {
+  email: String!
+  password: String!
+}
+
+type SignUpAccountOutput {
+  error: String
+  ok: Boolean!
+  signInToken: String
+  user: User
 }
 
 type Subscription {
@@ -405,13 +396,12 @@ type TakeOrderOutput {
 type User {
   createdAt: DateTime!
   email: String!
-  id: Float!
-  orders: [Order!]!
-  password: String!
-  payments: [Payment!]!
-  restaurants: [Restaurant!]!
-  rides: [Order!]!
-  role: UserRole!
+  id: String!
+  orders: [Order!]
+  payments: [Payment!]
+  restaurants: [Restaurant!]
+  rides: [Order!]
+  roles: [UserRole!]!
   updatedAt: DateTime!
   verified: Boolean!
 }
@@ -423,16 +413,8 @@ type UserProfileOutput {
 }
 
 enum UserRole {
-  Client
-  Delivery
-  Owner
-}
-
-input VerifyEmailInput {
-  code: String!
-}
-
-type VerifyEmailOutput {
-  error: String
-  ok: Boolean!
+  Admin
+  Customer
+  Driver
+  Vendor
 }

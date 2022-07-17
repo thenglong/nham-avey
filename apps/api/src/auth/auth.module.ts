@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common"
 import { APP_GUARD } from "@nestjs/core"
-import { AuthGuard } from "src/auth/auth.guard"
+import { GraphqlAuthGuard } from "src/auth/graphql-auth-guard.service"
 import { UsersModule } from "src/users/users.module"
 
 @Module({
@@ -8,7 +8,7 @@ import { UsersModule } from "src/users/users.module"
   providers: [
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: GraphqlAuthGuard,
     },
   ],
 })

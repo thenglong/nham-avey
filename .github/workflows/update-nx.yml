@@ -30,8 +30,10 @@ jobs:
         run: |
           npm i
           npx nx migrate latest
+          npx prettier --write package.json
           npm i
           npm update
+
 
       - name: Create Commit 💌
         run: |

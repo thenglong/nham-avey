@@ -9,7 +9,7 @@ import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { CategoryRepository } from "src/restaurants/repositories/category.repository"
 import { User } from "src/users/entities/user.entity"
-import { Verification } from "src/users/entities/verification.entity"
+import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
@@ -23,18 +23,10 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       database: this.config.get<string>("db.name"),
       username: this.config.get<string>("db.username"),
       password: this.config.get<string>("db.password"),
-      entities: [
-        User,
-        Verification,
-        Restaurant,
-        Category,
-        Dish,
-        Order,
-        OrderItem,
-        Payment,
-      ],
+      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment],
       migrations: [],
       migrationsTableName: "typeorm_migrations",
+      namingStrategy: new SnakeNamingStrategy(),
       logger: "advanced-console",
       logging: this.config.get<boolean>("db.logging"),
       synchronize: false,

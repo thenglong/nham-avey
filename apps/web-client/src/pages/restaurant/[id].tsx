@@ -8,9 +8,9 @@ import {
   CreateOrderMutation,
   useCreateOrderMutation,
   useRestaurantQuery,
-} from "../../__generated__/types.react-apollo"
-import { Dish } from "../../components/dish"
-import { DishOption } from "../../components/dish-option"
+} from "src/__generated__/types.react-apollo"
+import { Dish } from "src/components/dish"
+import { DishOption } from "src/components/dish-option"
 
 const RestaurantPage = () => {
   const { query } = useRouter()
@@ -18,7 +18,7 @@ const RestaurantPage = () => {
   const { data } = useRestaurantQuery({
     variables: {
       input: {
-        restaurantId: +id,
+        restaurantId: +(id as string),
       },
     },
   })
@@ -57,7 +57,7 @@ const RestaurantPage = () => {
       if (!hasOption) {
         removeFromOrder(dishId)
         setOrderItems(current => [
-          { dishId, options: [{ name: optionName }, ...oldItem.options] },
+          { dishId, options: [{ name: optionName }, ...(oldItem?.options || [])] },
           ...current,
         ])
       }
@@ -124,7 +124,7 @@ const RestaurantPage = () => {
       createOrderMutation({
         variables: {
           input: {
-            restaurantId: +id,
+            restaurantId: +(id as string),
             items: orderItems,
           },
         },

@@ -1,17 +1,16 @@
-import { InternalServerErrorException } from "@nestjs/common"
 import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql"
-import * as bcrypt from "bcrypt"
-import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator"
-import { CoreEntity } from "src/common/entities/core.entity"
+import { IsBoolean, IsEmail, IsEnum } from "class-validator"
+import { CoreWithoutIdEntity } from "src/common/entities/core.entity"
 import { Order } from "src/orders/entities/order.entity"
 import { Payment } from "src/payments/entities/payment.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm"
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
 
 export enum UserRole {
-  Client = "Client",
-  Owner = "Owner",
-  Delivery = "Delivery",
+  Admin = "Admin",
+  Customer = "Customer",
+  Vendor = "Vendor",
+  Driver = "Driver",
 }
 
 registerEnumType(UserRole, { name: "UserRole" })
@@ -19,64 +18,50 @@ registerEnumType(UserRole, { name: "UserRole" })
 @InputType("UserInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
-export class User extends CoreEntity {
-  @Column({ unique: true })
+export class User extends CoreWithoutIdEntity {
+  @PrimaryColumn()
   @Field(() => String)
+  id: string
+
+  @Column({ unique: true })
+  @Field(type => String)
   @IsEmail()
   email: string
-
-  @Column({ select: false })
-  @Field(() => String)
-  @IsString()
-  password: string
 
   @Column({
     type: "enum",
     enum: UserRole,
   })
-  @Field(() => UserRole)
-  @IsEnum(UserRole)
-  role: UserRole
+  @Field(type => [UserRole])
+  @IsEnum(UserRole, { each: true })
+  @Column({
+    name: "roles",
+    enumName: "user_roles_enum",
+    type: "enum",
+    enum: UserRole,
+    array: true,
+    default: [UserRole.Customer],
+  })
+  roles: UserRole[]
 
   @Column({ default: false })
-  @Field(() => Boolean)
+  @Field(type => Boolean)
   @IsBoolean()
   verified: boolean
 
-  @Field(() => [Restaurant])
+  @Field(type => [Restaurant], { nullable: true })
   @OneToMany(() => Restaurant, restaurant => restaurant.owner)
   restaurants: Restaurant[]
 
-  @Field(() => [Order])
+  @Field(type => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.customer)
   orders: Order[]
 
-  @Field(() => [Payment])
+  @Field(type => [Payment], { nullable: true })
   @OneToMany(() => Payment, payment => payment.user, { eager: true })
   payments: Payment[]
 
-  @Field(() => [Order])
+  @Field(type => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.driver)
   rides: Order[]
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword(): Promise<void> {
-    if (this.password) {
-      try {
-        this.password = await bcrypt.hash(this.password, 10)
-      } catch (error) {
-        throw new InternalServerErrorException()
-      }
-    }
-  }
-
-  async checkPassword(aPassword: string): Promise<boolean> {
-    try {
-      const ok = await bcrypt.compare(aPassword, this.password)
-      return ok
-    } catch (error) {
-      throw new InternalServerErrorException()
-    }
-  }
 }

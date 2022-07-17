@@ -1,35 +1,24 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
+import { DecodedIdToken } from "firebase-admin/auth"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
 import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
 import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import {
-  CreateRestaurantInput,
-  CreateRestaurantOutput,
-} from "src/restaurants/dtos/create-restaurant.dto"
+import { CreateRestaurantByAdminInput, CreateRestaurantInput, CreateRestaurantOutput } from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import {
-  DeleteRestaurantInput,
-  DeleteRestaurantOutput,
-} from "src/restaurants/dtos/delete-restaurant.dto"
+import { DeleteRestaurantInput, DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import {
-  EditRestaurantInput,
-  EditRestaurantOutput,
-} from "src/restaurants/dtos/edit.restaurant.dto"
+import { EditRestaurantInput, EditRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { RestaurantInput, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { RestaurantsInput, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
-import {
-  SearchRestaurantInput,
-  SearchRestaurantOutput,
-} from "src/restaurants/dtos/search-restaurant.dto"
+import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
+import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
+import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { User } from "src/users/entities/user.entity"
-import { ILike, Repository, Equal } from "typeorm"
+import { UserService } from "src/users/users.service"
+import { Equal, ILike, Repository } from "typeorm"
 
 @Injectable()
 export class RestaurantService {
@@ -39,7 +28,8 @@ export class RestaurantService {
     @InjectRepository(Dish)
     private readonly dishRepo: Repository<Dish>,
     @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>
+    private readonly categoryRepo: Repository<Category>,
+    private readonly userService: UserService,
   ) {}
 
   private async getOrCreateCategory(name: string): Promise<Category> {
@@ -51,27 +41,26 @@ export class RestaurantService {
         this.categoryRepo.create({
           slug: categorySlug,
           name: categoryName,
-        })
+        }),
       )
     }
     return category
   }
 
-  async createRestaurant(
-    owner: User,
-    createRestaurantInput: CreateRestaurantInput
-  ): Promise<CreateRestaurantOutput> {
+  async createRestaurant(owner: DecodedIdToken, createRestaurantInput: CreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
-      const newRestaurant = this.restaurantRepo.create(createRestaurantInput)
-      newRestaurant.owner = owner
-      newRestaurant.category = await this.getOrCreateCategory(
-        createRestaurantInput.categoryName
-      )
+      const ownerEntity = await this.userService.findUserById(owner.uid)
+      if (!ownerEntity) {
+        throw new Error(`Owner with id ${owner.uid} not found`)
+      }
+      const restaurant = this.restaurantRepo.create(createRestaurantInput)
+      restaurant.owner = ownerEntity
+      restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
 
-      await this.restaurantRepo.save(newRestaurant)
+      await this.restaurantRepo.save(restaurant)
       return {
         ok: true,
-        restaurantId: newRestaurant.id,
+        restaurant,
       }
     } catch {
       return {
@@ -81,10 +70,33 @@ export class RestaurantService {
     }
   }
 
-  async editRestaurant(
-    owner: User,
-    editRestaurantInput: EditRestaurantInput
-  ): Promise<EditRestaurantOutput> {
+  async createRestaurantByAdmin(
+    admin: DecodedIdToken,
+    createRestaurantInput: CreateRestaurantByAdminInput,
+  ): Promise<CreateRestaurantOutput> {
+    try {
+      const ownerEntity = await this.userService.findUserById(createRestaurantInput.ownerId)
+      if (!ownerEntity) {
+        throw new Error(`Owner with id ${createRestaurantInput.ownerId} not found`)
+      }
+
+      const restaurant = this.restaurantRepo.create(createRestaurantInput)
+      restaurant.owner = ownerEntity
+      restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
+      await this.restaurantRepo.save(restaurant)
+      return {
+        ok: true,
+        restaurant,
+      }
+    } catch (err) {
+      return {
+        ok: false,
+        error: `[App] Could not create restaurant`,
+      }
+    }
+  }
+
+  async updateRestaurant(owner: DecodedIdToken, editRestaurantInput: EditRestaurantInput): Promise<EditRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneByOrFail({
         id: editRestaurantInput.restaurantId,
@@ -96,7 +108,7 @@ export class RestaurantService {
         }
       }
 
-      if (owner.id !== restaurant.ownerId) {
+      if (owner.uid !== restaurant.ownerId) {
         return {
           ok: false,
           error: "[App] You can't edit a restaurant that you don't own",
@@ -126,10 +138,7 @@ export class RestaurantService {
     }
   }
 
-  async deleteRestaurant(
-    owner: User,
-    { restaurantId }: DeleteRestaurantInput
-  ): Promise<DeleteRestaurantOutput> {
+  async deleteRestaurant(owner: DecodedIdToken, { restaurantId }: DeleteRestaurantInput): Promise<DeleteRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
 
@@ -140,7 +149,7 @@ export class RestaurantService {
         }
       }
 
-      if (owner.id !== restaurant.ownerId) {
+      if (owner.uid !== restaurant.ownerId) {
         return {
           ok: false,
           error: "[App] You can't delete a restaurant that you don't own",
@@ -216,7 +225,7 @@ export class RestaurantService {
     }
   }
 
-  async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
+  async allRestaurants({ page }: RestaurantsArgs): Promise<RestaurantsOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
         skip: (page - 1) * 3,
@@ -233,8 +242,6 @@ export class RestaurantService {
         totalResults,
       }
     } catch (err) {
-      console.log(err)
-
       return {
         ok: false,
         error: "[App] Could not load restaurantRepo",
@@ -242,7 +249,7 @@ export class RestaurantService {
     }
   }
 
-  async findRestaurantById({ restaurantId }: RestaurantInput): Promise<RestaurantOutput> {
+  async findRestaurantById({ restaurantId }: RestaurantArgs): Promise<RestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: { id: restaurantId },
@@ -267,10 +274,7 @@ export class RestaurantService {
     }
   }
 
-  async searchRestaurantByName({
-    query,
-    page,
-  }: SearchRestaurantInput): Promise<SearchRestaurantOutput> {
+  async searchRestaurantByName({ query, page }: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
     try {
       const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
         where: {
@@ -293,10 +297,7 @@ export class RestaurantService {
     }
   }
 
-  async createDish(
-    owner: User,
-    createDishInput: CreateDishInput
-  ): Promise<CreateDishOutput> {
+  async createDish(owner: DecodedIdToken, createDishInput: CreateDishInput): Promise<CreateDishOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({
         id: createDishInput.restaurantId,
@@ -309,7 +310,7 @@ export class RestaurantService {
         }
       }
 
-      if (owner.id !== restaurant.ownerId) {
+      if (owner.uid !== restaurant.ownerId) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -329,7 +330,7 @@ export class RestaurantService {
     }
   }
 
-  async editDish(owner: User, editDishInput: EditDishInput): Promise<EditDishOutput> {
+  async editDish(owner: DecodedIdToken, editDishInput: EditDishInput): Promise<EditDishOutput> {
     try {
       const dish = await this.dishRepo.findOne({
         where: { id: editDishInput.dishId },
@@ -343,7 +344,7 @@ export class RestaurantService {
         }
       }
 
-      if (dish.restaurant.ownerId !== owner.id) {
+      if (dish.restaurant.ownerId !== owner.uid) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -367,7 +368,7 @@ export class RestaurantService {
     }
   }
 
-  async deleteDish(owner: User, { dishId }: DeleteDishInput): Promise<DeleteDishOutput> {
+  async deleteDish(owner: DecodedIdToken, { dishId }: DeleteDishInput): Promise<DeleteDishOutput> {
     try {
       const dish = await this.dishRepo.findOne({
         where: { id: dishId },
@@ -381,7 +382,7 @@ export class RestaurantService {
         }
       }
 
-      if (dish.restaurant.ownerId !== owner.id) {
+      if (dish.restaurant.ownerId !== owner.uid) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -401,9 +402,9 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurants(owner: User): Promise<MyRestaurantsOutput> {
+  async myRestaurants(owner: DecodedIdToken): Promise<MyRestaurantsOutput> {
     try {
-      const restaurants = await this.restaurantRepo.findBy({ owner: Equal(owner) })
+      const restaurants = await this.restaurantRepo.findBy({ ownerId: Equal(owner.uid) })
       return {
         restaurants,
         ok: true,
@@ -416,15 +417,12 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurant(
-    owner: User,
-    { id }: MyRestaurantInput
-  ): Promise<MyRestaurantOutput> {
+  async myRestaurant(owner: DecodedIdToken, { id }: MyRestaurantInput): Promise<MyRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: {
           id,
-          owner: Equal(owner),
+          ownerId: Equal(owner.uid),
         },
         relations: ["menu", "orders"],
       })

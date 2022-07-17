@@ -5,18 +5,28 @@
     "next",
     "next/core-web-vitals",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
     "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:prettier/recommended"
   ],
   "ignorePatterns": ["!**/*", "**/__generated__/**"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "apps/*/tsconfig.json"
+      }
+    }
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "apps/web-client/pages"]
+        "@next/next/no-html-link-for-pages": ["error", "apps/web-client/src/pages"]
       }
     },
     {
@@ -68,6 +78,7 @@
     ],
     "import/first": "error",
     "import/newline-after-import": "error",
-    "import/no-duplicates": "error"
+    "import/no-duplicates": "error",
+    "jsx-a11y/anchor-is-valid": "off"
   }
 }

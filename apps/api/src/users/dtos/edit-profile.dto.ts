@@ -1,4 +1,5 @@
-import { InputType, ObjectType, PartialType, PickType } from "@nestjs/graphql"
+import { Field, InputType, ObjectType, PartialType, PickType } from "@nestjs/graphql"
+import { MinLength } from "class-validator"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { User } from "src/users/entities/user.entity"
 
@@ -6,6 +7,8 @@ import { User } from "src/users/entities/user.entity"
 export class EditProfileOutput extends CoreOutput {}
 
 @InputType()
-export class EditProfileInput extends PartialType(
-  PickType(User, ["email", "password"])
-) {}
+export class EditProfileInput extends PartialType(PickType(User, ["email"])) {
+  @Field(type => String)
+  @MinLength(8)
+  password: string
+}

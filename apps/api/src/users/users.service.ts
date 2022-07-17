@@ -1,158 +1,140 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { JwtService } from "src/jwt/jwt.service"
-import { MailService } from "src/mail/mail.service"
-import { CreateAccountInput } from "src/users/dtos/create-account.dto"
+import { CreateRequest, UserRecord } from "firebase-admin/auth"
+import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
 import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
-import { LoginInput } from "src/users/dtos/login.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
-import { VerifyEmailOutput } from "src/users/dtos/verify-email.dto"
-import { User } from "src/users/entities/user.entity"
-import { Verification } from "src/users/entities/verification.entity"
+import { User, UserRole } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly users: Repository<User>,
-    @InjectRepository(Verification)
-    private readonly verifications: Repository<Verification>,
-    private readonly jwtService: JwtService,
-    private readonly mailService: MailService
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    private readonly firebaseAuthService: FirebaseAuthenticationService,
   ) {}
 
-  async createAccount({
-    email,
-    password,
-    role,
-  }: CreateAccountInput): Promise<{ ok: boolean; error?: string }> {
-    try {
-      const exists = await this.users.findOne({ where: { email } })
+  private async createFirebaseUser(createRequest: CreateRequest, customClaims: object): Promise<UserRecord> {
+    const firebaseUser = await this.firebaseAuthService.createUser(createRequest)
+    await this.firebaseAuthService.setCustomUserClaims(firebaseUser.uid, customClaims)
+    return firebaseUser
+  }
 
-      if (exists) {
+  private async checkIfUserExistByEmail(email: string): Promise<boolean> {
+    const user = await this.userRepo.findOne({ where: { email } })
+    return user !== null
+  }
+
+  private async createUser(id: string, input: CreateAccountInput, roles: UserRole[]): Promise<User> {
+    const userEntity = this.userRepo.create({ id, ...input, roles })
+    return this.userRepo.save(userEntity)
+  }
+
+  async findUserById(id: string) {
+    return this.userRepo.findOneBy({ id })
+  }
+
+  async signUpCustomer(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const exist = await this.checkIfUserExistByEmail(signUpAccountInput.email)
+    if (exist) {
+      return {
+        ok: false,
+        error: `[App] User with email ${signUpAccountInput.email} already exist!`,
+      }
+    }
+
+    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Customer] })
+    const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
+    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Customer])
+
+    return { ok: true, user, signInToken }
+  }
+
+  async signUpVendor(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const exist = await this.checkIfUserExistByEmail(signUpAccountInput.email)
+    if (exist) {
+      return {
+        ok: false,
+        error: `[App] User with email ${signUpAccountInput.email} already exist!`,
+      }
+    }
+
+    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Vendor] })
+    const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
+    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Vendor])
+
+    return { ok: true, user, signInToken }
+  }
+
+  async createAdmin(createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
+    try {
+      const exist = await this.checkIfUserExistByEmail(createAccountInput.email)
+      if (exist) {
         return {
           ok: false,
           error: "[App] There is a user with that email already!",
         }
       }
-      const user = await this.users.save(this.users.create({ email, password, role }))
 
-      const verification = await this.verifications.save(
-        this.verifications.create({
-          user,
-        })
-      )
+      const firebaseUser = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Admin] })
+      const user = await this.createUser(firebaseUser.uid, createAccountInput, [UserRole.Admin])
 
-      this.mailService.sendVerificationEmail(user.email, verification.code)
+      // TODO: send verify email here
 
-      return { ok: true }
+      return { ok: true, user }
     } catch (err) {
-      return { ok: false, error: "[App] Couldn't create account" }
-    }
-  }
-
-  async login({
-    email,
-    password,
-  }: LoginInput): Promise<{ ok: boolean; error?: string | unknown; token?: string }> {
-    try {
-      const user = await this.users.findOne({
-        where: { email },
-        select: ["id", "password"],
-      })
-
-      if (!user) {
-        return {
-          ok: false,
-          error: "[App] User not found!",
-        }
-      }
-
-      const passwordCorrect = await user.checkPassword(password)
-      if (!passwordCorrect) {
-        return {
-          ok: false,
-          error: "[App] Wrong password",
-        }
-      }
-
-      const token = this.jwtService.sign(user.id)
-
-      return {
-        ok: true,
-        token,
-      }
-    } catch (error) {
       return {
         ok: false,
-        error,
+        error: "[App] Couldn't create account",
       }
     }
   }
 
-  async findById(id: number): Promise<UserProfileOutput> {
+  async findById(id: string): Promise<UserProfileOutput> {
     try {
-      const user = await this.users.findOneByOrFail({ id })
+      const user = await this.userRepo.findOneByOrFail({ id })
       return {
         ok: true,
         user,
       }
     } catch (error) {
-      return { ok: false, error: "[App] User Not Found" }
+      return {
+        ok: false,
+        error: "[App] User Not Found",
+      }
     }
   }
 
-  async editProfile(
-    userId: number,
-    { email, password }: EditProfileInput
-  ): Promise<EditProfileOutput> {
+  async editProfile(id: string, { email }: EditProfileInput): Promise<EditProfileOutput> {
     try {
-      const user = await this.users.findOneBy({ id: userId })
+      const user = await this.userRepo.findOneBy({
+        id: id,
+      })
       if (!user) {
-        return { ok: false, error: "[App] User not found" }
+        return {
+          ok: false,
+          error: "[App] User not found",
+        }
       }
 
       if (email) {
         user.email = email
         user.verified = false
 
-        await this.verifications.delete({ user: { id: user.id } })
-        const verification = await this.verifications.save(
-          this.verifications.create({
-            user,
-          })
-        )
-
-        this.mailService.sendVerificationEmail(user.email, verification.code)
-      }
-      if (password) {
-        user.password = password
+        // TODO: Resend verify email here
       }
 
-      await this.users.save(user)
+      await this.userRepo.save(user)
       return {
         ok: true,
       }
     } catch (error) {
-      return { ok: false, error: "[App] Could not update profile" }
-    }
-  }
-
-  async verifyEmail(code: string): Promise<VerifyEmailOutput> {
-    try {
-      const verification = await this.verifications.findOne({
-        where: { code },
-        relations: ["user"],
-      })
-      if (verification) {
-        verification.user.verified = true
-        await this.users.save(verification.user)
-        await this.verifications.delete(verification.id)
-        return { ok: true }
+      return {
+        ok: false,
+        error: "[App] Could not update profile",
       }
-      return { ok: false, error: "[App] Verification not found" }
-    } catch (error) {
-      return { ok: false, error: "[App] Could not verify email" }
     }
   }
 }

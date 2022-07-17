@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nham-avey/common": ["libs/common/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

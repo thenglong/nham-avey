@@ -1,14 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup"
+import clsx from "clsx"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-import { LoginMutation, useLoginMutation } from "../__generated__/types.react-apollo"
-import { Button } from "../components/button"
-import { FormError } from "../components/form-error"
-import { LOCAL_STORAGE_TOKEN } from "../constants/common-constants"
-import { authTokenVar, isLoggedInVar } from "../graphql/apollo-config"
+import { FormError } from "src/components/form-error"
+import useSignIn from "src/hooks/use-sign-in"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -25,34 +23,21 @@ const LoginPage = () => {
     register,
     getValues,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<LoginForm>({
-    mode: "onChange",
     resolver: yupResolver(schema),
   })
 
-  const onCompleted = (data: LoginMutation) => {
-    const {
-      login: { ok, token },
-    } = data
-    if (ok && token) {
-      localStorage.setItem(LOCAL_STORAGE_TOKEN, token)
-      authTokenVar(token)
-      isLoggedInVar(true)
-    }
-  }
+  const {
+    mutate: signIn,
+    data,
+    error: _, // not used, use data.error instead
+    isLoading: isSigningIn,
+  } = useSignIn()
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useLoginMutation({
-    onCompleted,
-  })
-
-  const onSubmit = () => {
-    if (!loading) {
-      const { email, password } = getValues()
-      loginMutation({
-        variables: { loginInput: { email, password } },
-      })
-    }
+  const onSubmit = async () => {
+    const { email, password } = getValues()
+    signIn({ email, password })
   }
 
   return (
@@ -60,39 +45,68 @@ const LoginPage = () => {
       <NextSeo title="Login | Nham Avey" />
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
         <h1 className="my-10 w-52 text-4xl font-semibold">Nham Avey</h1>
-        <h4 className="mb-5 w-full text-left text-3xl font-medium">Welcome back</h4>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
-          <input
-            {...register("email")}
-            type="email"
-            placeholder="Email"
-            className="input "
-          />
+          <div className="form-control w-full">
+            <label htmlFor="email" className="label">
+              <span className="label-text">Your Email Address</span>
+            </label>
+            <input
+              id="email"
+              {...register("email")}
+              type="email"
+              placeholder="Email"
+              className="input input-primary w-full"
+            />
+            <label htmlFor="email" className="label">
+              <span className="label-text-alt text-error">{errors.email?.message}</span>
+            </label>
+          </div>
 
-          {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
+          <div className="form-control w-full">
+            <label htmlFor="password" className="label">
+              <span className="label-text">Your Password</span>
+            </label>
+            <input
+              {...register("password")}
+              id="password"
+              type="password"
+              className="input input-primary w-full"
+            />
+            <label htmlFor="password" className="label">
+              <span className="label-text-alt text-error">
+                {errors.password?.message}
+              </span>
+            </label>
+          </div>
 
-          <input
-            {...register("password")}
-            type="password"
-            placeholder="Password"
-            className="input"
-          />
-
-          {errors.password?.message && (
-            <FormError errorMessage={errors.password?.message} />
-          )}
-
-          <Button canClick={isValid} loading={loading} actionText="Log in" />
-          {loginMutationResult?.login.error && (
-            <FormError errorMessage={loginMutationResult?.login.error} />
-          )}
+          <button
+            className={clsx("btn btn-primary", {
+              loading: isSigningIn,
+            })}
+          >
+            Log in
+          </button>
+          <div className="text-center">
+            {data?.error && <FormError errorMessage={data.error} />}
+          </div>
         </form>
-        <div>
-          New to Nham Avey ?{" "}
-          <Link href="/create-account" className="text-lime-600 hover:underline">
-            Create an Account
-          </Link>
-        </div>
+
+        <Link href="/create-account">
+          <a className="link">Create an Account instead</a>
+        </Link>
+      </div>
+
+      <div className="mt-40 flex w-max flex-col gap-2">
+        <button className="btn" data-set-theme="dark" data-act-class="ACTIVECLASS">
+          Dark Theme
+        </button>
+        <button
+          className="btn btn-outline"
+          data-set-theme="light"
+          data-act-class="ACTIVECLASS"
+        >
+          Light Theme
+        </button>
       </div>
     </div>
   )

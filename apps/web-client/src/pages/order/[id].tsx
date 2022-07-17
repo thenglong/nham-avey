@@ -12,11 +12,11 @@ import {
   useGetMeQuery,
   useGetOrderQuery,
   UserRole,
-} from "../../__generated__/types.react-apollo"
+} from "src/__generated__/types.react-apollo"
 
 const OrderPage: NextPage = () => {
   const router = useRouter()
-  const id = +router.query.id
+  const id = +(router.query.id as string)
 
   const { data: userData } = useGetMeQuery()
   const [editOrderMutation] = useEditOrderMutation()

@@ -78,45 +78,25 @@ export class FirebaseAuthenticationService {
   revokeRefreshTokens(uid: string): Promise<void> {
     return this.auth.revokeRefreshTokens(uid)
   }
-  importUsers(
-    users: UserImportRecord[],
-    options?: UserImportOptions
-  ): Promise<UserImportResult> {
+  importUsers(users: UserImportRecord[], options?: UserImportOptions): Promise<UserImportResult> {
     return this.auth.importUsers(users, options)
   }
-  createSessionCookie(
-    idToken: string,
-    sessionCookieOptions: SessionCookieOptions
-  ): Promise<string> {
+  createSessionCookie(idToken: string, sessionCookieOptions: SessionCookieOptions): Promise<string> {
     return this.auth.createSessionCookie(idToken, sessionCookieOptions)
   }
-  verifySessionCookie(
-    sessionCookie: string,
-    checkForRevocation?: boolean
-  ): Promise<DecodedIdToken> {
+  verifySessionCookie(sessionCookie: string, checkForRevocation?: boolean): Promise<DecodedIdToken> {
     return this.auth.verifySessionCookie(sessionCookie, checkForRevocation)
   }
-  generatePasswordResetLink(
-    email: string,
-    actionCodeSettings?: ActionCodeSettings
-  ): Promise<string> {
+  generatePasswordResetLink(email: string, actionCodeSettings?: ActionCodeSettings): Promise<string> {
     return this.auth.generatePasswordResetLink(email, actionCodeSettings)
   }
-  generateEmailVerificationLink(
-    email: string,
-    actionCodeSettings?: ActionCodeSettings
-  ): Promise<string> {
+  generateEmailVerificationLink(email: string, actionCodeSettings?: ActionCodeSettings): Promise<string> {
     return this.auth.generateEmailVerificationLink(email, actionCodeSettings)
   }
-  generateSignInWithEmailLink(
-    email: string,
-    actionCodeSettings: ActionCodeSettings
-  ): Promise<string> {
+  generateSignInWithEmailLink(email: string, actionCodeSettings: ActionCodeSettings): Promise<string> {
     return this.auth.generateSignInWithEmailLink(email, actionCodeSettings)
   }
-  listProviderConfigs(
-    options: AuthProviderConfigFilter
-  ): Promise<ListProviderConfigResults> {
+  listProviderConfigs(options: AuthProviderConfigFilter): Promise<ListProviderConfigResults> {
     return this.auth.listProviderConfigs(options)
   }
   getProviderConfig(providerId: string): Promise<AuthProviderConfig> {
@@ -125,10 +105,7 @@ export class FirebaseAuthenticationService {
   deleteProviderConfig(providerId: string): Promise<void> {
     return this.auth.deleteProviderConfig(providerId)
   }
-  updateProviderConfig(
-    providerId: string,
-    updatedConfig: UpdateAuthProviderRequest
-  ): Promise<AuthProviderConfig> {
+  updateProviderConfig(providerId: string, updatedConfig: UpdateAuthProviderRequest): Promise<AuthProviderConfig> {
     return this.auth.updateProviderConfig(providerId, updatedConfig)
   }
   createProviderConfig(config: AuthProviderConfig): Promise<AuthProviderConfig> {
