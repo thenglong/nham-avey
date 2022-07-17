@@ -1,14 +1,12 @@
-import { UseGuards } from "@nestjs/common"
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
-import { GraphqlAuthGuard } from "src/auth/graphql-auth-guard.service"
+import { Args, Mutation, Resolver } from "@nestjs/graphql"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
+import { Roles } from "src/auth/role.decorator"
 import { SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
-import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
-import { UserProfileInput, UserProfileOutput } from "src/users/dtos/user-profile.dto"
-import { User } from "src/users/entities/user.entity"
+import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
+import { User, UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
 
-@Resolver(() => User)
+@Resolver()
 export class CustomersResolver {
   constructor(private readonly UserService: UserService) {}
 
@@ -17,21 +15,14 @@ export class CustomersResolver {
     return this.UserService.signUpCustomer(signUpAccountInput)
   }
 
-  @Query(() => User)
-  @UseGuards(GraphqlAuthGuard)
-  getMe(@GraphqlAuthUser() authUser: User) {
-    return authUser
-  }
-
-  @Query(() => UserProfileOutput)
-  async userProfile(@Args() userProfileInput: UserProfileInput): Promise<UserProfileOutput> {
-    return this.UserService.findById(userProfileInput.userId)
-  }
-
-  @Mutation(() => EditProfileOutput)
-  async editProfile(@GraphqlAuthUser() authUser: User, @Args("input") editProfileInput: EditProfileInput): Promise<EditProfileOutput> {
+  @Roles(UserRole.Customer)
+  @Mutation(() => UpdateProfileOutput)
+  async updateMeAsCustomer(
+    @GraphqlAuthUser() authUser: User,
+    @Args("input") updateProfileInput: UpdateProfileInput,
+  ): Promise<UpdateProfileOutput> {
     try {
-      await this.UserService.editProfile(authUser.id, editProfileInput)
+      await this.UserService.editProfile(authUser.id, updateProfileInput)
       return {
         ok: true,
       }

@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
 import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
-import { EditProfileInput, EditProfileOutput } from "src/users/dtos/edit-profile.dto"
+import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
@@ -107,11 +107,9 @@ export class UserService {
     }
   }
 
-  async editProfile(id: string, { email }: EditProfileInput): Promise<EditProfileOutput> {
+  async editProfile(id: string, { email }: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      const user = await this.userRepo.findOneBy({
-        id: id,
-      })
+      const user = await this.userRepo.findOneBy({ id: id })
       if (!user) {
         return {
           ok: false,
