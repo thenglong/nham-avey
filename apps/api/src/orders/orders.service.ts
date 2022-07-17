@@ -89,7 +89,7 @@ export class OrderService {
       )
 
       await this.pubSub.publish(NEW_PENDING_ORDER, {
-        pendingOrders: { order, ownerId: restaurant.ownerId },
+        pendingOrders: { order, ownerId: restaurant.vendorId },
       })
 
       return {
@@ -157,7 +157,7 @@ export class OrderService {
       canSee = false
     }
 
-    if (user.roles.includes(UserRole.Vendor) && order.restaurant?.ownerId !== user.id) {
+    if (user.roles.includes(UserRole.Vendor) && order.restaurant?.vendorId !== user.id) {
       canSee = false
     }
     return canSee

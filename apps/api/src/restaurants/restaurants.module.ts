@@ -7,8 +7,6 @@ import { CategoryResolver, DishResolver, RestaurantResolver } from "src/restaura
 import { RestaurantService } from "src/restaurants/restaurants.service"
 import { UsersModule } from "src/users/users.module"
 
-import { Category } from "./entities/category.entity"
-
 @Module({
   imports: [TypeOrmModule.forFeature([Restaurant, Category, Dish]), UsersModule],
   providers: [RestaurantResolver, RestaurantService, CategoryResolver, DishResolver],

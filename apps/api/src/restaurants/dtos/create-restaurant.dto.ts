@@ -3,13 +3,13 @@ import { CoreOutput } from "src/common/dtos/output.dto"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @InputType()
-export class CreateRestaurantInput extends PickType(Restaurant, ["name", "coverImg", "address"]) {
+export class VendorCreateRestaurantInput extends PickType(Restaurant, ["name", "coverImg", "address"]) {
   @Field(type => String)
   categoryName: string
 }
 
 @InputType()
-export class CreateRestaurantByAdminInput extends CreateRestaurantInput {
+export class AdminCreateRestaurantByInput extends VendorCreateRestaurantInput {
   @Field(type => String)
   ownerId: string
 }

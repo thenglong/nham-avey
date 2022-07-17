@@ -1,10 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { Interval } from "@nestjs/schedule"
 import { InjectRepository } from "@nestjs/typeorm"
-import {
-  CreatePaymentInput,
-  CreatePaymentOutput,
-} from "src/payments/dtos/create-payment.dto"
+import { CreatePaymentInput, CreatePaymentOutput } from "src/payments/dtos/create-payment.dto"
 import { GetPaymentsOutput } from "src/payments/dtos/get-payments.dto"
 import { Payment } from "src/payments/entities/payment.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -17,13 +14,10 @@ export class PaymentService {
     @InjectRepository(Payment)
     private readonly payments: Repository<Payment>,
     @InjectRepository(Restaurant)
-    private readonly restaurants: Repository<Restaurant>
+    private readonly restaurants: Repository<Restaurant>,
   ) {}
 
-  async createPayment(
-    owner: User,
-    { transactionId, restaurantId }: CreatePaymentInput
-  ): Promise<CreatePaymentOutput> {
+  async createPayment(owner: User, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
     try {
       const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
 
@@ -34,7 +28,7 @@ export class PaymentService {
         }
       }
 
-      if (restaurant.ownerId !== owner.id) {
+      if (restaurant.vendorId !== owner.id) {
         return {
           ok: false,
           error: "[App] You can't do this",
@@ -46,7 +40,7 @@ export class PaymentService {
           transactionId,
           user: owner,
           restaurant,
-        })
+        }),
       )
 
       restaurant.isPromoted = true

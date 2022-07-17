@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "@nestjs/graphql"
-import { CoreOutput } from "src/common/dtos/output.dto"
+import { PaginationOutput } from "src/common/dtos/pagination.dto"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @ObjectType()
-export class MyRestaurantsOutput extends CoreOutput {
+export class PaginatedRestaurantsOutput extends PaginationOutput {
   @Field(type => [Restaurant])
   restaurants?: Restaurant[]
 }

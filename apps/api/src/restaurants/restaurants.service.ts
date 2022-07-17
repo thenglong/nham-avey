@@ -1,22 +1,27 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import { DecodedIdToken } from "firebase-admin/auth"
+import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
 import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
 import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import { CreateRestaurantByAdminInput, CreateRestaurantInput, CreateRestaurantOutput } from "src/restaurants/dtos/create-restaurant.dto"
+import {
+  AdminCreateRestaurantByInput,
+  CreateRestaurantOutput,
+  VendorCreateRestaurantInput,
+} from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import { DeleteRestaurantInput, DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
+import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import { EditRestaurantInput, EditRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
-import { MyRestaurantInput, MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
-import { MyRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
+import { UpdateRestaurantInput, UpdateRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
+import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
+import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
 import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
 import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
 import { Equal, ILike, Repository } from "typeorm"
 
@@ -47,11 +52,11 @@ export class RestaurantService {
     return category
   }
 
-  async createRestaurant(owner: DecodedIdToken, createRestaurantInput: CreateRestaurantInput): Promise<CreateRestaurantOutput> {
+  async createRestaurant(vendorId: UserRecord["uid"], createRestaurantInput: VendorCreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
-      const ownerEntity = await this.userService.findUserById(owner.uid)
+      const ownerEntity = await this.userService.findUserById(vendorId)
       if (!ownerEntity) {
-        throw new Error(`Owner with id ${owner.uid} not found`)
+        throw new Error(`Owner with id ${vendorId} not found`)
       }
       const restaurant = this.restaurantRepo.create(createRestaurantInput)
       restaurant.owner = ownerEntity
@@ -72,7 +77,7 @@ export class RestaurantService {
 
   async createRestaurantByAdmin(
     admin: DecodedIdToken,
-    createRestaurantInput: CreateRestaurantByAdminInput,
+    createRestaurantInput: AdminCreateRestaurantByInput,
   ): Promise<CreateRestaurantOutput> {
     try {
       const ownerEntity = await this.userService.findUserById(createRestaurantInput.ownerId)
@@ -96,10 +101,13 @@ export class RestaurantService {
     }
   }
 
-  async updateRestaurant(owner: DecodedIdToken, editRestaurantInput: EditRestaurantInput): Promise<EditRestaurantOutput> {
+  async updateRestaurantByVendor(
+    vendorId: UserRecord["uid"],
+    updateRestaurantInput: UpdateRestaurantInput,
+  ): Promise<UpdateRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneByOrFail({
-        id: editRestaurantInput.restaurantId,
+        id: updateRestaurantInput.restaurantId,
       })
       if (!restaurant) {
         return {
@@ -108,22 +116,22 @@ export class RestaurantService {
         }
       }
 
-      if (owner.uid !== restaurant.ownerId) {
+      if (vendorId !== restaurant.vendorId) {
         return {
           ok: false,
-          error: "[App] You can't edit a restaurant that you don't own",
+          error: "[App] You can't update a restaurant that you don't own",
         }
       }
 
       let category: Category | null = null
-      if (editRestaurantInput.categoryName) {
-        category = await this.getOrCreateCategory(editRestaurantInput.categoryName)
+      if (updateRestaurantInput.categoryName) {
+        category = await this.getOrCreateCategory(updateRestaurantInput.categoryName)
       }
 
       await this.restaurantRepo.save([
         {
-          id: editRestaurantInput.restaurantId,
-          ...editRestaurantInput,
+          id: updateRestaurantInput.restaurantId,
+          ...updateRestaurantInput,
           ...(category && { category }),
         },
       ])
@@ -138,7 +146,42 @@ export class RestaurantService {
     }
   }
 
-  async deleteRestaurant(owner: DecodedIdToken, { restaurantId }: DeleteRestaurantInput): Promise<DeleteRestaurantOutput> {
+  async updateRestaurant(updateRestaurantInput: UpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
+    try {
+      const restaurant = await this.restaurantRepo.findOneByOrFail({
+        id: updateRestaurantInput.restaurantId,
+      })
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: "[App] Restaurant not found",
+        }
+      }
+
+      let category: Category | null = null
+      if (updateRestaurantInput.categoryName) {
+        category = await this.getOrCreateCategory(updateRestaurantInput.categoryName)
+      }
+
+      await this.restaurantRepo.save([
+        {
+          id: updateRestaurantInput.restaurantId,
+          ...updateRestaurantInput,
+          ...(category && { category }),
+        },
+      ])
+      return {
+        ok: true,
+      }
+    } catch {
+      return {
+        ok: false,
+        error: "[App] Could not edit Restaurant",
+      }
+    }
+  }
+
+  async deleteRestaurant(decodedIdToken: DecodedIdToken, restaurantId: Restaurant["id"]): Promise<DeleteRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
 
@@ -149,7 +192,7 @@ export class RestaurantService {
         }
       }
 
-      if (owner.uid !== restaurant.ownerId) {
+      if (!decodedIdToken.roles.includes(UserRole.Admin) && decodedIdToken.uid !== restaurant.vendorId) {
         return {
           ok: false,
           error: "[App] You can't delete a restaurant that you don't own",
@@ -215,7 +258,7 @@ export class RestaurantService {
       return {
         ok: true,
         category,
-        totalPages: Math.ceil(totalResults / 25),
+        pageCount: Math.ceil(totalResults / 25),
       }
     } catch {
       return {
@@ -225,26 +268,45 @@ export class RestaurantService {
     }
   }
 
-  async allRestaurants({ page }: RestaurantsArgs): Promise<RestaurantsOutput> {
+  async getRestaurantsByPublic({ page, take, skip, searchQuery }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     try {
-      const [restaurants, totalResults] = await this.restaurantRepo.findAndCount({
-        skip: (page - 1) * 3,
-        take: 3,
-        order: {
-          isPromoted: "DESC",
-        },
-      })
+      const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
 
-      return {
-        ok: true,
-        results: restaurants,
-        totalPages: Math.ceil(totalResults / 3),
-        totalResults,
+      if (searchQuery) {
+        queryBuilder.andWhere(
+          `restaurant.name ILIKE :search
+                 OR
+                 restaurant.address ILIKE :searchQuery`,
+          { searchQuery },
+        )
       }
-    } catch (err) {
+
+      const matchedCount = await queryBuilder.getCount()
+
+      queryBuilder
+        .skip(skip)
+        .take(take)
+        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.orders", "orders") //
+        .leftJoinAndSelect("restaurant.menu", "menu") //
+        .orderBy("restaurant.isPromoted", "DESC")
+        .addOrderBy("restaurant.name", "ASC")
+
+      const { entities } = await queryBuilder.getRawAndEntities()
+
+      const pageCount = Math.ceil(matchedCount / take)
+      return {
+        restaurants: entities,
+        pageCount,
+        hasPrevious: page > pageCount,
+        hasNext: page < pageCount,
+        matchedCount,
+        ok: true,
+      }
+    } catch {
       return {
         ok: false,
-        error: "[App] Could not load restaurantRepo",
+        error: "[App] Could not find restaurantRepo",
       }
     }
   }
@@ -286,8 +348,8 @@ export class RestaurantService {
       return {
         ok: true,
         restaurants,
-        totalResults,
-        totalPages: Math.ceil(totalResults / 25),
+        matchedCount: totalResults,
+        pageCount: Math.ceil(totalResults / 25),
       }
     } catch {
       return {
@@ -297,7 +359,7 @@ export class RestaurantService {
     }
   }
 
-  async createDish(owner: DecodedIdToken, createDishInput: CreateDishInput): Promise<CreateDishOutput> {
+  async createDish(vendorId: UserRecord["uid"], createDishInput: CreateDishInput): Promise<CreateDishOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({
         id: createDishInput.restaurantId,
@@ -310,7 +372,7 @@ export class RestaurantService {
         }
       }
 
-      if (owner.uid !== restaurant.ownerId) {
+      if (vendorId !== restaurant.vendorId) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -330,7 +392,7 @@ export class RestaurantService {
     }
   }
 
-  async editDish(owner: DecodedIdToken, editDishInput: EditDishInput): Promise<EditDishOutput> {
+  async editDish(vendorId: UserRecord["uid"], editDishInput: EditDishInput): Promise<EditDishOutput> {
     try {
       const dish = await this.dishRepo.findOne({
         where: { id: editDishInput.dishId },
@@ -344,7 +406,7 @@ export class RestaurantService {
         }
       }
 
-      if (dish.restaurant.ownerId !== owner.uid) {
+      if (dish.restaurant.vendorId !== vendorId) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -368,7 +430,7 @@ export class RestaurantService {
     }
   }
 
-  async deleteDish(owner: DecodedIdToken, { dishId }: DeleteDishInput): Promise<DeleteDishOutput> {
+  async deleteDish(vendorId: UserRecord["uid"], { dishId }: DeleteDishInput): Promise<DeleteDishOutput> {
     try {
       const dish = await this.dishRepo.findOne({
         where: { id: dishId },
@@ -382,7 +444,7 @@ export class RestaurantService {
         }
       }
 
-      if (dish.restaurant.ownerId !== owner.uid) {
+      if (dish.restaurant.vendorId !== vendorId) {
         return {
           ok: false,
           error: "[App] You can't do that",
@@ -402,11 +464,44 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurants(owner: DecodedIdToken): Promise<MyRestaurantsOutput> {
+  async getRestaurantsByVendor(
+    vendorId: UserRecord["uid"],
+    { take, skip, searchQuery, page }: RestaurantsArgs,
+  ): Promise<PaginatedRestaurantsOutput> {
     try {
-      const restaurants = await this.restaurantRepo.findBy({ ownerId: Equal(owner.uid) })
+      const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
+
+      queryBuilder.where(`restaurant.vendorId = :vendorId`, { vendorId })
+
+      if (searchQuery) {
+        queryBuilder.andWhere(
+          `restaurant.name ILIKE :search
+                 OR
+                 restaurant.address ILIKE :searchQuery`,
+          { searchQuery },
+        )
+      }
+
+      const matchedCount = await queryBuilder.getCount()
+
+      queryBuilder
+        .skip(skip)
+        .take(take)
+        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.orders", "orders") //
+        .leftJoinAndSelect("restaurant.menu", "menu") //
+        .orderBy("restaurant.isPromoted", "DESC")
+        .addOrderBy("restaurant.name", "ASC")
+
+      const { entities } = await queryBuilder.getRawAndEntities()
+
+      const pageCount = Math.ceil(matchedCount / take)
       return {
-        restaurants,
+        restaurants: entities,
+        pageCount,
+        hasPrevious: page > pageCount,
+        hasNext: page < pageCount,
+        matchedCount,
         ok: true,
       }
     } catch {
@@ -417,12 +512,55 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurant(owner: DecodedIdToken, { id }: MyRestaurantInput): Promise<MyRestaurantOutput> {
+  async getRestaurantsByAdmin({ skip, searchQuery, page, take }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+    try {
+      const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
+
+      if (searchQuery) {
+        queryBuilder.andWhere(
+          `restaurant.name ILIKE :search
+                   OR
+                   restaurant.address ILIKE :searchQuery`,
+          { searchQuery },
+        )
+      }
+
+      const matchedCount = await queryBuilder.getCount()
+
+      queryBuilder
+        .skip(skip)
+        .take(take)
+        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.orders", "orders") //
+        .leftJoinAndSelect("restaurant.menu", "menu") //
+        .orderBy("restaurant.isPromoted", "DESC")
+        .addOrderBy("restaurant.name", "ASC")
+
+      const { entities } = await queryBuilder.getRawAndEntities()
+
+      const pageCount = Math.ceil(matchedCount / take)
+      return {
+        restaurants: entities,
+        pageCount,
+        hasPrevious: page > pageCount,
+        hasNext: page < pageCount,
+        matchedCount,
+        ok: true,
+      }
+    } catch {
+      return {
+        ok: false,
+        error: "[App] Could not find restaurantRepo",
+      }
+    }
+  }
+
+  async findRestaurantByIdAndOwnerId(ownerId: UserRecord["uid"], restaurantId: Restaurant["id"]): Promise<MyRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: {
-          id,
-          ownerId: Equal(owner.uid),
+          id: restaurantId,
+          vendorId: Equal(ownerId),
         },
         relations: ["menu", "orders"],
       })
