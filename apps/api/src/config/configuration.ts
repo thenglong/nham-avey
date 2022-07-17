@@ -7,13 +7,8 @@ const configs = () => ({
     bucketUrl: process.env.FIREBASE_STORAGE_BUCKET_URL,
   },
   db: {
-    host: process.env.DATABASE_HOST,
-    port: +(process.env.DATABASE_PORT as string),
-    name: process.env.DATABASE_NAME,
-    username: process.env.DATABASE_USERNAME,
-    password: process.env.DATABASE_PASSWORD,
-    logging: process.env.DATABASE_LOGGING === "true",
-    isHeroku: process.env.IS_HEROKU_DATABASE === "true",
+    url: process.env.DATABASE_URL,
+    logging: process.env.DATABASE_LOGGING,
   },
   log: {
     level: process.env.LOG_LEVEL,

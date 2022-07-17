@@ -539,7 +539,6 @@ export class RestaurantService {
       const { entities } = await queryBuilder.getRawAndEntities()
 
       const pageCount = Math.ceil(matchedCount / take)
-      console.log({ matchedCount, take, pageCount })
       return {
         restaurants: entities,
         pageCount,

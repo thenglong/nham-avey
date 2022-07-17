@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
+import { parse } from "pg-connection-string"
 import { OrderItem } from "src/orders/entities/order-item.entity"
 import { Order } from "src/orders/entities/order.entity"
 import { Payment } from "src/payments/entities/payment.entity"
@@ -15,26 +16,25 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
   constructor(private readonly config: ConfigService) {}
 
   public createTypeOrmOptions(): TypeOrmModuleOptions {
+    const { host, port, database, user, password } = parse(this.config.get<string>("db.url") as string)
     return {
       type: "postgres",
-      host: this.config.get<string>("db.host"),
-      port: this.config.get<number>("db.port"),
-      database: this.config.get<string>("db.name"),
-      username: this.config.get<string>("db.username"),
-      password: this.config.get<string>("db.password"),
+      host: host as string,
+      port: +(port || 5432) as number,
+      database: database as string,
+      username: user,
+      password,
       entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment],
       migrations: [],
-      migrationsTableName: "typeorm_migrations",
+      migrationsTableName: "migrations",
       namingStrategy: new SnakeNamingStrategy(),
       logger: "advanced-console",
       logging: this.config.get<boolean>("db.logging"),
       synchronize: false,
       keepConnectionAlive: !this.config.get("isProd"),
-      ...(this.config.get("db.isHeroku") && {
-        ssl: {
-          rejectUnauthorized: false, // this should be true outside heroku!
-        },
-      }),
+      ssl: {
+        rejectUnauthorized: false, // this should be true outside heroku!
+      },
     }
   }
 }
