@@ -6,7 +6,13 @@
     "plugin:prettier/recommended"
   ],
   "ignorePatterns": ["!**/*"],
-  "plugins": ["import", "@typescript-eslint/eslint-plugin"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./apps/api/tsconfig.app.json"
+  },
+  "plugins": ["import", "@typescript-eslint/eslint-plugin","deprecation"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -53,6 +59,7 @@
     ],
     "import/first": "error",
     "import/newline-after-import": "error",
-    "import/no-duplicates": "error"
+    "import/no-duplicates": "error",
+    "deprecation/deprecation": "error"
   }
 }

@@ -11,7 +11,7 @@ export class VendorCreateRestaurantInput extends PickType(Restaurant, ["name", "
 @InputType()
 export class AdminCreateRestaurantByInput extends VendorCreateRestaurantInput {
   @Field(type => String)
-  ownerId: string
+  vendorId: string
 }
 
 @ObjectType()

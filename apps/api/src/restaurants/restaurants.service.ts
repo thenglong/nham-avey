@@ -16,7 +16,7 @@ import { UpdateRestaurantInput, UpdateRestaurantOutput } from "src/restaurants/d
 import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { RestaurantsArgs, RestaurantsOutput } from "src/restaurants/dtos/restaurants.dto"
+import { RestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
 import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
@@ -54,12 +54,12 @@ export class RestaurantService {
 
   async createRestaurant(vendorId: UserRecord["uid"], createRestaurantInput: VendorCreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
-      const ownerEntity = await this.userService.findUserById(vendorId)
-      if (!ownerEntity) {
-        throw new Error(`Owner with id ${vendorId} not found`)
+      const vendorEntity = await this.userService.findUserById(vendorId)
+      if (!vendorEntity) {
+        throw new Error(`Vendor with id ${vendorId} not found`)
       }
       const restaurant = this.restaurantRepo.create(createRestaurantInput)
-      restaurant.owner = ownerEntity
+      restaurant.vendor = vendorEntity
       restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
 
       await this.restaurantRepo.save(restaurant)
@@ -80,13 +80,13 @@ export class RestaurantService {
     createRestaurantInput: AdminCreateRestaurantByInput,
   ): Promise<CreateRestaurantOutput> {
     try {
-      const ownerEntity = await this.userService.findUserById(createRestaurantInput.ownerId)
-      if (!ownerEntity) {
-        throw new Error(`Owner with id ${createRestaurantInput.ownerId} not found`)
+      const vendorEntity = await this.userService.findUserById(createRestaurantInput.vendorId)
+      if (!vendorEntity) {
+        throw new Error(`Vendor with id ${createRestaurantInput.vendorId} not found`)
       }
 
       const restaurant = this.restaurantRepo.create(createRestaurantInput)
-      restaurant.owner = ownerEntity
+      restaurant.vendor = vendorEntity
       restaurant.category = await this.getOrCreateCategory(createRestaurantInput.categoryName)
       await this.restaurantRepo.save(restaurant)
       return {
@@ -268,13 +268,13 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByPublic({ page, take, skip, searchQuery }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByPublic({ options: { page, take, skip }, searchQuery }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
 
       if (searchQuery) {
         queryBuilder.andWhere(
-          `restaurant.name ILIKE :search
+          `restaurant.name ILIKE :searchQuery
                  OR
                  restaurant.address ILIKE :searchQuery`,
           { searchQuery },
@@ -286,7 +286,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.vendor", "vendor") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")
@@ -466,7 +466,7 @@ export class RestaurantService {
 
   async getRestaurantsByVendor(
     vendorId: UserRecord["uid"],
-    { take, skip, searchQuery, page }: RestaurantsArgs,
+    { searchQuery, options: { skip, page, take } }: RestaurantsArgs,
   ): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
@@ -475,7 +475,7 @@ export class RestaurantService {
 
       if (searchQuery) {
         queryBuilder.andWhere(
-          `restaurant.name ILIKE :search
+          `restaurant.name ILIKE :searchQuery
                  OR
                  restaurant.address ILIKE :searchQuery`,
           { searchQuery },
@@ -487,7 +487,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.vendor", "vendor") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")
@@ -512,15 +512,15 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByAdmin({ skip, searchQuery, page, take }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByAdmin({ searchQuery, options: { skip, page, take } }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
 
       if (searchQuery) {
         queryBuilder.andWhere(
-          `restaurant.name ILIKE :search
+          `restaurant.name ILIKE :searchQuery
                    OR
-                   restaurant.address ILIKE :searchQuery`,
+                 restaurant.address ILIKE :searchQuery`,
           { searchQuery },
         )
       }
@@ -530,7 +530,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.owner", "owner") //
+        .leftJoinAndSelect("restaurant.vendor", "vendor") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")
@@ -539,6 +539,7 @@ export class RestaurantService {
       const { entities } = await queryBuilder.getRawAndEntities()
 
       const pageCount = Math.ceil(matchedCount / take)
+      console.log({ matchedCount, take, pageCount })
       return {
         restaurants: entities,
         pageCount,
@@ -555,12 +556,12 @@ export class RestaurantService {
     }
   }
 
-  async findRestaurantByIdAndOwnerId(ownerId: UserRecord["uid"], restaurantId: Restaurant["id"]): Promise<MyRestaurantOutput> {
+  async findRestaurantByIdAndVendorId(vendorId: UserRecord["uid"], restaurantId: Restaurant["id"]): Promise<MyRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOne({
         where: {
           id: restaurantId,
-          vendorId: Equal(ownerId),
+          vendorId: Equal(vendorId),
         },
         relations: ["menu", "orders"],
       })

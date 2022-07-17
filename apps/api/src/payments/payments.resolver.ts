@@ -13,8 +13,8 @@ export class PaymentResolver {
 
   @Mutation(() => CreatePaymentOutput)
   @Roles(UserRole.Vendor)
-  createPayment(@GraphqlAuthUser() owner: User, @Args("input") createPaymentInput: CreatePaymentInput): Promise<CreatePaymentOutput> {
-    return this.paymentService.createPayment(owner, createPaymentInput)
+  createPayment(@GraphqlAuthUser() vendor: User, @Args("input") createPaymentInput: CreatePaymentInput): Promise<CreatePaymentOutput> {
+    return this.paymentService.createPayment(vendor, createPaymentInput)
   }
 
   @Query(() => GetPaymentsOutput)

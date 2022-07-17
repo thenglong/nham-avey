@@ -6,7 +6,7 @@ import { Column, Entity, OneToMany } from "typeorm"
 
 @InputType("CategoryInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "categories" })
 export class Category extends CoreEntity {
   @Field(() => String)
   @Column({ unique: true })

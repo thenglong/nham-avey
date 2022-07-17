@@ -17,7 +17,7 @@ registerEnumType(UserRole, { name: "UserRole" })
 
 @InputType("UserInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "users" })
 export class User extends CoreWithoutIdEntity {
   @PrimaryColumn()
   @Field(() => String)
@@ -28,15 +28,10 @@ export class User extends CoreWithoutIdEntity {
   @IsEmail()
   email: string
 
-  @Column({
-    type: "enum",
-    enum: UserRole,
-  })
   @Field(type => [UserRole])
   @IsEnum(UserRole, { each: true })
   @Column({
-    name: "roles",
-    enumName: "user_roles_enum",
+    enumName: "user_role",
     type: "enum",
     enum: UserRole,
     array: true,
@@ -50,7 +45,7 @@ export class User extends CoreWithoutIdEntity {
   verified: boolean
 
   @Field(type => [Restaurant], { nullable: true })
-  @OneToMany(() => Restaurant, restaurant => restaurant.owner)
+  @OneToMany(() => Restaurant, restaurant => restaurant.vendor)
   restaurants: Restaurant[]
 
   @Field(type => [Order], { nullable: true })

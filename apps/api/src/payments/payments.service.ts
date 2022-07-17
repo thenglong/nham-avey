@@ -17,7 +17,7 @@ export class PaymentService {
     private readonly restaurants: Repository<Restaurant>,
   ) {}
 
-  async createPayment(owner: User, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
+  async createPayment(vendor: User, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
     try {
       const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
 
@@ -28,7 +28,7 @@ export class PaymentService {
         }
       }
 
-      if (restaurant.vendorId !== owner.id) {
+      if (restaurant.vendorId !== vendor.id) {
         return {
           ok: false,
           error: "[App] You can't do this",
@@ -38,7 +38,7 @@ export class PaymentService {
       await this.payments.save(
         this.payments.create({
           transactionId,
-          user: owner,
+          user: vendor,
           restaurant,
         }),
       )

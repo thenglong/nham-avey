@@ -15,7 +15,7 @@ export class OrderItemOption {
 
 @InputType("OrderItemInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "order_items" })
 export class OrderItem extends CoreEntity {
   @Field(() => Dish)
   @ManyToOne(() => Dish, { nullable: true })

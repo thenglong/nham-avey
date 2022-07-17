@@ -18,7 +18,7 @@ registerEnumType(OrderStatus, { name: "OrderStatus" })
 
 @InputType("OrderInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "orders" })
 export class Order extends CoreEntity {
   @Field(type => User, { nullable: true })
   @ManyToOne(type => User, user => user.orders, {
@@ -54,7 +54,7 @@ export class Order extends CoreEntity {
   @ManyToMany(type => OrderItem, {
     eager: true,
   })
-  @JoinTable()
+  @JoinTable({ name: "order_order_items" })
   items: OrderItem[]
 
   @Column({ nullable: true })
@@ -62,7 +62,12 @@ export class Order extends CoreEntity {
   @IsNumber()
   total?: number
 
-  @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.Pending })
+  @Column({
+    type: "enum",
+    enumName: "order_status",
+    enum: OrderStatus,
+    default: OrderStatus.Pending,
+  })
   @Field(type => OrderStatus)
   @IsEnum(OrderStatus)
   status: OrderStatus

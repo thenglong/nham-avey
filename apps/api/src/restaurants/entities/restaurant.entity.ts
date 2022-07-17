@@ -9,7 +9,7 @@ import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm"
 
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "restaurants" })
 export class Restaurant extends CoreEntity {
   @Field(() => String)
   @Column()
@@ -34,14 +34,15 @@ export class Restaurant extends CoreEntity {
   })
   category: Category
 
+  // TODO: upgrade to m -> m
   @Field(() => User)
   @ManyToOne(() => User, user => user.restaurants, {
     onDelete: "CASCADE",
     nullable: false,
   })
-  owner: User
+  vendor: User
 
-  @RelationId((restaurant: Restaurant) => restaurant.owner)
+  @RelationId((restaurant: Restaurant) => restaurant.vendor)
   vendorId: string
 
   @Field(() => [Order], { nullable: true })

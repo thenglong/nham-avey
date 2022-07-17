@@ -28,7 +28,7 @@ export class DishOption {
 
 @InputType("DishInputType", { isAbstract: true })
 @ObjectType()
-@Entity()
+@Entity({ name: "dishes" })
 export class Dish extends CoreEntity {
   @Field(type => String)
   @Column()

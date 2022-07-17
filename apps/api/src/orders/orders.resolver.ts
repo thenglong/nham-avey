@@ -40,8 +40,8 @@ export class OrderResolver {
   }
 
   @Subscription(() => Order, {
-    filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
-      return ownerId === user.id
+    filter: ({ pendingOrders: { vendorId } }, _, { user }) => {
+      return vendorId === user.id
     },
     resolve: ({ pendingOrders: { order } }) => {
       return order
@@ -60,7 +60,7 @@ export class OrderResolver {
 
   @Subscription(() => Order, {
     filter: ({ orderUpdates: order }: { orderUpdates: Order }, { input }: { input: OrderUpdatesInput }, { user }: { user: User }) => {
-      if (order.driverId !== user.id && order.customerId !== user.id && order.restaurant?.ownerId !== user.id) {
+      if (order.driverId !== user.id && order.customerId !== user.id && order.restaurant?.vendorId !== user.id) {
         return false
       }
       return order.id === input.id

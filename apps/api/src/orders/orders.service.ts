@@ -89,7 +89,7 @@ export class OrderService {
       )
 
       await this.pubSub.publish(NEW_PENDING_ORDER, {
-        pendingOrders: { order, ownerId: restaurant.vendorId },
+        pendingOrders: { order, vendorId: restaurant.vendorId },
       })
 
       return {
@@ -125,7 +125,7 @@ export class OrderService {
       } else if (user.roles.includes(UserRole.Vendor)) {
         const restaurants = await this.restaurants.find({
           where: {
-            owner: Equal(user),
+            vendor: Equal(user),
           },
           relations: ["orders"],
         })
