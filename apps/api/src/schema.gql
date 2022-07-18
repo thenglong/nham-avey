@@ -204,7 +204,7 @@ type Mutation {
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
   deleteDish(input: DeleteDishInput!): DeleteDishOutput!
-  deleteRestaurant(id: Float!): DeleteRestaurantOutput!
+  deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
   editDish(input: EditDishInput!): EditDishOutput!
   editOrder(input: EditOrderInput!): EditOrderOutput!
   signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!

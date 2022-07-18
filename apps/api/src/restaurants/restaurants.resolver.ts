@@ -80,8 +80,11 @@ export class RestaurantResolver {
 
   @Mutation(() => DeleteRestaurantOutput)
   @Roles(UserRole.Vendor, UserRole.Admin)
-  deleteRestaurant(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args("id") restaurantId: number): Promise<DeleteRestaurantOutput> {
-    return this.restaurantService.deleteRestaurant(decodedIdToken, restaurantId)
+  deleteRestaurant(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args() restaurantArgs: RestaurantArgs,
+  ): Promise<DeleteRestaurantOutput> {
+    return this.restaurantService.deleteRestaurant(decodedIdToken, restaurantArgs.restaurantId)
   }
 
   @Query(() => PaginatedRestaurantsOutput)
