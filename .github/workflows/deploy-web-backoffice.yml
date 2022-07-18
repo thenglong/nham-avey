@@ -30,6 +30,10 @@ jobs:
         run: npx nx run web-backoffice:build
         env:
           NX_BO_FIREBASE_CONFIG_JSON: ${{secrets.NX_BO_FIREBASE_CONFIG_JSON}}
+          NX_API_URL: ${{secrets.NX_API_URL}}
+          NX_API_KEY: ${{secrets.NX_API_KEY}}
+          NX_HTTP_GRAPHQL_URI: ${{secrets.NX_HTTP_GRAPHQL_URI}}
+          NX_WS_GRAPHQL_URI: ${{secrets.NX_WS_GRAPHQL_URI}}
 
       - name: Add _redirect to serve SPA 🔀
         run:  echo "/*    /index.html   200" > ./dist/apps/web-backoffice/_redirects
