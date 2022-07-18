@@ -282,7 +282,7 @@ export type MutationDeleteDishArgs = {
 
 
 export type MutationDeleteRestaurantArgs = {
-  id: Scalars['Float'];
+  restaurantId: Scalars['Int'];
 };
 
 
@@ -611,6 +611,20 @@ export type DishPartsFragment = { __typename?: 'Dish', id: number, name: string,
 
 export type OrderPartsFragment = { __typename?: 'Order', id: number, createdAt: any, total?: number | null };
 
+export type AdminCreateRestaurantMutationVariables = Exact<{
+  input: AdminCreateRestaurantByInput;
+}>;
+
+
+export type AdminCreateRestaurantMutation = { __typename?: 'Mutation', adminCreateRestaurant: { __typename?: 'CreateRestaurantOutput', error?: string | null, ok: boolean } };
+
+export type AdminUpdateRestaurantMutationVariables = Exact<{
+  input: UpdateRestaurantInput;
+}>;
+
+
+export type AdminUpdateRestaurantMutation = { __typename?: 'Mutation', adminUpdateRestaurant: { __typename?: 'UpdateRestaurantOutput', error?: string | null, ok: boolean } };
+
 export type CreateDishMutationVariables = Exact<{
   input: CreateDishInput;
 }>;
@@ -624,6 +638,13 @@ export type CreateOrderMutationVariables = Exact<{
 
 
 export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'CreateOrderOutput', ok: boolean, error?: string | null, orderId?: number | null } };
+
+export type DeleteRestaurantMutationVariables = Exact<{
+  restaurantId: Scalars['Int'];
+}>;
+
+
+export type DeleteRestaurantMutation = { __typename?: 'Mutation', deleteRestaurant: { __typename?: 'DeleteRestaurantOutput', error?: string | null, ok: boolean } };
 
 export type EditOrderMutationVariables = Exact<{
   input: EditOrderInput;
@@ -646,7 +667,7 @@ export type AdminGetRestaurantsQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, category?: { __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any } | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null, restaurant?: { __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any } | null }> | null, orders?: Array<{ __typename?: 'Order', createdAt: any, id: number, status: OrderStatus, total?: number | null, updatedAt: any, customer?: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } | null, driver?: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } | null, items: Array<{ __typename?: 'OrderItem', createdAt: any, id: number, updatedAt: any, dish: { __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any }, options?: Array<{ __typename?: 'OrderItemOption', choice?: string | null, name: string }> | null }> }> | null, vendor: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean, payments?: Array<{ __typename?: 'Payment', createdAt: any, id: number, restaurantId: number, transactionId: string, updatedAt: any, user: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } }> | null, rides?: Array<{ __typename?: 'Order', createdAt: any, id: number, status: OrderStatus, total?: number | null, updatedAt: any }> | null } }> | null } };
+export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, category?: { __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any } | null, vendor: { __typename?: 'User', id: string, email: string, createdAt: any, updatedAt: any, verified: boolean } }> | null } };
 
 export type CategoryQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -756,6 +777,74 @@ export const OrderPartsFragmentDoc = gql`
   total
 }
     `;
+export const AdminCreateRestaurantDocument = gql`
+    mutation AdminCreateRestaurant($input: AdminCreateRestaurantByInput!) {
+  adminCreateRestaurant(input: $input) {
+    error
+    ok
+  }
+}
+    `;
+export type AdminCreateRestaurantMutationFn = Apollo.MutationFunction<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>;
+
+/**
+ * __useAdminCreateRestaurantMutation__
+ *
+ * To run a mutation, you first call `useAdminCreateRestaurantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminCreateRestaurantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminCreateRestaurantMutation, { data, loading, error }] = useAdminCreateRestaurantMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminCreateRestaurantMutation(baseOptions?: Apollo.MutationHookOptions<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>(AdminCreateRestaurantDocument, options);
+      }
+export type AdminCreateRestaurantMutationHookResult = ReturnType<typeof useAdminCreateRestaurantMutation>;
+export type AdminCreateRestaurantMutationResult = Apollo.MutationResult<AdminCreateRestaurantMutation>;
+export type AdminCreateRestaurantMutationOptions = Apollo.BaseMutationOptions<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>;
+export const AdminUpdateRestaurantDocument = gql`
+    mutation AdminUpdateRestaurant($input: UpdateRestaurantInput!) {
+  adminUpdateRestaurant(input: $input) {
+    error
+    ok
+  }
+}
+    `;
+export type AdminUpdateRestaurantMutationFn = Apollo.MutationFunction<AdminUpdateRestaurantMutation, AdminUpdateRestaurantMutationVariables>;
+
+/**
+ * __useAdminUpdateRestaurantMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateRestaurantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateRestaurantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateRestaurantMutation, { data, loading, error }] = useAdminUpdateRestaurantMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminUpdateRestaurantMutation(baseOptions?: Apollo.MutationHookOptions<AdminUpdateRestaurantMutation, AdminUpdateRestaurantMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminUpdateRestaurantMutation, AdminUpdateRestaurantMutationVariables>(AdminUpdateRestaurantDocument, options);
+      }
+export type AdminUpdateRestaurantMutationHookResult = ReturnType<typeof useAdminUpdateRestaurantMutation>;
+export type AdminUpdateRestaurantMutationResult = Apollo.MutationResult<AdminUpdateRestaurantMutation>;
+export type AdminUpdateRestaurantMutationOptions = Apollo.BaseMutationOptions<AdminUpdateRestaurantMutation, AdminUpdateRestaurantMutationVariables>;
 export const CreateDishDocument = gql`
     mutation createDish($input: CreateDishInput!) {
   createDish(input: $input) {
@@ -825,6 +914,40 @@ export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
 export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
 export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
+export const DeleteRestaurantDocument = gql`
+    mutation DeleteRestaurant($restaurantId: Int!) {
+  deleteRestaurant(restaurantId: $restaurantId) {
+    error
+    ok
+  }
+}
+    `;
+export type DeleteRestaurantMutationFn = Apollo.MutationFunction<DeleteRestaurantMutation, DeleteRestaurantMutationVariables>;
+
+/**
+ * __useDeleteRestaurantMutation__
+ *
+ * To run a mutation, you first call `useDeleteRestaurantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRestaurantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRestaurantMutation, { data, loading, error }] = useDeleteRestaurantMutation({
+ *   variables: {
+ *      restaurantId: // value for 'restaurantId'
+ *   },
+ * });
+ */
+export function useDeleteRestaurantMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRestaurantMutation, DeleteRestaurantMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteRestaurantMutation, DeleteRestaurantMutationVariables>(DeleteRestaurantDocument, options);
+      }
+export type DeleteRestaurantMutationHookResult = ReturnType<typeof useDeleteRestaurantMutation>;
+export type DeleteRestaurantMutationResult = Apollo.MutationResult<DeleteRestaurantMutation>;
+export type DeleteRestaurantMutationOptions = Apollo.BaseMutationOptions<DeleteRestaurantMutation, DeleteRestaurantMutationVariables>;
 export const EditOrderDocument = gql`
     mutation editOrder($input: EditOrderInput!) {
   editOrder(input: $input) {
@@ -917,104 +1040,13 @@ export const AdminGetRestaurantsDocument = gql`
       createdAt
       id
       isPromoted
-      menu {
-        createdAt
-        description
-        id
-        name
-        options {
-          choices {
-            extra
-            name
-          }
-          extra
-          name
-        }
-        photo
-        price
-        restaurant {
-          address
-          coverImg
-          createdAt
-          id
-          isPromoted
-          name
-          promotedUntil
-          updatedAt
-        }
-        updatedAt
-      }
       name
-      orders {
-        createdAt
-        customer {
-          createdAt
-          email
-          id
-          roles
-          updatedAt
-          verified
-        }
-        driver {
-          createdAt
-          email
-          id
-          roles
-          updatedAt
-          verified
-        }
-        id
-        items {
-          createdAt
-          dish {
-            createdAt
-            description
-            id
-            name
-            photo
-            price
-            updatedAt
-          }
-          id
-          options {
-            choice
-            name
-          }
-          updatedAt
-        }
-        status
-        total
-        updatedAt
-      }
       promotedUntil
       updatedAt
       vendor {
-        createdAt
-        email
         id
-        payments {
-          createdAt
-          id
-          restaurantId
-          transactionId
-          updatedAt
-          user {
-            createdAt
-            email
-            id
-            roles
-            updatedAt
-            verified
-          }
-        }
-        rides {
-          createdAt
-          id
-          status
-          total
-          updatedAt
-        }
-        roles
+        email
+        createdAt
         updatedAt
         verified
       }

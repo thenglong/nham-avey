@@ -21,104 +21,13 @@ query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
       createdAt
       id
       isPromoted
-      menu {
-        createdAt
-        description
-        id
-        name
-        options {
-          choices {
-            extra
-            name
-          }
-          extra
-          name
-        }
-        photo
-        price
-        restaurant {
-          address
-          coverImg
-          createdAt
-          id
-          isPromoted
-          name
-          promotedUntil
-          updatedAt
-        }
-        updatedAt
-      }
       name
-      orders {
-        createdAt
-        customer {
-          createdAt
-          email
-          id
-          roles
-          updatedAt
-          verified
-        }
-        driver {
-          createdAt
-          email
-          id
-          roles
-          updatedAt
-          verified
-        }
-        id
-        items {
-          createdAt
-          dish {
-            createdAt
-            description
-            id
-            name
-            photo
-            price
-            updatedAt
-          }
-          id
-          options {
-            choice
-            name
-          }
-          updatedAt
-        }
-        status
-        total
-        updatedAt
-      }
       promotedUntil
       updatedAt
       vendor {
-        createdAt
-        email
         id
-        payments {
-          createdAt
-          id
-          restaurantId
-          transactionId
-          updatedAt
-          user {
-            createdAt
-            email
-            id
-            roles
-            updatedAt
-            verified
-          }
-        }
-        rides {
-          createdAt
-          id
-          status
-          total
-          updatedAt
-        }
-        roles
+        email
+        createdAt
         updatedAt
         verified
       }

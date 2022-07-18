@@ -6,8 +6,6 @@ import { AUTH_PREFIX_PATH } from "src/config/app-config"
 
 const SignInPage = lazy(() => import("src/pages/sign-in-page"))
 
-const SIGN_IN_PATH = "/sign-in"
-
 const authRoutes: RouteObject[] = [
   {
     path: "*",

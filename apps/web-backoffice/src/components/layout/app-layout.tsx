@@ -49,7 +49,7 @@ export const AppLayout = () => {
           >
             <PageHeader title="App Title" />
             <Content>
-              <Suspense fallback={<LoadingIndicator cover="content" />}>
+              <Suspense fallback={<LoadingIndicator cover="content" size={54} />}>
                 <Outlet />
               </Suspense>
             </Content>

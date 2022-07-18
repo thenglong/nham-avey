@@ -5,7 +5,7 @@ import LoadingIndicator from "src/components/loading-indicator"
 
 export const AuthLayout = () => {
   return (
-    <Suspense fallback={<LoadingIndicator cover="page" />}>
+    <Suspense fallback={<LoadingIndicator cover="page" size={54} />}>
       <div className="h-screen">
         <Outlet />
       </div>

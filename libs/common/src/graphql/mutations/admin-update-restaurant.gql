@@ -1,0 +1,6 @@
+mutation AdminUpdateRestaurant($input: UpdateRestaurantInput!) {
+  adminUpdateRestaurant(input: $input) {
+    error
+    ok
+  }
+}

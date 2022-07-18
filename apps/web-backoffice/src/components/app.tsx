@@ -39,7 +39,7 @@ function App() {
     [isLoadingFirebaseUser, isLoadingCurrentUser]
   )
 
-  if (isLoading) return <LoadingIndicator cover="page" />
+  if (isLoading) return <LoadingIndicator cover="page" size={54} />
 
   if (!firebaseUser) return authRouter
 

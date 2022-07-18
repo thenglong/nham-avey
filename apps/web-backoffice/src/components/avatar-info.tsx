@@ -22,13 +22,15 @@ export const AvatarInfo = ({
         "flex-row-reverse": reverse,
       })}
     >
-      <LazyAvatar
-        photoUrl={photoUrl}
-        alt={title}
-        name={title}
-        blurhash={blurhash}
-        size={50}
-      />
+      <div className="rounded-full ring-2 ring-offset-2">
+        <LazyAvatar
+          photoUrl={photoUrl}
+          alt={title}
+          name={title}
+          blurhash={blurhash}
+          size={50}
+        />
+      </div>
       <div
         className={clsx("mx-2", {
           "text-right": reverse,

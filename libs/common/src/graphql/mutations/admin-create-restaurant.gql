@@ -1,0 +1,6 @@
+mutation AdminCreateRestaurant($input: AdminCreateRestaurantByInput!) {
+  adminCreateRestaurant(input: $input) {
+    error
+    ok
+  }
+}

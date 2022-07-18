@@ -5,9 +5,10 @@ import clsx from "clsx"
 interface LoadingProps {
   align?: "left" | "right" | "center"
   cover?: "content" | "page"
+  size?: number
 }
 
-const LoadingIndicator = ({ align, cover }: LoadingProps) => {
+const LoadingIndicator = ({ align, cover, size = 35 }: LoadingProps) => {
   return (
     <div
       className={clsx("loading", {
@@ -18,7 +19,7 @@ const LoadingIndicator = ({ align, cover }: LoadingProps) => {
         "fixed flex h-full w-full items-center justify-center": cover === "page",
       })}
     >
-      <Spin indicator={<LoadingOutlined style={{ fontSize: 35 }} spin />} />
+      <Spin indicator={<LoadingOutlined style={{ fontSize: size }} spin />} />
     </div>
   )
 }

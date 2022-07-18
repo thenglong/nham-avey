@@ -1,0 +1,6 @@
+mutation DeleteRestaurant($restaurantId: Int!) {
+  deleteRestaurant(restaurantId: $restaurantId) {
+    error
+    ok
+  }
+}
