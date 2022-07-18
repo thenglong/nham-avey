@@ -12,7 +12,7 @@ import {
 import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
 import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import { UpdateRestaurantInput, UpdateRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
+import { AdminUpdateRestaurantInput, UpdateRestaurantOutput, VendorUpdateRestaurantInput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
@@ -103,7 +103,7 @@ export class RestaurantService {
 
   async updateRestaurantByVendor(
     vendorId: UserRecord["uid"],
-    updateRestaurantInput: UpdateRestaurantInput,
+    updateRestaurantInput: VendorUpdateRestaurantInput,
   ): Promise<UpdateRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneByOrFail({
@@ -146,7 +146,7 @@ export class RestaurantService {
     }
   }
 
-  async updateRestaurant(updateRestaurantInput: UpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
+  async updateRestaurantByAdmin(updateRestaurantInput: AdminUpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneByOrFail({
         id: updateRestaurantInput.restaurantId,
@@ -168,6 +168,7 @@ export class RestaurantService {
           id: updateRestaurantInput.restaurantId,
           ...updateRestaurantInput,
           ...(category && { category }),
+          vendorId: updateRestaurantInput.vendorId,
         },
       ])
       return {

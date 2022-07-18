@@ -8,7 +8,7 @@ import {
   VendorCreateRestaurantInput,
 } from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
-import { UpdateRestaurantInput, UpdateRestaurantOutput } from "src/restaurants/dtos/edit.restaurant.dto"
+import { AdminUpdateRestaurantInput, UpdateRestaurantOutput, VendorUpdateRestaurantInput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
@@ -64,7 +64,7 @@ export class RestaurantResolver {
   @Roles(UserRole.Vendor)
   vendorUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args("input") restaurantInput: UpdateRestaurantInput,
+    @Args("input") restaurantInput: VendorUpdateRestaurantInput,
   ): Promise<UpdateRestaurantOutput> {
     return this.restaurantService.updateRestaurantByVendor(decodedIdToken.uid, restaurantInput)
   }
@@ -73,9 +73,9 @@ export class RestaurantResolver {
   @Roles(UserRole.Admin)
   adminUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args("input") restaurantInput: UpdateRestaurantInput,
+    @Args("input") restaurantInput: AdminUpdateRestaurantInput,
   ): Promise<UpdateRestaurantOutput> {
-    return this.restaurantService.updateRestaurant(restaurantInput)
+    return this.restaurantService.updateRestaurantByAdmin(restaurantInput)
   }
 
   @Mutation(() => DeleteRestaurantOutput)
