@@ -1,4 +1,4 @@
-mutation AdminUpdateRestaurant($input: UpdateRestaurantInput!) {
+mutation AdminUpdateRestaurant($input: AdminUpdateRestaurantInput!) {
   adminUpdateRestaurant(input: $input) {
     error
     ok

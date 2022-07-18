@@ -24,6 +24,15 @@ export type AdminCreateRestaurantByInput = {
   vendorId: Scalars['String'];
 };
 
+export type AdminUpdateRestaurantInput = {
+  address?: InputMaybe<Scalars['String']>;
+  categoryName?: InputMaybe<Scalars['String']>;
+  coverImg?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  restaurantId: Scalars['Float'];
+  vendorId?: InputMaybe<Scalars['String']>;
+};
+
 export type AllCategoriesOutput = {
   __typename?: 'AllCategoriesOutput';
   categories?: Maybe<Array<Category>>;
@@ -252,7 +261,7 @@ export type MutationAdminCreateRestaurantArgs = {
 
 
 export type MutationAdminUpdateRestaurantArgs = {
-  input: UpdateRestaurantInput;
+  input: AdminUpdateRestaurantInput;
 };
 
 
@@ -332,7 +341,7 @@ export type MutationVendorCreateRestaurantArgs = {
 
 
 export type MutationVendorUpdateRestaurantArgs = {
-  input: UpdateRestaurantInput;
+  input: VendorUpdateRestaurantInput;
 };
 
 export type MyRestaurantOutput = {
@@ -559,14 +568,6 @@ export type UpdateProfileOutput = {
   ok: Scalars['Boolean'];
 };
 
-export type UpdateRestaurantInput = {
-  address?: InputMaybe<Scalars['String']>;
-  categoryName?: InputMaybe<Scalars['String']>;
-  coverImg?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  restaurantId: Scalars['Float'];
-};
-
 export type UpdateRestaurantOutput = {
   __typename?: 'UpdateRestaurantOutput';
   error?: Maybe<Scalars['String']>;
@@ -601,6 +602,14 @@ export type VendorCreateRestaurantInput = {
   name: Scalars['String'];
 };
 
+export type VendorUpdateRestaurantInput = {
+  address?: InputMaybe<Scalars['String']>;
+  categoryName?: InputMaybe<Scalars['String']>;
+  coverImg?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  restaurantId: Scalars['Float'];
+};
+
 export type FullOrderPartsFragment = { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null };
 
 export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string, coverImageUrl?: string | null } | null };
@@ -619,7 +628,7 @@ export type AdminCreateRestaurantMutationVariables = Exact<{
 export type AdminCreateRestaurantMutation = { __typename?: 'Mutation', adminCreateRestaurant: { __typename?: 'CreateRestaurantOutput', error?: string | null, ok: boolean } };
 
 export type AdminUpdateRestaurantMutationVariables = Exact<{
-  input: UpdateRestaurantInput;
+  input: AdminUpdateRestaurantInput;
 }>;
 
 
@@ -812,7 +821,7 @@ export type AdminCreateRestaurantMutationHookResult = ReturnType<typeof useAdmin
 export type AdminCreateRestaurantMutationResult = Apollo.MutationResult<AdminCreateRestaurantMutation>;
 export type AdminCreateRestaurantMutationOptions = Apollo.BaseMutationOptions<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>;
 export const AdminUpdateRestaurantDocument = gql`
-    mutation AdminUpdateRestaurant($input: UpdateRestaurantInput!) {
+    mutation AdminUpdateRestaurant($input: AdminUpdateRestaurantInput!) {
   adminUpdateRestaurant(input: $input) {
     error
     ok

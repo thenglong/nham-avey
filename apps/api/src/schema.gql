@@ -10,6 +10,15 @@ input AdminCreateRestaurantByInput {
   vendorId: String!
 }
 
+input AdminUpdateRestaurantInput {
+  address: String
+  categoryName: String
+  coverImg: String
+  name: String
+  restaurantId: Float!
+  vendorId: String
+}
+
 type AllCategoriesOutput {
   categories: [Category!]
   error: String
@@ -198,7 +207,7 @@ type GetPaymentsOutput {
 
 type Mutation {
   adminCreateRestaurant(input: AdminCreateRestaurantByInput!): CreateRestaurantOutput!
-  adminUpdateRestaurant(input: UpdateRestaurantInput!): UpdateRestaurantOutput!
+  adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
   createAdmin(input: CreateAccountInput!): CreateAccountOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
@@ -214,7 +223,7 @@ type Mutation {
   updateMeAsCustomer(input: UpdateProfileInput!): UpdateProfileOutput!
   updateMeAsVendor(input: UpdateProfileInput!): UpdateProfileOutput!
   vendorCreateRestaurant(input: VendorCreateRestaurantInput!): CreateRestaurantOutput!
-  vendorUpdateRestaurant(input: UpdateRestaurantInput!): UpdateRestaurantOutput!
+  vendorUpdateRestaurant(input: VendorUpdateRestaurantInput!): UpdateRestaurantOutput!
 }
 
 type MyRestaurantOutput {
@@ -367,14 +376,6 @@ type UpdateProfileOutput {
   ok: Boolean!
 }
 
-input UpdateRestaurantInput {
-  address: String
-  categoryName: String
-  coverImg: String
-  name: String
-  restaurantId: Float!
-}
-
 type UpdateRestaurantOutput {
   error: String
   ok: Boolean!
@@ -405,4 +406,12 @@ input VendorCreateRestaurantInput {
   categoryName: String!
   coverImg: String!
   name: String!
+}
+
+input VendorUpdateRestaurantInput {
+  address: String
+  categoryName: String
+  coverImg: String
+  name: String
+  restaurantId: Float!
 }

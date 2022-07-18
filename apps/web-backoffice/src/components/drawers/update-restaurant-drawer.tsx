@@ -96,6 +96,7 @@ export function UpdateRestaurantDrawer({
           restaurantId: restaurant?.id as number,
           coverImg: coverImageUrl,
           categoryName: restaurant?.category?.name,
+          vendorId: restaurant?.vendor?.id,
         },
       },
       onCompleted: () => {
