@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from "react"
 
 import { onAuthStateChanged, User, Auth } from "firebase/auth"
-import useLoadingValue from "src/hooks/use-loading-value/use-loading-value"
-import firebaseService from "src/services/firebase-services"
+import firebaseService from "../../services/firebase-services"
+import useLoadingValue from "../../hooks/use-loading-value/use-loading-value"
 
 const { auth: fallbackAuth } = firebaseService
 export interface UseFirebaseAuthState {

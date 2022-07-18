@@ -2,8 +2,17 @@ query category($page: Int, $slug: String!) {
   category(page: $page, slug: $slug) {
     ok
     error
-    totalPages
-    totalResults
+    pageCount
+    hasPrevious
+    hasNext
+    matchedCount
+    category {
+      id
+      name
+      slug
+      coverImageUrl
+      restaurantCount
+    }
     restaurants {
       ...RestaurantParts
     }

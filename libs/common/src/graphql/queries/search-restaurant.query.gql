@@ -1,9 +1,11 @@
-query searchRestaurant($page: Int, $query: String) {
-  searchRestaurant(page: $page, query: $query) {
+query searchRestaurant($page: Int, $take: Int, $query: String) {
+  searchRestaurant(page: $page, query: $query, take: $take) {
     ok
     error
-    totalPages
-    totalResults
+    hasNext
+    matchedCount
+    hasPrevious
+    pageCount
     restaurants {
       ...RestaurantParts
     }

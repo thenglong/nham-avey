@@ -19,6 +19,7 @@ fragment RestaurantParts on Restaurant {
   coverImg
   category {
     name
+    coverImageUrl
   }
   address
   isPromoted
@@ -27,7 +28,7 @@ fragment RestaurantParts on Restaurant {
 fragment CategoryParts on Category {
   id
   name
-  coverImg
+  coverImageUrl
   slug
   restaurantCount
 }

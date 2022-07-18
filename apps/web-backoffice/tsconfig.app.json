@@ -5,7 +5,11 @@
     "types": ["node"],
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      // This is just a workaround https://stackoverflow.com/a/68505525
+      "@nham-avey/common": ["../../libs/common/src/index.ts"]
+    }
   },
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",

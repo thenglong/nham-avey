@@ -16,6 +16,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AdminCreateRestaurantByInput = {
+  address: Scalars['String'];
+  categoryName: Scalars['String'];
+  coverImg: Scalars['String'];
+  name: Scalars['String'];
+  vendorId: Scalars['String'];
+};
+
 export type AllCategoriesOutput = {
   __typename?: 'AllCategoriesOutput';
   categories?: Maybe<Array<Category>>;
@@ -25,7 +33,7 @@ export type AllCategoriesOutput = {
 
 export type Category = {
   __typename?: 'Category';
-  coverImg?: Maybe<Scalars['String']>;
+  coverImageUrl?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
   name: Scalars['String'];
@@ -39,22 +47,24 @@ export type CategoryOutput = {
   __typename?: 'CategoryOutput';
   category?: Maybe<Category>;
   error?: Maybe<Scalars['String']>;
+  hasNext?: Maybe<Scalars['Boolean']>;
+  hasPrevious?: Maybe<Scalars['Boolean']>;
+  matchedCount?: Maybe<Scalars['Int']>;
   ok: Scalars['Boolean'];
+  pageCount?: Maybe<Scalars['Int']>;
   restaurants?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
 };
 
 export type CreateAccountInput = {
   email: Scalars['String'];
   password: Scalars['String'];
-  role: UserRole;
 };
 
 export type CreateAccountOutput = {
   __typename?: 'CreateAccountOutput';
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
+  user?: Maybe<User>;
 };
 
 export type CreateDishInput = {
@@ -99,18 +109,11 @@ export type CreatePaymentOutput = {
   ok: Scalars['Boolean'];
 };
 
-export type CreateRestaurantInput = {
-  address: Scalars['String'];
-  categoryName: Scalars['String'];
-  coverImg: Scalars['String'];
-  name: Scalars['String'];
-};
-
 export type CreateRestaurantOutput = {
   __typename?: 'CreateRestaurantOutput';
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
-  restaurantId: Scalars['Int'];
+  restaurant?: Maybe<Restaurant>;
 };
 
 export type DeleteDishInput = {
@@ -121,10 +124,6 @@ export type DeleteDishOutput = {
   __typename?: 'DeleteDishOutput';
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
-};
-
-export type DeleteRestaurantInput = {
-  restaurantId: Scalars['Float'];
 };
 
 export type DeleteRestaurantOutput = {
@@ -195,31 +194,6 @@ export type EditOrderOutput = {
   ok: Scalars['Boolean'];
 };
 
-export type EditProfileInput = {
-  email?: InputMaybe<Scalars['String']>;
-  password?: InputMaybe<Scalars['String']>;
-};
-
-export type EditProfileOutput = {
-  __typename?: 'EditProfileOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
-
-export type EditRestaurantInput = {
-  address?: InputMaybe<Scalars['String']>;
-  categoryName?: InputMaybe<Scalars['String']>;
-  coverImg?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  restaurantId: Scalars['Float'];
-};
-
-export type EditRestaurantOutput = {
-  __typename?: 'EditRestaurantOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
-
 export type GetOrderInput = {
   id: Scalars['Float'];
 };
@@ -251,23 +225,38 @@ export type GetPaymentsOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createAccount: CreateAccountOutput;
+  adminCreateRestaurant: CreateRestaurantOutput;
+  adminUpdateRestaurant: UpdateRestaurantOutput;
+  createAdmin: CreateAccountOutput;
   createDish: CreateDishOutput;
   createOrder: CreateOrderOutput;
   createPayment: CreatePaymentOutput;
-  createRestaurant: CreateRestaurantOutput;
   deleteDish: DeleteDishOutput;
   deleteRestaurant: DeleteRestaurantOutput;
   editDish: EditDishOutput;
   editOrder: EditOrderOutput;
-  editProfile: EditProfileOutput;
-  editRestaurant: EditRestaurantOutput;
+  signUpCustomer: SignUpAccountOutput;
+  signUpVendor: SignUpAccountOutput;
   takeOrder: TakeOrderOutput;
-  verifyEmail: VerifyEmailOutput;
+  updateMeAsAdmin: UpdateProfileOutput;
+  updateMeAsCustomer: UpdateProfileOutput;
+  updateMeAsVendor: UpdateProfileOutput;
+  vendorCreateRestaurant: CreateRestaurantOutput;
+  vendorUpdateRestaurant: UpdateRestaurantOutput;
 };
 
 
-export type MutationCreateAccountArgs = {
+export type MutationAdminCreateRestaurantArgs = {
+  input: AdminCreateRestaurantByInput;
+};
+
+
+export type MutationAdminUpdateRestaurantArgs = {
+  input: UpdateRestaurantInput;
+};
+
+
+export type MutationCreateAdminArgs = {
   input: CreateAccountInput;
 };
 
@@ -287,18 +276,13 @@ export type MutationCreatePaymentArgs = {
 };
 
 
-export type MutationCreateRestaurantArgs = {
-  input: CreateRestaurantInput;
-};
-
-
 export type MutationDeleteDishArgs = {
   input: DeleteDishInput;
 };
 
 
 export type MutationDeleteRestaurantArgs = {
-  input: DeleteRestaurantInput;
+  id: Scalars['Float'];
 };
 
 
@@ -312,13 +296,13 @@ export type MutationEditOrderArgs = {
 };
 
 
-export type MutationEditProfileArgs = {
-  input: EditProfileInput;
+export type MutationSignUpCustomerArgs = {
+  input: SignUpAccountInput;
 };
 
 
-export type MutationEditRestaurantArgs = {
-  input: EditRestaurantInput;
+export type MutationSignUpVendorArgs = {
+  input: SignUpAccountInput;
 };
 
 
@@ -327,12 +311,28 @@ export type MutationTakeOrderArgs = {
 };
 
 
-export type MutationVerifyEmailArgs = {
-  input: VerifyEmailInput;
+export type MutationUpdateMeAsAdminArgs = {
+  input: UpdateProfileInput;
 };
 
-export type MyRestaurantInput = {
-  id: Scalars['Float'];
+
+export type MutationUpdateMeAsCustomerArgs = {
+  input: UpdateProfileInput;
+};
+
+
+export type MutationUpdateMeAsVendorArgs = {
+  input: UpdateProfileInput;
+};
+
+
+export type MutationVendorCreateRestaurantArgs = {
+  input: VendorCreateRestaurantInput;
+};
+
+
+export type MutationVendorUpdateRestaurantArgs = {
+  input: UpdateRestaurantInput;
 };
 
 export type MyRestaurantOutput = {
@@ -340,13 +340,6 @@ export type MyRestaurantOutput = {
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
   restaurant?: Maybe<Restaurant>;
-};
-
-export type MyRestaurantsOutput = {
-  __typename?: 'MyRestaurantsOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  restaurants: Array<Restaurant>;
 };
 
 export type Order = {
@@ -394,6 +387,17 @@ export type OrderUpdatesInput = {
   id: Scalars['Float'];
 };
 
+export type PaginatedRestaurantsOutput = {
+  __typename?: 'PaginatedRestaurantsOutput';
+  error?: Maybe<Scalars['String']>;
+  hasNext?: Maybe<Scalars['Boolean']>;
+  hasPrevious?: Maybe<Scalars['Boolean']>;
+  matchedCount?: Maybe<Scalars['Int']>;
+  ok: Scalars['Boolean'];
+  pageCount?: Maybe<Scalars['Int']>;
+  restaurants?: Maybe<Array<Restaurant>>;
+};
+
 export type Payment = {
   __typename?: 'Payment';
   createdAt: Scalars['DateTime'];
@@ -407,24 +411,31 @@ export type Payment = {
 
 export type Query = {
   __typename?: 'Query';
+  adminGetRestaurants: PaginatedRestaurantsOutput;
   allCategories: AllCategoriesOutput;
   category: CategoryOutput;
   getOrder: GetOrderOutput;
   getOrders: GetOrdersOutput;
   getPayments: GetPaymentsOutput;
-  me: User;
-  myRestaurant: MyRestaurantOutput;
-  myRestaurants: MyRestaurantsOutput;
-  restaurant: RestaurantOutput;
-  restaurants: RestaurantsOutput;
+  myRestaurantById: MyRestaurantOutput;
+  myRestaurants: PaginatedRestaurantsOutput;
+  pubicGetRestaurants: PaginatedRestaurantsOutput;
+  publicGetRestaurantById: RestaurantOutput;
   searchRestaurant: SearchRestaurantOutput;
-  userProfile: UserProfileOutput;
+};
+
+
+export type QueryAdminGetRestaurantsArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
 };
 
 
 export type QueryCategoryArgs = {
   page?: InputMaybe<Scalars['Int']>;
   slug: Scalars['String'];
+  take?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -438,29 +449,34 @@ export type QueryGetOrdersArgs = {
 };
 
 
-export type QueryMyRestaurantArgs = {
-  input: MyRestaurantInput;
-};
-
-
-export type QueryRestaurantArgs = {
+export type QueryMyRestaurantByIdArgs = {
   restaurantId: Scalars['Int'];
 };
 
 
-export type QueryRestaurantsArgs = {
+export type QueryMyRestaurantsArgs = {
   page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryPubicGetRestaurantsArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryPublicGetRestaurantByIdArgs = {
+  restaurantId: Scalars['Int'];
 };
 
 
 export type QuerySearchRestaurantArgs = {
   page?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryUserProfileArgs = {
-  userId: Scalars['Float'];
+  take?: InputMaybe<Scalars['Int']>;
 };
 
 export type Restaurant = {
@@ -471,12 +487,12 @@ export type Restaurant = {
   createdAt: Scalars['DateTime'];
   id: Scalars['Float'];
   isPromoted: Scalars['Boolean'];
-  menu: Array<Dish>;
+  menu?: Maybe<Array<Dish>>;
   name: Scalars['String'];
-  orders: Array<Order>;
-  owner: User;
+  orders?: Maybe<Array<Order>>;
   promotedUntil?: Maybe<Scalars['DateTime']>;
   updatedAt: Scalars['DateTime'];
+  vendor: User;
 };
 
 export type RestaurantOutput = {
@@ -486,22 +502,28 @@ export type RestaurantOutput = {
   restaurant?: Maybe<Restaurant>;
 };
 
-export type RestaurantsOutput = {
-  __typename?: 'RestaurantsOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  results?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
-};
-
 export type SearchRestaurantOutput = {
   __typename?: 'SearchRestaurantOutput';
   error?: Maybe<Scalars['String']>;
+  hasNext?: Maybe<Scalars['Boolean']>;
+  hasPrevious?: Maybe<Scalars['Boolean']>;
+  matchedCount?: Maybe<Scalars['Int']>;
   ok: Scalars['Boolean'];
+  pageCount?: Maybe<Scalars['Int']>;
   restaurants?: Maybe<Array<Restaurant>>;
-  totalPages?: Maybe<Scalars['Int']>;
-  totalResults?: Maybe<Scalars['Int']>;
+};
+
+export type SignUpAccountInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type SignUpAccountOutput = {
+  __typename?: 'SignUpAccountOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+  signInToken?: Maybe<Scalars['String']>;
+  user?: Maybe<User>;
 };
 
 export type Subscription = {
@@ -526,60 +548,68 @@ export type TakeOrderOutput = {
   ok: Scalars['Boolean'];
 };
 
+export type UpdateProfileInput = {
+  email?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
+};
+
+export type UpdateProfileOutput = {
+  __typename?: 'UpdateProfileOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+};
+
+export type UpdateRestaurantInput = {
+  address?: InputMaybe<Scalars['String']>;
+  categoryName?: InputMaybe<Scalars['String']>;
+  coverImg?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  restaurantId: Scalars['Float'];
+};
+
+export type UpdateRestaurantOutput = {
+  __typename?: 'UpdateRestaurantOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
-  id: Scalars['Float'];
-  orders: Array<Order>;
-  password: Scalars['String'];
-  payments: Array<Payment>;
-  restaurants: Array<Restaurant>;
-  rides: Array<Order>;
-  role: UserRole;
+  id: Scalars['String'];
+  orders?: Maybe<Array<Order>>;
+  payments?: Maybe<Array<Payment>>;
+  restaurants?: Maybe<Array<Restaurant>>;
+  rides?: Maybe<Array<Order>>;
+  roles: Array<UserRole>;
   updatedAt: Scalars['DateTime'];
   verified: Scalars['Boolean'];
 };
 
-export type UserProfileOutput = {
-  __typename?: 'UserProfileOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-  user?: Maybe<User>;
-};
-
 export enum UserRole {
-  Client = 'Client',
-  Delivery = 'Delivery',
-  Owner = 'Owner'
+  Admin = 'Admin',
+  Customer = 'Customer',
+  Driver = 'Driver',
+  Vendor = 'Vendor'
 }
 
-export type VerifyEmailInput = {
-  code: Scalars['String'];
-};
-
-export type VerifyEmailOutput = {
-  __typename?: 'VerifyEmailOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
+export type VendorCreateRestaurantInput = {
+  address: Scalars['String'];
+  categoryName: Scalars['String'];
+  coverImg: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type FullOrderPartsFragment = { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null };
 
-export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null };
+export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string, coverImageUrl?: string | null } | null };
 
-export type CategoryPartsFragment = { __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number };
+export type CategoryPartsFragment = { __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number };
 
 export type DishPartsFragment = { __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null };
 
 export type OrderPartsFragment = { __typename?: 'Order', id: number, createdAt: any, total?: number | null };
-
-export type CreateAccountMutationVariables = Exact<{
-  createAccountInput: CreateAccountInput;
-}>;
-
-
-export type CreateAccountMutation = { __typename?: 'Mutation', createAccount: { __typename?: 'CreateAccountOutput', ok: boolean, error?: string | null } };
 
 export type CreateDishMutationVariables = Exact<{
   input: CreateDishInput;
@@ -602,13 +632,6 @@ export type EditOrderMutationVariables = Exact<{
 
 export type EditOrderMutation = { __typename?: 'Mutation', editOrder: { __typename?: 'EditOrderOutput', ok: boolean, error?: string | null } };
 
-export type EditProfileMutationVariables = Exact<{
-  input: EditProfileInput;
-}>;
-
-
-export type EditProfileMutation = { __typename?: 'Mutation', editProfile: { __typename?: 'EditProfileOutput', ok: boolean, error?: string | null } };
-
 export type TakeOrderMutationVariables = Exact<{
   input: TakeOrderInput;
 }>;
@@ -616,12 +639,14 @@ export type TakeOrderMutationVariables = Exact<{
 
 export type TakeOrderMutation = { __typename?: 'Mutation', takeOrder: { __typename?: 'TakeOrderOutput', ok: boolean, error?: string | null } };
 
-export type VerifyEmailMutationVariables = Exact<{
-  input: VerifyEmailInput;
+export type AdminGetRestaurantsQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'VerifyEmailOutput', ok: boolean, error?: string | null } };
+export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, category?: { __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any } | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null, restaurant?: { __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any } | null }> | null, orders?: Array<{ __typename?: 'Order', createdAt: any, id: number, status: OrderStatus, total?: number | null, updatedAt: any, customer?: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } | null, driver?: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } | null, items: Array<{ __typename?: 'OrderItem', createdAt: any, id: number, updatedAt: any, dish: { __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any }, options?: Array<{ __typename?: 'OrderItemOption', choice?: string | null, name: string }> | null }> }> | null, vendor: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean, payments?: Array<{ __typename?: 'Payment', createdAt: any, id: number, restaurantId: number, transactionId: string, updatedAt: any, user: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } }> | null, rides?: Array<{ __typename?: 'Order', createdAt: any, id: number, status: OrderStatus, total?: number | null, updatedAt: any }> | null } }> | null } };
 
 export type CategoryQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -629,12 +654,7 @@ export type CategoryQueryVariables = Exact<{
 }>;
 
 
-export type CategoryQuery = { __typename?: 'Query', category: { __typename?: 'CategoryOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null, category?: { __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number } | null } };
-
-export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetMeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: number, email: string, role: UserRole, verified: boolean } };
+export type CategoryQuery = { __typename?: 'Query', category: { __typename?: 'CategoryOutput', ok: boolean, error?: string | null, pageCount?: number | null, hasPrevious?: boolean | null, hasNext?: boolean | null, matchedCount?: number | null, category?: { __typename?: 'Category', id: number, name: string, slug: string, coverImageUrl?: string | null, restaurantCount: number } | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string, coverImageUrl?: string | null } | null }> | null } };
 
 export type GetOrderQueryVariables = Exact<{
   input: GetOrderInput;
@@ -643,39 +663,19 @@ export type GetOrderQueryVariables = Exact<{
 
 export type GetOrderQuery = { __typename?: 'Query', getOrder: { __typename?: 'GetOrderOutput', ok: boolean, error?: string | null, order?: { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null } | null } };
 
-export type MyRestaurantQueryVariables = Exact<{
-  input: MyRestaurantInput;
-}>;
-
-
-export type MyRestaurantQuery = { __typename?: 'Query', myRestaurant: { __typename?: 'MyRestaurantOutput', ok: boolean, error?: string | null, restaurant?: { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, menu: Array<{ __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null }>, orders: Array<{ __typename?: 'Order', id: number, createdAt: any, total?: number | null }>, category?: { __typename?: 'Category', name: string } | null } | null } };
-
 export type MyRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'MyRestaurantsOutput', ok: boolean, error?: string | null, restaurants: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> } };
-
-export type RestaurantQueryVariables = Exact<{
-  restaurantId: Scalars['Int'];
-}>;
-
-
-export type RestaurantQuery = { __typename?: 'Query', restaurant: { __typename?: 'RestaurantOutput', ok: boolean, error?: string | null, restaurant?: { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, menu: Array<{ __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null }>, category?: { __typename?: 'Category', name: string } | null } | null } };
-
-export type RestaurantsPageQueryQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']>;
-}>;
-
-
-export type RestaurantsPageQueryQuery = { __typename?: 'Query', allCategories: { __typename?: 'AllCategoriesOutput', ok: boolean, error?: string | null, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImg?: string | null, slug: string, restaurantCount: number }> | null }, restaurants: { __typename?: 'RestaurantsOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, results?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null } };
+export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string, coverImageUrl?: string | null } | null }> | null } };
 
 export type SearchRestaurantQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type SearchRestaurantQuery = { __typename?: 'Query', searchRestaurant: { __typename?: 'SearchRestaurantOutput', ok: boolean, error?: string | null, totalPages?: number | null, totalResults?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string } | null }> | null } };
+export type SearchRestaurantQuery = { __typename?: 'Query', searchRestaurant: { __typename?: 'SearchRestaurantOutput', ok: boolean, error?: string | null, hasNext?: boolean | null, matchedCount?: number | null, hasPrevious?: boolean | null, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, category?: { __typename?: 'Category', name: string, coverImageUrl?: string | null } | null }> | null } };
 
 export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -717,6 +717,7 @@ export const RestaurantPartsFragmentDoc = gql`
   coverImg
   category {
     name
+    coverImageUrl
   }
   address
   isPromoted
@@ -726,7 +727,7 @@ export const CategoryPartsFragmentDoc = gql`
     fragment CategoryParts on Category {
   id
   name
-  coverImg
+  coverImageUrl
   slug
   restaurantCount
 }
@@ -755,40 +756,6 @@ export const OrderPartsFragmentDoc = gql`
   total
 }
     `;
-export const CreateAccountDocument = gql`
-    mutation createAccount($createAccountInput: CreateAccountInput!) {
-  createAccount(input: $createAccountInput) {
-    ok
-    error
-  }
-}
-    `;
-export type CreateAccountMutationFn = Apollo.MutationFunction<CreateAccountMutation, CreateAccountMutationVariables>;
-
-/**
- * __useCreateAccountMutation__
- *
- * To run a mutation, you first call `useCreateAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAccountMutation, { data, loading, error }] = useCreateAccountMutation({
- *   variables: {
- *      createAccountInput: // value for 'createAccountInput'
- *   },
- * });
- */
-export function useCreateAccountMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccountMutation, CreateAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument, options);
-      }
-export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>;
-export type CreateAccountMutationResult = Apollo.MutationResult<CreateAccountMutation>;
-export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<CreateAccountMutation, CreateAccountMutationVariables>;
 export const CreateDishDocument = gql`
     mutation createDish($input: CreateDishInput!) {
   createDish(input: $input) {
@@ -892,40 +859,6 @@ export function useEditOrderMutation(baseOptions?: Apollo.MutationHookOptions<Ed
 export type EditOrderMutationHookResult = ReturnType<typeof useEditOrderMutation>;
 export type EditOrderMutationResult = Apollo.MutationResult<EditOrderMutation>;
 export type EditOrderMutationOptions = Apollo.BaseMutationOptions<EditOrderMutation, EditOrderMutationVariables>;
-export const EditProfileDocument = gql`
-    mutation editProfile($input: EditProfileInput!) {
-  editProfile(input: $input) {
-    ok
-    error
-  }
-}
-    `;
-export type EditProfileMutationFn = Apollo.MutationFunction<EditProfileMutation, EditProfileMutationVariables>;
-
-/**
- * __useEditProfileMutation__
- *
- * To run a mutation, you first call `useEditProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useEditProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [editProfileMutation, { data, loading, error }] = useEditProfileMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useEditProfileMutation(baseOptions?: Apollo.MutationHookOptions<EditProfileMutation, EditProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<EditProfileMutation, EditProfileMutationVariables>(EditProfileDocument, options);
-      }
-export type EditProfileMutationHookResult = ReturnType<typeof useEditProfileMutation>;
-export type EditProfileMutationResult = Apollo.MutationResult<EditProfileMutation>;
-export type EditProfileMutationOptions = Apollo.BaseMutationOptions<EditProfileMutation, EditProfileMutationVariables>;
 export const TakeOrderDocument = gql`
     mutation takeOrder($input: TakeOrderInput!) {
   takeOrder(input: $input) {
@@ -960,47 +893,181 @@ export function useTakeOrderMutation(baseOptions?: Apollo.MutationHookOptions<Ta
 export type TakeOrderMutationHookResult = ReturnType<typeof useTakeOrderMutation>;
 export type TakeOrderMutationResult = Apollo.MutationResult<TakeOrderMutation>;
 export type TakeOrderMutationOptions = Apollo.BaseMutationOptions<TakeOrderMutation, TakeOrderMutationVariables>;
-export const VerifyEmailDocument = gql`
-    mutation verifyEmail($input: VerifyEmailInput!) {
-  verifyEmail(input: $input) {
-    ok
+export const AdminGetRestaurantsDocument = gql`
+    query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
+  adminGetRestaurants(page: $page, q: $q, take: $take) {
     error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+    restaurants {
+      address
+      category {
+        coverImageUrl
+        createdAt
+        id
+        name
+        restaurantCount
+        slug
+        updatedAt
+      }
+      coverImg
+      createdAt
+      id
+      isPromoted
+      menu {
+        createdAt
+        description
+        id
+        name
+        options {
+          choices {
+            extra
+            name
+          }
+          extra
+          name
+        }
+        photo
+        price
+        restaurant {
+          address
+          coverImg
+          createdAt
+          id
+          isPromoted
+          name
+          promotedUntil
+          updatedAt
+        }
+        updatedAt
+      }
+      name
+      orders {
+        createdAt
+        customer {
+          createdAt
+          email
+          id
+          roles
+          updatedAt
+          verified
+        }
+        driver {
+          createdAt
+          email
+          id
+          roles
+          updatedAt
+          verified
+        }
+        id
+        items {
+          createdAt
+          dish {
+            createdAt
+            description
+            id
+            name
+            photo
+            price
+            updatedAt
+          }
+          id
+          options {
+            choice
+            name
+          }
+          updatedAt
+        }
+        status
+        total
+        updatedAt
+      }
+      promotedUntil
+      updatedAt
+      vendor {
+        createdAt
+        email
+        id
+        payments {
+          createdAt
+          id
+          restaurantId
+          transactionId
+          updatedAt
+          user {
+            createdAt
+            email
+            id
+            roles
+            updatedAt
+            verified
+          }
+        }
+        rides {
+          createdAt
+          id
+          status
+          total
+          updatedAt
+        }
+        roles
+        updatedAt
+        verified
+      }
+    }
   }
 }
     `;
-export type VerifyEmailMutationFn = Apollo.MutationFunction<VerifyEmailMutation, VerifyEmailMutationVariables>;
 
 /**
- * __useVerifyEmailMutation__
+ * __useAdminGetRestaurantsQuery__
  *
- * To run a mutation, you first call `useVerifyEmailMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useVerifyEmailMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useAdminGetRestaurantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminGetRestaurantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [verifyEmailMutation, { data, loading, error }] = useVerifyEmailMutation({
+ * const { data, loading, error } = useAdminGetRestaurantsQuery({
  *   variables: {
- *      input: // value for 'input'
+ *      page: // value for 'page'
+ *      q: // value for 'q'
+ *      take: // value for 'take'
  *   },
  * });
  */
-export function useVerifyEmailMutation(baseOptions?: Apollo.MutationHookOptions<VerifyEmailMutation, VerifyEmailMutationVariables>) {
+export function useAdminGetRestaurantsQuery(baseOptions?: Apollo.QueryHookOptions<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument, options);
+        return Apollo.useQuery<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>(AdminGetRestaurantsDocument, options);
       }
-export type VerifyEmailMutationHookResult = ReturnType<typeof useVerifyEmailMutation>;
-export type VerifyEmailMutationResult = Apollo.MutationResult<VerifyEmailMutation>;
-export type VerifyEmailMutationOptions = Apollo.BaseMutationOptions<VerifyEmailMutation, VerifyEmailMutationVariables>;
+export function useAdminGetRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>(AdminGetRestaurantsDocument, options);
+        }
+export type AdminGetRestaurantsQueryHookResult = ReturnType<typeof useAdminGetRestaurantsQuery>;
+export type AdminGetRestaurantsLazyQueryHookResult = ReturnType<typeof useAdminGetRestaurantsLazyQuery>;
+export type AdminGetRestaurantsQueryResult = Apollo.QueryResult<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>;
 export const CategoryDocument = gql`
     query category($page: Int, $slug: String!) {
   category(page: $page, slug: $slug) {
     ok
     error
-    totalPages
-    totalResults
+    pageCount
+    hasPrevious
+    hasNext
+    matchedCount
+    category {
+      id
+      name
+      slug
+      coverImageUrl
+      restaurantCount
+    }
     restaurants {
       ...RestaurantParts
     }
@@ -1040,43 +1107,6 @@ export function useCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type CategoryQueryHookResult = ReturnType<typeof useCategoryQuery>;
 export type CategoryLazyQueryHookResult = ReturnType<typeof useCategoryLazyQuery>;
 export type CategoryQueryResult = Apollo.QueryResult<CategoryQuery, CategoryQueryVariables>;
-export const GetMeDocument = gql`
-    query getMe {
-  me {
-    id
-    email
-    role
-    verified
-  }
-}
-    `;
-
-/**
- * __useGetMeQuery__
- *
- * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMeQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-      }
-export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
-        }
-export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
-export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
-export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const GetOrderDocument = gql`
     query getOrder($input: GetOrderInput!) {
   getOrder(input: $input) {
@@ -1116,53 +1146,6 @@ export function useGetOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetOrderQueryHookResult = ReturnType<typeof useGetOrderQuery>;
 export type GetOrderLazyQueryHookResult = ReturnType<typeof useGetOrderLazyQuery>;
 export type GetOrderQueryResult = Apollo.QueryResult<GetOrderQuery, GetOrderQueryVariables>;
-export const MyRestaurantDocument = gql`
-    query myRestaurant($input: MyRestaurantInput!) {
-  myRestaurant(input: $input) {
-    ok
-    error
-    restaurant {
-      ...RestaurantParts
-      menu {
-        ...DishParts
-      }
-      orders {
-        ...OrderParts
-      }
-    }
-  }
-}
-    ${RestaurantPartsFragmentDoc}
-${DishPartsFragmentDoc}
-${OrderPartsFragmentDoc}`;
-
-/**
- * __useMyRestaurantQuery__
- *
- * To run a query within a React component, call `useMyRestaurantQuery` and pass it any options that fit your needs.
- * When your component renders, `useMyRestaurantQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMyRestaurantQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMyRestaurantQuery(baseOptions: Apollo.QueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(MyRestaurantDocument, options);
-      }
-export function useMyRestaurantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyRestaurantQuery, MyRestaurantQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MyRestaurantQuery, MyRestaurantQueryVariables>(MyRestaurantDocument, options);
-        }
-export type MyRestaurantQueryHookResult = ReturnType<typeof useMyRestaurantQuery>;
-export type MyRestaurantLazyQueryHookResult = ReturnType<typeof useMyRestaurantLazyQuery>;
-export type MyRestaurantQueryResult = Apollo.QueryResult<MyRestaurantQuery, MyRestaurantQueryVariables>;
 export const MyRestaurantsDocument = gql`
     query myRestaurants {
   myRestaurants {
@@ -1201,105 +1184,15 @@ export function useMyRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type MyRestaurantsQueryHookResult = ReturnType<typeof useMyRestaurantsQuery>;
 export type MyRestaurantsLazyQueryHookResult = ReturnType<typeof useMyRestaurantsLazyQuery>;
 export type MyRestaurantsQueryResult = Apollo.QueryResult<MyRestaurantsQuery, MyRestaurantsQueryVariables>;
-export const RestaurantDocument = gql`
-    query restaurant($restaurantId: Int!) {
-  restaurant(restaurantId: $restaurantId) {
-    ok
-    error
-    restaurant {
-      ...RestaurantParts
-      menu {
-        ...DishParts
-      }
-    }
-  }
-}
-    ${RestaurantPartsFragmentDoc}
-${DishPartsFragmentDoc}`;
-
-/**
- * __useRestaurantQuery__
- *
- * To run a query within a React component, call `useRestaurantQuery` and pass it any options that fit your needs.
- * When your component renders, `useRestaurantQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRestaurantQuery({
- *   variables: {
- *      restaurantId: // value for 'restaurantId'
- *   },
- * });
- */
-export function useRestaurantQuery(baseOptions: Apollo.QueryHookOptions<RestaurantQuery, RestaurantQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RestaurantQuery, RestaurantQueryVariables>(RestaurantDocument, options);
-      }
-export function useRestaurantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RestaurantQuery, RestaurantQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RestaurantQuery, RestaurantQueryVariables>(RestaurantDocument, options);
-        }
-export type RestaurantQueryHookResult = ReturnType<typeof useRestaurantQuery>;
-export type RestaurantLazyQueryHookResult = ReturnType<typeof useRestaurantLazyQuery>;
-export type RestaurantQueryResult = Apollo.QueryResult<RestaurantQuery, RestaurantQueryVariables>;
-export const RestaurantsPageQueryDocument = gql`
-    query restaurantsPageQuery($page: Int) {
-  allCategories {
-    ok
-    error
-    categories {
-      ...CategoryParts
-    }
-  }
-  restaurants(page: $page) {
-    ok
-    error
-    totalPages
-    totalResults
-    results {
-      ...RestaurantParts
-    }
-  }
-}
-    ${CategoryPartsFragmentDoc}
-${RestaurantPartsFragmentDoc}`;
-
-/**
- * __useRestaurantsPageQueryQuery__
- *
- * To run a query within a React component, call `useRestaurantsPageQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useRestaurantsPageQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRestaurantsPageQueryQuery({
- *   variables: {
- *      page: // value for 'page'
- *   },
- * });
- */
-export function useRestaurantsPageQueryQuery(baseOptions?: Apollo.QueryHookOptions<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>(RestaurantsPageQueryDocument, options);
-      }
-export function useRestaurantsPageQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>(RestaurantsPageQueryDocument, options);
-        }
-export type RestaurantsPageQueryQueryHookResult = ReturnType<typeof useRestaurantsPageQueryQuery>;
-export type RestaurantsPageQueryLazyQueryHookResult = ReturnType<typeof useRestaurantsPageQueryLazyQuery>;
-export type RestaurantsPageQueryQueryResult = Apollo.QueryResult<RestaurantsPageQueryQuery, RestaurantsPageQueryQueryVariables>;
 export const SearchRestaurantDocument = gql`
-    query searchRestaurant($page: Int, $query: String) {
-  searchRestaurant(page: $page, query: $query) {
+    query searchRestaurant($page: Int, $take: Int, $query: String) {
+  searchRestaurant(page: $page, query: $query, take: $take) {
     ok
     error
-    totalPages
-    totalResults
+    hasNext
+    matchedCount
+    hasPrevious
+    pageCount
     restaurants {
       ...RestaurantParts
     }
@@ -1320,6 +1213,7 @@ export const SearchRestaurantDocument = gql`
  * const { data, loading, error } = useSearchRestaurantQuery({
  *   variables: {
  *      page: // value for 'page'
+ *      take: // value for 'take'
  *      query: // value for 'query'
  *   },
  * });

@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
 
+import { ApolloProvider } from "@apollo/client/react"
 import { ConfigProvider as AntConfigProvider } from "antd"
 import { HelmetProvider } from "react-helmet-async"
 import { QueryClient, QueryClientProvider } from "react-query"
@@ -7,6 +8,7 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import { Provider as ReduxProvider } from "react-redux"
 import { BrowserRouter } from "react-router-dom"
 import AudioAlertContextProvider from "src/context/AudioAlertContext"
+import { client } from "src/graphql/apollo-config"
 import store from "src/redux/store"
 
 // Create a client
@@ -26,12 +28,14 @@ const AppProvider = ({ children }: AppProviderProps) => {
       <BrowserRouter>
         <AntConfigProvider componentSize="large">
           <ReduxProvider store={store}>
-            <AudioAlertContextProvider>
-              <QueryClientProvider client={queryClient}>
-                <ReactQueryDevtools initialIsOpen={false} />
-                {children}
-              </QueryClientProvider>
-            </AudioAlertContextProvider>
+            <ApolloProvider client={client}>
+              <AudioAlertContextProvider>
+                <QueryClientProvider client={queryClient}>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                  {children}
+                </QueryClientProvider>
+              </AudioAlertContextProvider>
+            </ApolloProvider>
           </ReduxProvider>
         </AntConfigProvider>
       </BrowserRouter>
