@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config"
 import { GraphQLModule } from "@nestjs/graphql"
 import { ScheduleModule } from "@nestjs/schedule"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core"
+import { ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault } from "apollo-server-core"
 import { ApolloServer } from "apollo-server-express"
 import { cert } from "firebase-admin/app"
 import { ApiKeyMiddleware } from "src/auth/api-key.middleware"
@@ -41,7 +41,12 @@ import * as Yup from "yup"
       driver: ApolloDriver,
       installSubscriptionHandlers: true,
       playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      introspection: true,
+      plugins: [
+        process.env.NODE_ENV === "production"
+          ? ApolloServerPluginLandingPageProductionDefault()
+          : ApolloServerPluginLandingPageLocalDefault(),
+      ],
       sortSchema: true,
       autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
       context: ({ req, connection }: ApolloServer["context"]) => {
