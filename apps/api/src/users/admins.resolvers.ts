@@ -13,18 +13,15 @@ export class AdminsResolver {
 
   @Roles(UserRole.Admin)
   @Mutation(() => CreateAccountOutput)
-  async createAdmin(@Args("input") createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
-    return this.userService.createAdmin(createAccountInput)
+  async createAdmin(@Args("input") input: CreateAccountInput): Promise<CreateAccountOutput> {
+    return this.userService.createAdmin(input)
   }
 
   @Roles(UserRole.Admin)
   @Mutation(() => UpdateProfileOutput)
-  async updateMeAsAdmin(
-    @GraphqlAuthUser() authUser: User,
-    @Args("input") updateProfileInput: UpdateProfileInput,
-  ): Promise<UpdateProfileOutput> {
+  async updateMeAsAdmin(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      await this.userService.editProfile(authUser.id, updateProfileInput)
+      await this.userService.editProfile(authUser.id, input)
       return {
         ok: true,
       }
@@ -38,7 +35,7 @@ export class AdminsResolver {
 
   @Query(() => PaginatedUsersOutput)
   @Roles(UserRole.Admin)
-  adminGetUsers(@Args() paginationUserArgs: PaginationUserArgs): Promise<PaginatedUsersOutput> {
-    return this.userService.getUsersByAdmin(paginationUserArgs)
+  adminGetUsers(@Args() args: PaginationUserArgs): Promise<PaginatedUsersOutput> {
+    return this.userService.getUsersByAdmin(args)
   }
 }

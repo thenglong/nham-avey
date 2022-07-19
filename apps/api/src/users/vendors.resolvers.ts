@@ -11,18 +11,15 @@ export class VendorsResolver {
   constructor(private readonly UserService: UserService) {}
 
   @Mutation(() => SignUpAccountOutput)
-  async signUpVendor(@Args("input") signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    return this.UserService.signUpVendor(signUpAccountInput)
+  async signUpVendor(@Args("input") input: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    return this.UserService.signUpVendor(input)
   }
 
   @Roles(UserRole.Vendor)
   @Mutation(() => UpdateProfileOutput)
-  async updateMeAsVendor(
-    @GraphqlAuthUser() authUser: User,
-    @Args("input") updateProfileInput: UpdateProfileInput,
-  ): Promise<UpdateProfileOutput> {
+  async updateMeAsVendor(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      await this.UserService.editProfile(authUser.id, updateProfileInput)
+      await this.UserService.editProfile(authUser.id, input)
       return {
         ok: true,
       }

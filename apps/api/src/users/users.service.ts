@@ -71,9 +71,10 @@ export class UserService {
     return { ok: true, user, signInToken }
   }
 
-  async createAdmin(createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
+  async createAdmin(input: CreateAccountInput): Promise<CreateAccountOutput> {
     try {
-      const exist = await this.checkIfUserExistByEmail(createAccountInput.email)
+      const { email } = input
+      const exist = await this.checkIfUserExistByEmail(email)
       if (exist) {
         return {
           ok: false,
@@ -81,8 +82,8 @@ export class UserService {
         }
       }
 
-      const firebaseUser = await this.createFirebaseUser(createAccountInput, { roles: [UserRole.Admin] })
-      const user = await this.createUser(firebaseUser.uid, createAccountInput, [UserRole.Admin])
+      const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Admin] })
+      const user = await this.createUser(firebaseUser.uid, input, [UserRole.Admin])
 
       // TODO: send verify email here
 

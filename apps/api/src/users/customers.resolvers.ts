@@ -11,18 +11,15 @@ export class CustomersResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => SignUpAccountOutput)
-  async signUpCustomer(@Args("input") signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    return this.userService.signUpCustomer(signUpAccountInput)
+  async signUpCustomer(@Args("input") input: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    return this.userService.signUpCustomer(input)
   }
 
   @Roles(UserRole.Customer)
   @Mutation(() => UpdateProfileOutput)
-  async updateMeAsCustomer(
-    @GraphqlAuthUser() authUser: User,
-    @Args("input") updateProfileInput: UpdateProfileInput,
-  ): Promise<UpdateProfileOutput> {
+  async updateMeAsCustomer(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      await this.userService.editProfile(authUser.id, updateProfileInput)
+      await this.userService.editProfile(authUser.id, input)
       return {
         ok: true,
       }
