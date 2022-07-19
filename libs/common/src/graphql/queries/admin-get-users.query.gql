@@ -1,0 +1,18 @@
+query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
+  adminGetUsers(role: $role, q: $q, take: $take, page: $page) {
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+    users {
+      createdAt
+      email
+      id
+      roles
+      updatedAt
+      verified
+    }
+  }
+}

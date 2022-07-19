@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
-import { AdminUpdateRestaurantMutationHookResult, Restaurant } from "@nham-avey/common"
+import {
+  AdminUpdateRestaurantMutationHookResult,
+  Restaurant,
+  useAdminGetUsersLazyQuery,
+  UserRole,
+  User,
+} from "@nham-avey/common"
 import { Button, Drawer, Form, Input, Typography, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import type { UploadChangeParam } from "antd/es/upload"
@@ -11,8 +17,8 @@ import compressImage from "browser-image-compression"
 import api from "src/api/_api"
 import { CONTENT_TYPE_FORM_DATA } from "src/api/api-constants"
 import {
-  OptionValue,
   DebouncedSelect,
+  OptionValue,
 } from "src/components/form-elements/DebouncedSelect"
 
 const { useForm } = Form
@@ -114,22 +120,27 @@ export function UpdateRestaurantDrawer({
     })
   }
 
-  // TODO: SEARCH VENDOR API
-  function fetchUserList(username: string): Promise<OptionValue[]> {
-    return fetch("https://randomuser.me/api/?results=5")
-      .then(response => response.json())
-      .then(body =>
-        body.results.map(
-          (user: {
-            name: { first: string; last: string }
-            login: { username: string }
-          }) => ({
-            label: `${user.name.first} ${user.name.last}`,
-            value: user.login.username,
-          })
-        )
-      )
-  }
+  const [getVendors] = useAdminGetUsersLazyQuery()
+
+  const fetchVendor = useCallback(
+    async (search: string): Promise<OptionValue[]> => {
+      const { data } = await getVendors({
+        variables: { take: 10, q: search, role: UserRole.Vendor },
+      })
+
+      const { ok, users } = data?.adminGetUsers || {}
+
+      if (ok && users) {
+        return users.map((vendor: User) => ({
+          label: vendor.email,
+          value: vendor.id,
+        }))
+      }
+
+      return []
+    },
+    [getVendors]
+  )
 
   return (
     <Drawer
@@ -200,7 +211,7 @@ export function UpdateRestaurantDrawer({
             maxTagCount={1}
             maxLength={1}
             placeholder="Start Typing to Search"
-            fetchOptions={fetchUserList}
+            fetchOptions={fetchVendor}
             style={{ width: "100%" }}
           />
         </Form.Item>

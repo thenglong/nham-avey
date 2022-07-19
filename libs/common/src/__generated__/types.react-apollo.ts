@@ -407,6 +407,17 @@ export type PaginatedRestaurantsOutput = {
   restaurants?: Maybe<Array<Restaurant>>;
 };
 
+export type PaginatedUsersOutput = {
+  __typename?: 'PaginatedUsersOutput';
+  error?: Maybe<Scalars['String']>;
+  hasNext?: Maybe<Scalars['Boolean']>;
+  hasPrevious?: Maybe<Scalars['Boolean']>;
+  matchedCount?: Maybe<Scalars['Int']>;
+  ok: Scalars['Boolean'];
+  pageCount?: Maybe<Scalars['Int']>;
+  users?: Maybe<Array<User>>;
+};
+
 export type Payment = {
   __typename?: 'Payment';
   createdAt: Scalars['DateTime'];
@@ -421,6 +432,7 @@ export type Payment = {
 export type Query = {
   __typename?: 'Query';
   adminGetRestaurants: PaginatedRestaurantsOutput;
+  adminGetUsers: PaginatedUsersOutput;
   allCategories: AllCategoriesOutput;
   category: CategoryOutput;
   getOrder: GetOrderOutput;
@@ -437,6 +449,14 @@ export type Query = {
 export type QueryAdminGetRestaurantsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryAdminGetUsersArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  role?: InputMaybe<UserRole>;
   take?: InputMaybe<Scalars['Int']>;
 };
 
@@ -677,6 +697,16 @@ export type AdminGetRestaurantsQueryVariables = Exact<{
 
 
 export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, category?: { __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any } | null, vendor: { __typename?: 'User', id: string, email: string, createdAt: any, updatedAt: any, verified: boolean } }> | null } };
+
+export type AdminGetUsersQueryVariables = Exact<{
+  role?: InputMaybe<UserRole>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean }> | null } };
 
 export type CategoryQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1093,6 +1123,57 @@ export function useAdminGetRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type AdminGetRestaurantsQueryHookResult = ReturnType<typeof useAdminGetRestaurantsQuery>;
 export type AdminGetRestaurantsLazyQueryHookResult = ReturnType<typeof useAdminGetRestaurantsLazyQuery>;
 export type AdminGetRestaurantsQueryResult = Apollo.QueryResult<AdminGetRestaurantsQuery, AdminGetRestaurantsQueryVariables>;
+export const AdminGetUsersDocument = gql`
+    query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
+  adminGetUsers(role: $role, q: $q, take: $take, page: $page) {
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+    users {
+      createdAt
+      email
+      id
+      roles
+      updatedAt
+      verified
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdminGetUsersQuery__
+ *
+ * To run a query within a React component, call `useAdminGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminGetUsersQuery({
+ *   variables: {
+ *      role: // value for 'role'
+ *      q: // value for 'q'
+ *      take: // value for 'take'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useAdminGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<AdminGetUsersQuery, AdminGetUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AdminGetUsersQuery, AdminGetUsersQueryVariables>(AdminGetUsersDocument, options);
+      }
+export function useAdminGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminGetUsersQuery, AdminGetUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AdminGetUsersQuery, AdminGetUsersQueryVariables>(AdminGetUsersDocument, options);
+        }
+export type AdminGetUsersQueryHookResult = ReturnType<typeof useAdminGetUsersQuery>;
+export type AdminGetUsersLazyQueryHookResult = ReturnType<typeof useAdminGetUsersLazyQuery>;
+export type AdminGetUsersQueryResult = Apollo.QueryResult<AdminGetUsersQuery, AdminGetUsersQueryVariables>;
 export const CategoryDocument = gql`
     query category($page: Int, $slug: String!) {
   category(page: $page, slug: $slug) {
