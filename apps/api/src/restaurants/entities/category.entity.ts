@@ -24,6 +24,7 @@ export class Category extends CoreEntity {
   @IsString()
   slug: string
 
+  // TODO: upgrade to m -> m
   @Field(() => [Restaurant], { nullable: true })
   @OneToMany(() => Restaurant, restaurant => restaurant.category)
   restaurants: Restaurant[]

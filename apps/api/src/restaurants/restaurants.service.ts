@@ -519,9 +519,11 @@ export class RestaurantService {
 
       if (searchQuery) {
         queryBuilder.andWhere(
-          `restaurant.name ILIKE :searchQuery
-                   OR
-                 restaurant.address ILIKE :searchQuery`,
+          `
+            restaurant.name ILIKE :searchQuery
+            OR
+            restaurant.address ILIKE :searchQuery
+          `,
           { searchQuery },
         )
       }
@@ -532,6 +534,7 @@ export class RestaurantService {
         .skip(skip)
         .take(take)
         .leftJoinAndSelect("restaurant.vendor", "vendor") //
+        .leftJoinAndSelect("restaurant.category", "category") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")

@@ -27,6 +27,7 @@ export class Restaurant extends CoreEntity {
   @IsString()
   address: string
 
+  // TODO: upgrade to m -> m
   @Field(() => Category, { nullable: true })
   @ManyToOne(() => Category, category => category.restaurants, {
     nullable: true,

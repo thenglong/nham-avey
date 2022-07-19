@@ -13,6 +13,7 @@ export class CategoryInput extends PaginationArgs {
 export class CategoryOutput extends PaginationOutput {
   @Field(type => [Restaurant], { nullable: true })
   restaurants?: Restaurant[]
+
   @Field(type => Category, { nullable: true })
   category?: Category
 }
