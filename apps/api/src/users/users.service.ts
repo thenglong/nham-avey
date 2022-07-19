@@ -2,9 +2,12 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
+import { RestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
 import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
 import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
+import { PaginatedUsersOutput, PaginationUserArgs } from "src/users/dtos/user.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
 import { Repository } from "typeorm"
 
@@ -132,6 +135,44 @@ export class UserService {
       return {
         ok: false,
         error: "[App] Could not update profile",
+      }
+    }
+  }
+
+  async getUsersByAdmin({ searchQuery, pageOptions: { skip, page, take }, role }: PaginationUserArgs): Promise<PaginatedUsersOutput> {
+    try {
+      const queryBuilder = this.userRepo.createQueryBuilder("user")
+
+      if (searchQuery) {
+        queryBuilder.where(`user.email ILIKE :searchQuery`, { searchQuery })
+      }
+
+      if (role) {
+        queryBuilder.andWhere(`:role = ANY(user.roles)`, { role })
+      }
+
+      const matchedCount = await queryBuilder.getCount()
+
+      queryBuilder
+        .orderBy("user.email", "ASC")
+        .skip(skip) //
+        .take(take) //
+
+      const users = await queryBuilder.getMany()
+
+      const pageCount = Math.ceil(matchedCount / take)
+      return {
+        users,
+        pageCount,
+        hasPrevious: page > 1 && page <= pageCount,
+        hasNext: page < pageCount,
+        matchedCount,
+        ok: true,
+      }
+    } catch {
+      return {
+        ok: false,
+        error: "[App] Could not find restaurantRepo",
       }
     }
   }

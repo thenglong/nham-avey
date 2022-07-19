@@ -23,7 +23,7 @@ export abstract class PaginationArgs {
   /**
    * https://github.com/nestjs/graphql/issues/1511
    */
-  get options(): PaginateOptions {
+  get pageOptions(): PaginateOptions {
     const page = this.page ?? PAGE_DEFAULT_VALUE
     const take = this.take ?? TAKE_DEFAULT_VALUE
     const skip = (page - 1) * take

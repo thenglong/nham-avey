@@ -269,7 +269,7 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByPublic({ options: { page, take, skip }, searchQuery }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByPublic({ pageOptions: { page, take, skip }, searchQuery }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
 
@@ -299,7 +299,7 @@ export class RestaurantService {
       return {
         restaurants: entities,
         pageCount,
-        hasPrevious: page > pageCount,
+        hasPrevious: page > 1 && page <= pageCount,
         hasNext: page < pageCount,
         matchedCount,
         ok: true,
@@ -467,7 +467,7 @@ export class RestaurantService {
 
   async getRestaurantsByVendor(
     vendorId: UserRecord["uid"],
-    { searchQuery, options: { skip, page, take } }: RestaurantsArgs,
+    { searchQuery, pageOptions: { skip, page, take } }: RestaurantsArgs,
   ): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
@@ -500,7 +500,7 @@ export class RestaurantService {
       return {
         restaurants: entities,
         pageCount,
-        hasPrevious: page > pageCount,
+        hasPrevious: page > 1 && page <= pageCount,
         hasNext: page < pageCount,
         matchedCount,
         ok: true,
@@ -513,7 +513,7 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByAdmin({ searchQuery, options: { skip, page, take } }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByAdmin({ searchQuery, pageOptions: { skip, page, take } }: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     try {
       const queryBuilder = this.restaurantRepo.createQueryBuilder("restaurant")
 
@@ -543,7 +543,7 @@ export class RestaurantService {
       return {
         restaurants: entities,
         pageCount,
-        hasPrevious: page > pageCount,
+        hasPrevious: page > 1 && page <= pageCount,
         hasNext: page < pageCount,
         matchedCount,
         ok: true,

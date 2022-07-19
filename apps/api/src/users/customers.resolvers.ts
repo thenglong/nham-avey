@@ -8,11 +8,11 @@ import { UserService } from "src/users/users.service"
 
 @Resolver()
 export class CustomersResolver {
-  constructor(private readonly UserService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Mutation(() => SignUpAccountOutput)
   async signUpCustomer(@Args("input") signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    return this.UserService.signUpCustomer(signUpAccountInput)
+    return this.userService.signUpCustomer(signUpAccountInput)
   }
 
   @Roles(UserRole.Customer)
@@ -22,7 +22,7 @@ export class CustomersResolver {
     @Args("input") updateProfileInput: UpdateProfileInput,
   ): Promise<UpdateProfileOutput> {
     try {
-      await this.UserService.editProfile(authUser.id, updateProfileInput)
+      await this.userService.editProfile(authUser.id, updateProfileInput)
       return {
         ok: true,
       }
