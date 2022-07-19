@@ -1,12 +1,12 @@
+import { MutationFunction, useMutation } from "@tanstack/react-query"
 import { FirebaseError } from "firebase/app"
 import {
+  Auth,
   browserLocalPersistence,
   browserSessionPersistence,
   signInWithEmailAndPassword,
-  Auth,
   UserCredential,
 } from "firebase/auth"
-import { MutationFunction, useMutation } from "react-query"
 import firebaseService from "src/services/firebase-service"
 
 const { auth: fallbackAuth } = firebaseService
@@ -32,7 +32,7 @@ const useSignInWithEmailAndPassword = () => {
     UserCredential,
     FirebaseError,
     SignInParams
-  >(doSignInWithEmailAndPassword, { mutationKey: "" })
+  >(doSignInWithEmailAndPassword)
 
   return {
     error,

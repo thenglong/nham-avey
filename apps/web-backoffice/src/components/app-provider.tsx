@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
 
 import { ApolloProvider } from "@apollo/client/react"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { ConfigProvider as AntConfigProvider } from "antd"
 import { HelmetProvider } from "react-helmet-async"
-import { QueryClient, QueryClientProvider } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
 import { Provider as ReduxProvider } from "react-redux"
 import { BrowserRouter } from "react-router-dom"
 import AudioAlertContextProvider from "src/context/AudioAlertContext"
