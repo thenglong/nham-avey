@@ -9,7 +9,7 @@ export class CategoryResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @ResolveField(returns => Int)
-  countRestaurants(@Parent() category: Category): Promise<number> {
+  restaurantCount(@Parent() category: Category): Promise<number> {
     return this.restaurantService.countRestaurantsByCategory(category)
   }
 
@@ -20,6 +20,6 @@ export class CategoryResolver {
 
   @Query(() => PaginatedCategoryRestaurantOutput)
   categoryRestaurantBySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
-    return this.restaurantService.findCategoryRestaurantsBySlug(args)
+    return this.restaurantService.findRestaurantsByCategorySlug(args)
   }
 }

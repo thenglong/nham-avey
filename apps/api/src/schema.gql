@@ -26,11 +26,11 @@ type AllCategoriesOutput {
 }
 
 type Category {
-  countRestaurants: Int!
   coverImageUrl: String
   createdAt: DateTime!
   id: Float!
   name: String!
+  restaurantCount: Int!
   slug: String!
   updatedAt: DateTime!
 }

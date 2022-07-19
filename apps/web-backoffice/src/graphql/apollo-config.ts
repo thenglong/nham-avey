@@ -28,7 +28,9 @@ const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, extensions, path }) => {
       const serverMessage = (extensions as any)?.response?.message
-      notification.error({ message: serverMessage, placement: "bottomLeft" })
+      if (serverMessage) {
+        notification.error({ message: serverMessage, placement: "bottomLeft" })
+      }
       // eslint-disable-next-line no-console
       console.log(
         `[GraphQL error]: Message: ${message}, Operation: ${operation.operationName}, Path: ${path}`

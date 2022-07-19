@@ -8,12 +8,12 @@ query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
     pageCount
     restaurants {
       address
-      category {
+      categories {
+        countRestaurants
         coverImageUrl
         createdAt
         id
         name
-        restaurantCount
         slug
         updatedAt
       }
@@ -25,9 +25,10 @@ query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
       promotedUntil
       updatedAt
       vendor {
-        id
-        email
         createdAt
+        email
+        id
+        roles
         updatedAt
         verified
       }

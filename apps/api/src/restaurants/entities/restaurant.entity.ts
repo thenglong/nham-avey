@@ -27,10 +27,13 @@ export class Restaurant extends CoreEntity {
   @IsString()
   address: string
 
-  // TODO: upgrade to m -> m
   @Field(() => [Category], { nullable: true })
-  @ManyToMany(type => Category, { nullable: true, onDelete: "SET NULL" })
-  @JoinTable({ name: "restaurant_categories", joinColumn: { name: "restaurant_id" }, inverseJoinColumn: { name: "category_id" } })
+  @ManyToMany(type => Category, category => category.restaurants, { nullable: true, onDelete: "SET NULL" })
+  @JoinTable({
+    name: "restaurant_categories",
+    joinColumn: { name: "restaurant_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "category_id", referencedColumnName: "id" },
+  })
   categories: Category[]
 
   // TODO: upgrade to m -> m

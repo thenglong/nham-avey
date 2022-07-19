@@ -18,7 +18,7 @@ import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
-import { Equal, Repository } from "typeorm"
+import { Equal, Repository, SelectQueryBuilder } from "typeorm"
 
 @Injectable()
 export class RestaurantService {
@@ -35,7 +35,7 @@ export class RestaurantService {
   private async getOrCreateCategories(names: string[]): Promise<Category[]> {
     return Promise.all<Category>(
       names.map(async name => {
-        const slug = name.trim().replace(/ /g, "-")
+        const slug = name.trim().toLowerCase().replace(/ /g, "-")
         let category = await this.categoryRepo.findOneBy({ slug })
         if (!category) {
           const entity = this.categoryRepo.create({ name, slug })
@@ -87,10 +87,11 @@ export class RestaurantService {
       const restaurant = this.restaurantRepo.create(restaurantPayload)
       restaurant.vendor = vendorEntity
       restaurant.categories = categoryEntities
-      await this.restaurantRepo.save(restaurant)
+      const saved = await this.restaurantRepo.save(restaurant)
+
       return {
         ok: true,
-        restaurant,
+        restaurant: saved,
       }
     } catch (err) {
       return {
@@ -210,12 +211,13 @@ export class RestaurantService {
 
   countRestaurantsByCategory(category: Category) {
     return this.restaurantRepo
-      .createQueryBuilder("restaurant") //
-      .where(`:category = ANY(restaurant.categories)`, { category }) //
+      .createQueryBuilder("restaurant")
+      .leftJoinAndSelect("restaurant.categories", "category")
+      .where(`category.id = :categoryId`, { categoryId: category.id })
       .getCount()
   }
 
-  async findCategoryRestaurantsBySlug({
+  async findRestaurantsByCategorySlug({
     slug,
     pageOptions: { page, take, skip },
   }: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
@@ -227,7 +229,9 @@ export class RestaurantService {
 
       const restaurants = await this.restaurantRepo
         .createQueryBuilder("restaurant")
-        .where(`:category = ANY(restaurant.categories)`, category)
+        .leftJoinAndSelect("restaurant.categories", "category")
+        .leftJoinAndSelect("restaurant.vendor", "vendor")
+        .where(`category.id = :categoryId`, { categoryId: category.id })
         .orderBy("restaurant.isPromoted", "DESC")
         .take(take)
         .skip(skip)
