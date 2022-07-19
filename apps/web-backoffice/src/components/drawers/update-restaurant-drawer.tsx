@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import { AdminUpdateRestaurantMutationHookResult, Restaurant } from "@nham-avey/common"
@@ -10,12 +10,17 @@ import { AxiosRequestConfig } from "axios"
 import compressImage from "browser-image-compression"
 import api from "src/api/_api"
 import { CONTENT_TYPE_FORM_DATA } from "src/api/api-constants"
+import {
+  OptionValue,
+  DebouncedSelect,
+} from "src/components/form-elements/DebouncedSelect"
 
 const { useForm } = Form
 
 export interface UpdateRestaurantFormValue {
   name: string
   address: string
+  vendor: OptionValue
 }
 
 interface UpdateRestaurantDrawerProps {
@@ -82,6 +87,8 @@ export function UpdateRestaurantDrawer({
     if (restaurant) {
       form.setFieldsValue({
         ...restaurant,
+        // TODO: use vendor name
+        vendor: { value: restaurant.vendor.id, label: restaurant.vendor.email },
       })
       setCoverImageUrl(restaurant.coverImg)
     }
@@ -107,6 +114,23 @@ export function UpdateRestaurantDrawer({
     })
   }
 
+  // TODO: SEARCH VENDOR API
+  function fetchUserList(username: string): Promise<OptionValue[]> {
+    return fetch("https://randomuser.me/api/?results=5")
+      .then(response => response.json())
+      .then(body =>
+        body.results.map(
+          (user: {
+            name: { first: string; last: string }
+            login: { username: string }
+          }) => ({
+            label: `${user.name.first} ${user.name.last}`,
+            value: user.login.username,
+          })
+        )
+      )
+  }
+
   return (
     <Drawer
       width={500}
@@ -129,7 +153,7 @@ export function UpdateRestaurantDrawer({
         autoComplete="off"
         name="update-admin"
       >
-        <ImgCrop grid rotate quality={1}>
+        <ImgCrop grid rotate quality={1} aspect={16 / 9}>
           <Upload
             name="coverImg"
             listType="picture-card"
@@ -139,13 +163,12 @@ export function UpdateRestaurantDrawer({
             customRequest={customRequest}
             onChange={handleFileChange}
           >
-            {coverImageUrl ? (
+            {isUploadingCoverImage ? (
+              <div>{isUploadingCoverImage ? <LoadingOutlined /> : <PlusOutlined />}</div>
+            ) : coverImageUrl ? (
               <img src={coverImageUrl} alt="avatar" style={{ width: "100%" }} />
             ) : (
-              <div>
-                {isUploadingCoverImage ? <LoadingOutlined /> : <PlusOutlined />}
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </div>
+              <div style={{ marginTop: 8 }}>Upload</div>
             )}
           </Upload>
         </ImgCrop>
@@ -164,6 +187,25 @@ export function UpdateRestaurantDrawer({
         </Form.Item>
 
         <Form.Item
+          label="Vendor"
+          name="vendor"
+          rules={[
+            {
+              required: true,
+              message: "Please Select A Vendor",
+            },
+          ]}
+        >
+          <DebouncedSelect
+            maxTagCount={1}
+            maxLength={1}
+            placeholder="Start Typing to Search"
+            fetchOptions={fetchUserList}
+            style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Form.Item
           label="Address"
           name="address"
           rules={[
@@ -179,7 +221,12 @@ export function UpdateRestaurantDrawer({
         <Typography.Text type="danger">{error?.message}</Typography.Text>
 
         <div className="text-right">
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            disabled={isUploadingCoverImage}
+          >
             Save
           </Button>
         </div>
