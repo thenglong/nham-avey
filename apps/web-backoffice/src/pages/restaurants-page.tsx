@@ -71,10 +71,7 @@ export const RestaurantsPage = () => {
   const [create] = useAdminCreateRestaurantMutation({
     onCompleted: () => refetch(pageState),
   })
-  const [update, { loading: isUpdating, error: updateError }] =
-    useAdminUpdateRestaurantMutation({
-      onCompleted: () => refetch(pageState),
-    })
+
   const onOpenCreateView = useCallback((restaurant: Restaurant) => {
     setUserActionState(prevState => ({
       ...prevState,
@@ -253,11 +250,11 @@ export const RestaurantsPage = () => {
       {/*/>*/}
       <UpdateRestaurantDrawer
         visible={userActionState.updateRestaurantViewVisible}
-        onClose={closeUpdateDrawer}
-        loading={isUpdating}
         restaurant={userActionState.selectedRestaurant}
-        error={updateError}
-        onSubmit={update}
+        onCompleted={() => {
+          closeUpdateDrawer()
+          refetch(pageState)
+        }}
       />
     </Card>
   )

@@ -1,7 +1,15 @@
-import { ApolloClient, createHttpLink, InMemoryCache, split } from "@apollo/client"
+import {
+  ApolloClient,
+  ApolloLink,
+  createHttpLink,
+  InMemoryCache,
+  split,
+} from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
 import { WebSocketLink } from "@apollo/client/link/ws"
 import { getMainDefinition } from "@apollo/client/utilities"
+import { onError } from "@apollo/link-error"
+import { notification } from "antd"
 import firebaseService from "src/services/firebase-service"
 
 const getBearerToken = async () => {
@@ -15,6 +23,23 @@ const getBearerToken = async () => {
     return ""
   }
 }
+
+const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, extensions, path }) => {
+      const serverMessage = (extensions as any)?.response?.message
+      notification.error({ message: serverMessage, placement: "bottomLeft" })
+      // eslint-disable-next-line no-console
+      console.log(
+        `[GraphQL error]: Message: ${message}, Operation: ${operation.operationName}, Path: ${path}`
+      )
+    })
+  }
+  if (networkError) {
+    // eslint-disable-next-line no-console
+    console.log(`[Network error]: ${networkError}`)
+  }
+})
 
 const getWsLink = () => {
   return new WebSocketLink({
@@ -55,6 +80,6 @@ const splitLink = split(
 )
 
 export const client = new ApolloClient({
-  link: splitLink,
+  link: ApolloLink.from([errorLink, splitLink]),
   cache: new InMemoryCache(),
 })

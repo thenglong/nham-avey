@@ -4,13 +4,19 @@ import { Category } from "src/restaurants/entities/category.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @ArgsType()
-export class CategoryInput extends PaginationArgs {
+export class PaginationCategoryRestaurantArgs extends PaginationArgs {
   @Field(type => String)
   slug: string
 }
 
 @ObjectType()
-export class CategoryOutput extends PaginationOutput {
+export class PaginatedRestaurantsOutput extends PaginationOutput {
+  @Field(type => [Restaurant], { nullable: true })
+  restaurants?: Restaurant[]
+}
+
+@ObjectType()
+export class PaginatedCategoryRestaurantOutput extends PaginationOutput {
   @Field(type => [Restaurant], { nullable: true })
   restaurants?: Restaurant[]
 

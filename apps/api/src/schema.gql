@@ -2,9 +2,9 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AdminCreateRestaurantByInput {
+input AdminCreateRestaurantInput {
   address: String!
-  categoryName: String!
+  categories: [String!]
   coverImg: String!
   name: String!
   vendorId: String!
@@ -12,7 +12,7 @@ input AdminCreateRestaurantByInput {
 
 input AdminUpdateRestaurantInput {
   address: String
-  categoryName: String
+  categories: [String!]
   coverImg: String
   name: String
   restaurantId: Float!
@@ -26,25 +26,13 @@ type AllCategoriesOutput {
 }
 
 type Category {
+  countRestaurants: Int!
   coverImageUrl: String
   createdAt: DateTime!
   id: Float!
   name: String!
-  restaurantCount: Int!
-  restaurants: [Restaurant!]
   slug: String!
   updatedAt: DateTime!
-}
-
-type CategoryOutput {
-  category: Category
-  error: String
-  hasNext: Boolean
-  hasPrevious: Boolean
-  matchedCount: Int
-  ok: Boolean!
-  pageCount: Int
-  restaurants: [Restaurant!]
 }
 
 input CreateAccountInput {
@@ -206,7 +194,7 @@ type GetPaymentsOutput {
 }
 
 type Mutation {
-  adminCreateRestaurant(input: AdminCreateRestaurantByInput!): CreateRestaurantOutput!
+  adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
   adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
   createAdmin(input: CreateAccountInput!): CreateAccountOutput!
   createDish(input: CreateDishInput!): CreateDishOutput!
@@ -274,6 +262,17 @@ input OrderUpdatesInput {
   id: Float!
 }
 
+type PaginatedCategoryRestaurantOutput {
+  category: Category
+  error: String
+  hasNext: Boolean
+  hasPrevious: Boolean
+  matchedCount: Int
+  ok: Boolean!
+  pageCount: Int
+  restaurants: [Restaurant!]
+}
+
 type PaginatedRestaurantsOutput {
   error: String
   hasNext: Boolean
@@ -308,7 +307,7 @@ type Query {
   adminGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   adminGetUsers(page: Int = 1, q: String, role: UserRole, take: Int = 20): PaginatedUsersOutput!
   allCategories: AllCategoriesOutput!
-  category(page: Int = 1, slug: String!, take: Int = 20): CategoryOutput!
+  categoryRestaurantBySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
@@ -316,12 +315,11 @@ type Query {
   myRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   pubicGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   publicGetRestaurantById(restaurantId: Int!): RestaurantOutput!
-  searchRestaurant(page: Int = 1, query: String = "", take: Int = 20): SearchRestaurantOutput!
 }
 
 type Restaurant {
   address: String!
-  category: Category
+  categories: [Category!]
   coverImg: String!
   createdAt: DateTime!
   id: Float!
@@ -338,16 +336,6 @@ type RestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
-}
-
-type SearchRestaurantOutput {
-  error: String
-  hasNext: Boolean
-  hasPrevious: Boolean
-  matchedCount: Int
-  ok: Boolean!
-  pageCount: Int
-  restaurants: [Restaurant!]
 }
 
 input SignUpAccountInput {
@@ -414,14 +402,14 @@ enum UserRole {
 
 input VendorCreateRestaurantInput {
   address: String!
-  categoryName: String!
+  categories: [String!]
   coverImg: String!
   name: String!
 }
 
 input VendorUpdateRestaurantInput {
   address: String
-  categoryName: String
+  categories: [String!]
   coverImg: String
   name: String
   restaurantId: Float!

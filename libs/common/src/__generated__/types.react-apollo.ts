@@ -708,6 +708,11 @@ export type AdminGetUsersQueryVariables = Exact<{
 
 export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean }> | null } };
 
+export type AllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllCategoriesQuery = { __typename?: 'Query', allCategories: { __typename?: 'AllCategoriesOutput', error?: string | null, ok: boolean, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
+
 export type CategoryQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   slug: Scalars['String'];
@@ -1174,6 +1179,50 @@ export function useAdminGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type AdminGetUsersQueryHookResult = ReturnType<typeof useAdminGetUsersQuery>;
 export type AdminGetUsersLazyQueryHookResult = ReturnType<typeof useAdminGetUsersLazyQuery>;
 export type AdminGetUsersQueryResult = Apollo.QueryResult<AdminGetUsersQuery, AdminGetUsersQueryVariables>;
+export const AllCategoriesDocument = gql`
+    query AllCategories {
+  allCategories {
+    categories {
+      coverImageUrl
+      createdAt
+      id
+      name
+      restaurantCount
+      slug
+      updatedAt
+    }
+    error
+    ok
+  }
+}
+    `;
+
+/**
+ * __useAllCategoriesQuery__
+ *
+ * To run a query within a React component, call `useAllCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<AllCategoriesQuery, AllCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllCategoriesQuery, AllCategoriesQueryVariables>(AllCategoriesDocument, options);
+      }
+export function useAllCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllCategoriesQuery, AllCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllCategoriesQuery, AllCategoriesQueryVariables>(AllCategoriesDocument, options);
+        }
+export type AllCategoriesQueryHookResult = ReturnType<typeof useAllCategoriesQuery>;
+export type AllCategoriesLazyQueryHookResult = ReturnType<typeof useAllCategoriesLazyQuery>;
+export type AllCategoriesQueryResult = Apollo.QueryResult<AllCategoriesQuery, AllCategoriesQueryVariables>;
 export const CategoryDocument = gql`
     query category($page: Int, $slug: String!) {
   category(page: $page, slug: $slug) {

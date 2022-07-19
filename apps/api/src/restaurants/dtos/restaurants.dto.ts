@@ -3,7 +3,7 @@ import { PaginationOutput, PaginationWithSearchArgs } from "src/common/dtos/pagi
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 
 @ArgsType()
-export class RestaurantsArgs extends PaginationWithSearchArgs {}
+export class PaginationRestaurantsArgs extends PaginationWithSearchArgs {}
 
 @ObjectType()
 export class RestaurantsOutput extends PaginationOutput {

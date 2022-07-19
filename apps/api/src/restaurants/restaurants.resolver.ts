@@ -2,18 +2,13 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import {
-  AdminCreateRestaurantByInput,
-  CreateRestaurantOutput,
-  VendorCreateRestaurantInput,
-} from "src/restaurants/dtos/create-restaurant.dto"
+import { AdminCreateRestaurantInput, CreateRestaurantOutput, VendorCreateRestaurantInput } from "src/restaurants/dtos/create-restaurant.dto"
 import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
 import { AdminUpdateRestaurantInput, UpdateRestaurantOutput, VendorUpdateRestaurantInput } from "src/restaurants/dtos/edit.restaurant.dto"
 import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
 import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
 import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { RestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
-import { SearchRestaurantArgs, SearchRestaurantOutput } from "src/restaurants/dtos/search-restaurant.dto"
+import { PaginationRestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 import { UserRole } from "src/users/entities/user.entity"
 
@@ -25,80 +20,75 @@ export class RestaurantResolver {
   @Roles(UserRole.Vendor)
   async vendorCreateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args("input") createRestaurantInput: VendorCreateRestaurantInput,
+    @Args("input") input: VendorCreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
-    return await this.restaurantService.createRestaurant(decodedIdToken.uid, createRestaurantInput)
+    return await this.restaurantService.createRestaurantByVendor(decodedIdToken.uid, input)
   }
 
   @Mutation(() => CreateRestaurantOutput)
   @Roles(UserRole.Admin)
   async adminCreateRestaurant(
     @GraphqlAuthUser() admin: DecodedIdToken,
-    @Args("input") createRestaurantByAdminInput: AdminCreateRestaurantByInput,
+    @Args("input") input: AdminCreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
-    return await this.restaurantService.createRestaurantByAdmin(admin, createRestaurantByAdminInput)
+    return await this.restaurantService.createRestaurantByAdmin(admin, input)
   }
 
   @Query(() => PaginatedRestaurantsOutput)
   @Roles(UserRole.Vendor)
   myRestaurants(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args() restaurantsArgs: RestaurantsArgs,
+    @Args() args: PaginationRestaurantsArgs,
   ): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurantsByVendor(decodedIdToken.uid, restaurantsArgs)
+    return this.restaurantService.getRestaurantsByVendor(decodedIdToken.uid, args)
   }
 
   @Query(() => MyRestaurantOutput)
   @Roles(UserRole.Vendor)
-  myRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() restaurantArgs: RestaurantArgs): Promise<MyRestaurantOutput> {
-    return this.restaurantService.findRestaurantByIdAndVendorId(decodedIdToken.uid, restaurantArgs.restaurantId)
+  myRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: RestaurantArgs): Promise<MyRestaurantOutput> {
+    return this.restaurantService.findRestaurantByIdAndVendorId(decodedIdToken.uid, args.restaurantId)
   }
 
   @Query(() => PaginatedRestaurantsOutput)
   @Roles(UserRole.Admin)
-  adminGetRestaurants(@Args() restaurantsArgs: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurantsByAdmin(restaurantsArgs)
+  adminGetRestaurants(@Args() args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+    return this.restaurantService.getRestaurantsByAdmin(args)
   }
 
   @Mutation(() => UpdateRestaurantOutput)
   @Roles(UserRole.Vendor)
   vendorUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args("input") restaurantInput: VendorUpdateRestaurantInput,
+    @Args("input") input: VendorUpdateRestaurantInput,
   ): Promise<UpdateRestaurantOutput> {
-    return this.restaurantService.updateRestaurantByVendor(decodedIdToken.uid, restaurantInput)
+    return this.restaurantService.updateRestaurantByVendor(decodedIdToken.uid, input)
   }
 
   @Mutation(() => UpdateRestaurantOutput)
   @Roles(UserRole.Admin)
   adminUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args("input") restaurantInput: AdminUpdateRestaurantInput,
+    @Args("input") input: AdminUpdateRestaurantInput,
   ): Promise<UpdateRestaurantOutput> {
-    return this.restaurantService.updateRestaurantByAdmin(restaurantInput)
+    return this.restaurantService.updateRestaurantByAdmin(input)
   }
 
   @Mutation(() => DeleteRestaurantOutput)
   @Roles(UserRole.Vendor, UserRole.Admin)
   deleteRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
-    @Args() restaurantArgs: RestaurantArgs,
+    @Args() { restaurantId }: RestaurantArgs,
   ): Promise<DeleteRestaurantOutput> {
-    return this.restaurantService.deleteRestaurant(decodedIdToken, restaurantArgs.restaurantId)
+    return this.restaurantService.deleteRestaurant(decodedIdToken, restaurantId)
   }
 
   @Query(() => PaginatedRestaurantsOutput)
-  pubicGetRestaurants(@Args() restaurantsArgs: RestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurantsByPublic(restaurantsArgs)
+  pubicGetRestaurants(@Args() args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+    return this.restaurantService.getRestaurantsByPublic(args)
   }
 
   @Query(() => RestaurantOutput)
-  publicGetRestaurantById(@Args() restaurantArgs: RestaurantArgs): Promise<RestaurantOutput> {
-    return this.restaurantService.findRestaurantById(restaurantArgs)
-  }
-
-  @Query(() => SearchRestaurantOutput)
-  searchRestaurant(@Args() searchRestaurantArgs: SearchRestaurantArgs): Promise<SearchRestaurantOutput> {
-    return this.restaurantService.searchRestaurantByName(searchRestaurantArgs)
+  publicGetRestaurantById(@Args() { restaurantId }: RestaurantArgs): Promise<RestaurantOutput> {
+    return this.restaurantService.findRestaurantById(restaurantId)
   }
 }

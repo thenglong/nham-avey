@@ -52,8 +52,3 @@ export function DebouncedSelect<
     />
   )
 }
-
-export interface OptionValue {
-  label: string
-  value: string
-}

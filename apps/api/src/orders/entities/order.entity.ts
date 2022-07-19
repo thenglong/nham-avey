@@ -54,7 +54,7 @@ export class Order extends CoreEntity {
   @ManyToMany(type => OrderItem, {
     eager: true,
   })
-  @JoinTable({ name: "order_order_items" })
+  @JoinTable({ name: "order_order_items", joinColumn: { name: "order_id" }, inverseJoinColumn: { name: "order_item_id" } })
   items: OrderItem[]
 
   @Column({ nullable: true })

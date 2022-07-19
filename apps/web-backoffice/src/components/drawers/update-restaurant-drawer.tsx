@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import {
   AdminUpdateRestaurantMutationHookResult,
+  AdminUpdateRestaurantMutationOptions,
   Restaurant,
   useAdminGetUsersLazyQuery,
-  UserRole,
+  useAdminUpdateRestaurantMutation,
+  useAllCategoriesQuery,
   User,
+  UserRole,
 } from "@nham-avey/common"
-import { Button, Drawer, Form, Input, Typography, Upload } from "antd"
+import { Button, Drawer, Form, Input, Select, Typography, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import type { UploadChangeParam } from "antd/es/upload"
 import type { UploadProps } from "antd/es/upload/interface"
@@ -16,36 +19,37 @@ import { AxiosRequestConfig } from "axios"
 import compressImage from "browser-image-compression"
 import api from "src/api/_api"
 import { CONTENT_TYPE_FORM_DATA } from "src/api/api-constants"
-import {
-  DebouncedSelect,
-  OptionValue,
-} from "src/components/form-elements/DebouncedSelect"
+import { DebouncedSelect } from "src/components/form-elements/DebouncedSelect"
+import { SelectOption } from "src/typing/common-type"
 
 const { useForm } = Form
 
 export interface UpdateRestaurantFormValue {
   name: string
   address: string
-  vendor: OptionValue
+  vendor: SelectOption
+  category: SelectOption
 }
 
 interface UpdateRestaurantDrawerProps {
   restaurant: Restaurant | null
   visible: boolean
-  onClose: () => void
-  loading: boolean
-  onSubmit: AdminUpdateRestaurantMutationHookResult[0]
-  error: AdminUpdateRestaurantMutationHookResult[1]["error"]
+  onCompleted: AdminUpdateRestaurantMutationOptions["onCompleted"]
 }
 
 export function UpdateRestaurantDrawer({
   restaurant,
   visible,
-  onClose,
-  loading,
-  onSubmit,
-  error,
+  onCompleted,
 }: UpdateRestaurantDrawerProps) {
+  const [update, { loading: isUpdating }] = useAdminUpdateRestaurantMutation({
+    onCompleted: data => {
+      setCoverImageUrl("")
+      form.resetFields()
+      onCompleted?.(data)
+    },
+  })
+
   const [form] = useForm<UpdateRestaurantFormValue>()
 
   const customRequest: UploadProps["customRequest"] = async options => {
@@ -93,37 +97,44 @@ export function UpdateRestaurantDrawer({
     if (restaurant) {
       form.setFieldsValue({
         ...restaurant,
-        // TODO: use vendor name
-        vendor: { value: restaurant.vendor.id, label: restaurant.vendor.email },
+        category: { label: restaurant.category?.name, value: restaurant.category?.name },
+        vendor: { label: restaurant.vendor.email, value: restaurant.vendor.id },
       })
       setCoverImageUrl(restaurant.coverImg)
     }
   }, [form, restaurant])
 
   const onFinish = async (values: UpdateRestaurantFormValue) => {
-    await onSubmit({
-      variables: {
-        input: {
-          name: values.name,
-          address: values.address,
-          restaurantId: restaurant?.id as number,
-          coverImg: coverImageUrl,
-          categoryName: restaurant?.category?.name,
-          vendorId: restaurant?.vendor?.id,
+    try {
+      await update({
+        variables: {
+          input: {
+            name: values.name,
+            address: values.address,
+            restaurantId: restaurant?.id as number,
+            coverImg: coverImageUrl,
+            categoryName: values.category.value as string,
+            vendorId: values.vendor.value as string,
+          },
         },
-      },
-      onCompleted: () => {
-        onClose()
-        setCoverImageUrl("")
-        form.resetFields()
-      },
-    })
+      })
+    } catch (e) {} // do nothing
   }
 
   const [getVendors] = useAdminGetUsersLazyQuery()
+  const { data: categoriesData } = useAllCategoriesQuery()
+
+  const categoryOptions: SelectOption[] = useMemo(() => {
+    return (
+      categoriesData?.allCategories.categories?.map(category => ({
+        label: category.name,
+        value: category.name,
+      })) || []
+    )
+  }, [categoriesData])
 
   const fetchVendor = useCallback(
-    async (search: string): Promise<OptionValue[]> => {
+    async (search: string): Promise<SelectOption[]> => {
       const { data } = await getVendors({
         variables: { take: 10, q: search, role: UserRole.Vendor },
       })
@@ -146,7 +157,6 @@ export function UpdateRestaurantDrawer({
     <Drawer
       width={500}
       placement="right"
-      onClose={onClose}
       visible={visible}
       forceRender
       title="Update Restaurant"
@@ -208,11 +218,28 @@ export function UpdateRestaurantDrawer({
           ]}
         >
           <DebouncedSelect
-            maxTagCount={1}
-            maxLength={1}
             placeholder="Start Typing to Search"
             fetchOptions={fetchVendor}
             style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Category"
+          name="category"
+          rules={[
+            {
+              required: true,
+              message: "Category is Required",
+            },
+          ]}
+        >
+          <Select
+            mode="tags"
+            showSearch
+            labelInValue
+            filterOption={true}
+            options={categoryOptions}
           />
         </Form.Item>
 
@@ -229,13 +256,11 @@ export function UpdateRestaurantDrawer({
           <Input className="w-full" autoComplete="off" />
         </Form.Item>
 
-        <Typography.Text type="danger">{error?.message}</Typography.Text>
-
         <div className="text-right">
           <Button
             type="primary"
             htmlType="submit"
-            loading={loading}
+            loading={isUpdating}
             disabled={isUploadingCoverImage}
           >
             Save

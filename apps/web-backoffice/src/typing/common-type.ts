@@ -7,3 +7,8 @@ export enum Order {
   ASC = "ASC",
   DESC = "DESC",
 }
+
+export interface SelectOption {
+  label: string
+  value: string | number
+}

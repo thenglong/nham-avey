@@ -1,6 +1,6 @@
 import { Args, Int, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
 import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
-import { CategoryInput, CategoryOutput } from "src/restaurants/dtos/category.dto"
+import { PaginationCategoryRestaurantArgs, PaginatedCategoryRestaurantOutput } from "src/restaurants/dtos/category.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 
@@ -9,8 +9,8 @@ export class CategoryResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @ResolveField(returns => Int)
-  restaurantCount(@Parent() category: Category): Promise<number> {
-    return this.restaurantService.countRestaurants(category)
+  countRestaurants(@Parent() category: Category): Promise<number> {
+    return this.restaurantService.countRestaurantsByCategory(category)
   }
 
   @Query(returns => AllCategoriesOutput)
@@ -18,8 +18,8 @@ export class CategoryResolver {
     return this.restaurantService.allCategories()
   }
 
-  @Query(() => CategoryOutput)
-  category(@Args() categoryInput: CategoryInput): Promise<CategoryOutput> {
-    return this.restaurantService.findCategoryBySlug(categoryInput)
+  @Query(() => PaginatedCategoryRestaurantOutput)
+  categoryRestaurantBySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
+    return this.restaurantService.findCategoryRestaurantsBySlug(args)
   }
 }

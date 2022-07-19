@@ -5,7 +5,7 @@ import { Order } from "src/orders/entities/order.entity"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm"
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm"
 
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
@@ -28,12 +28,10 @@ export class Restaurant extends CoreEntity {
   address: string
 
   // TODO: upgrade to m -> m
-  @Field(() => Category, { nullable: true })
-  @ManyToOne(() => Category, category => category.restaurants, {
-    nullable: true,
-    onDelete: "SET NULL",
-  })
-  category: Category
+  @Field(() => [Category], { nullable: true })
+  @ManyToMany(type => Category, { nullable: true, onDelete: "SET NULL" })
+  @JoinTable({ name: "restaurant_categories", joinColumn: { name: "restaurant_id" }, inverseJoinColumn: { name: "category_id" } })
+  categories: Category[]
 
   // TODO: upgrade to m -> m
   @Field(() => User)
