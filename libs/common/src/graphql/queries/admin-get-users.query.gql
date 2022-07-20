@@ -12,7 +12,7 @@ query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
       id
       roles
       updatedAt
-      verified
+      isVerified
     }
   }
 }

@@ -2,9 +2,14 @@ import { Args, Mutation, Resolver } from "@nestjs/graphql"
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
+import {
+  CreateDishInput,
+  CreateDishOutput,
+  DeleteDishInput,
+  DeleteDishOutput,
+  EditDishInput,
+  EditDishOutput,
+} from "src/restaurants/dtos/dishes.dto"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 import { UserRole } from "src/users/entities/user.entity"
 

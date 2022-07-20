@@ -13,24 +13,26 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  DateTime: any;
+  EnhancedDate: any;
 };
 
 export type AdminCreateRestaurantInput = {
   address: Scalars['String'];
   categories?: InputMaybe<Array<Scalars['String']>>;
-  coverImg: Scalars['String'];
+  coverImageUrls?: InputMaybe<Array<Scalars['String']>>;
+  logoImageUrl?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
-  vendorId: Scalars['String'];
+  vendorIds: Array<Scalars['String']>;
 };
 
 export type AdminUpdateRestaurantInput = {
   address?: InputMaybe<Scalars['String']>;
   categories?: InputMaybe<Array<Scalars['String']>>;
-  coverImg?: InputMaybe<Scalars['String']>;
+  coverImageUrls?: InputMaybe<Array<Scalars['String']>>;
+  logoImageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   restaurantId: Scalars['Float'];
-  vendorId?: InputMaybe<Scalars['String']>;
+  vendorIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type AllCategoriesOutput = {
@@ -43,12 +45,12 @@ export type AllCategoriesOutput = {
 export type Category = {
   __typename?: 'Category';
   coverImageUrl?: Maybe<Scalars['String']>;
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   id: Scalars['Float'];
   name: Scalars['String'];
   restaurantCount: Scalars['Int'];
   slug: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['EnhancedDate'];
 };
 
 export type CreateAccountInput = {
@@ -130,7 +132,7 @@ export type DeleteRestaurantOutput = {
 
 export type Dish = {
   __typename?: 'Dish';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   description: Scalars['String'];
   id: Scalars['Float'];
   name: Scalars['String'];
@@ -138,7 +140,7 @@ export type Dish = {
   photo?: Maybe<Scalars['String']>;
   price: Scalars['Int'];
   restaurant?: Maybe<Restaurant>;
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['EnhancedDate'];
 };
 
 export type DishChoice = {
@@ -340,7 +342,7 @@ export type MyRestaurantOutput = {
 
 export type Order = {
   __typename?: 'Order';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   customer?: Maybe<User>;
   driver?: Maybe<User>;
   id: Scalars['Float'];
@@ -348,16 +350,16 @@ export type Order = {
   restaurant?: Maybe<Restaurant>;
   status: OrderStatus;
   total?: Maybe<Scalars['Float']>;
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['EnhancedDate'];
 };
 
 export type OrderItem = {
   __typename?: 'OrderItem';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   dish: Dish;
   id: Scalars['Float'];
   options?: Maybe<Array<OrderItemOption>>;
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['EnhancedDate'];
 };
 
 export type OrderItemOption = {
@@ -419,12 +421,12 @@ export type PaginatedUsersOutput = {
 
 export type Payment = {
   __typename?: 'Payment';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   id: Scalars['Float'];
   restaurant: Restaurant;
   restaurantId: Scalars['Int'];
   transactionId: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
+  updatedAt: Scalars['EnhancedDate'];
   user: User;
 };
 
@@ -503,16 +505,17 @@ export type Restaurant = {
   __typename?: 'Restaurant';
   address: Scalars['String'];
   categories?: Maybe<Array<Category>>;
-  coverImg: Scalars['String'];
-  createdAt: Scalars['DateTime'];
+  coverImageUrls?: Maybe<Array<Scalars['String']>>;
+  createdAt: Scalars['EnhancedDate'];
   id: Scalars['Float'];
   isPromoted: Scalars['Boolean'];
+  logoImageUrl?: Maybe<Scalars['String']>;
   menu?: Maybe<Array<Dish>>;
   name: Scalars['String'];
   orders?: Maybe<Array<Order>>;
-  promotedUntil?: Maybe<Scalars['DateTime']>;
-  updatedAt: Scalars['DateTime'];
-  vendor: User;
+  promotedUntil?: Maybe<Scalars['EnhancedDate']>;
+  updatedAt: Scalars['EnhancedDate'];
+  vendors: Array<User>;
 };
 
 export type RestaurantOutput = {
@@ -576,16 +579,19 @@ export type UpdateRestaurantOutput = {
 
 export type User = {
   __typename?: 'User';
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['EnhancedDate'];
   email: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isVerified: Scalars['Boolean'];
+  lastName?: Maybe<Scalars['String']>;
   orders?: Maybe<Array<Order>>;
   payments?: Maybe<Array<Payment>>;
+  photoURL?: Maybe<Scalars['String']>;
   restaurants?: Maybe<Array<Restaurant>>;
   rides?: Maybe<Array<Order>>;
   roles: Array<UserRole>;
-  updatedAt: Scalars['DateTime'];
-  verified: Scalars['Boolean'];
+  updatedAt: Scalars['EnhancedDate'];
 };
 
 export enum UserRole {
@@ -598,27 +604,31 @@ export enum UserRole {
 export type VendorCreateRestaurantInput = {
   address: Scalars['String'];
   categories?: InputMaybe<Array<Scalars['String']>>;
-  coverImg: Scalars['String'];
+  coverImageUrls?: InputMaybe<Array<Scalars['String']>>;
+  logoImageUrl?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
 export type VendorUpdateRestaurantInput = {
   address?: InputMaybe<Scalars['String']>;
   categories?: InputMaybe<Array<Scalars['String']>>;
-  coverImg?: InputMaybe<Scalars['String']>;
+  coverImageUrls?: InputMaybe<Array<Scalars['String']>>;
+  logoImageUrl?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   restaurantId: Scalars['Float'];
 };
 
 export type FullOrderPartsFragment = { __typename?: 'Order', id: number, status: OrderStatus, total?: number | null, driver?: { __typename?: 'User', email: string } | null, customer?: { __typename?: 'User', email: string } | null, restaurant?: { __typename?: 'Restaurant', name: string } | null };
 
-export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null };
+export type RestaurantPartsFragment = { __typename?: 'Restaurant', id: number, name: string, coverImageUrls?: Array<string> | null, address: string, isPromoted: boolean, logoImageUrl?: string | null, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null };
 
 export type CategoryPartsFragment = { __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number };
 
 export type DishPartsFragment = { __typename?: 'Dish', id: number, name: string, price: number, photo?: string | null, description: string, options?: Array<{ __typename?: 'DishOption', name: string, extra?: number | null, choices?: Array<{ __typename?: 'DishChoice', name: string, extra?: number | null }> | null }> | null };
 
 export type OrderPartsFragment = { __typename?: 'Order', id: number, createdAt: any, total?: number | null };
+
+export type UserPartsFragment = { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> };
 
 export type AdminCreateRestaurantMutationVariables = Exact<{
   input: AdminCreateRestaurantInput;
@@ -676,7 +686,7 @@ export type AdminGetRestaurantsQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImg: string, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', restaurantCount: number, coverImageUrl?: string | null, createdAt: any, id: number, name: string, slug: string, updatedAt: any }> | null, vendor: { __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean } }> | null } };
+export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', restaurantCount: number, coverImageUrl?: string | null, createdAt: any, id: number, name: string, slug: string, updatedAt: any }> | null, vendors: Array<{ __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> }> }> | null } };
 
 export type AdminGetUsersQueryVariables = Exact<{
   role?: InputMaybe<UserRole>;
@@ -686,7 +696,7 @@ export type AdminGetUsersQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, verified: boolean }> | null } };
+export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, isVerified: boolean }> | null } };
 
 export type AllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -703,7 +713,7 @@ export type GetOrderQuery = { __typename?: 'Query', getOrder: { __typename?: 'Ge
 export type MyRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImg: string, address: string, isPromoted: boolean, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null }> | null } };
+export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImageUrls?: Array<string> | null, address: string, isPromoted: boolean, logoImageUrl?: string | null, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null }> | null } };
 
 export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -742,13 +752,14 @@ export const RestaurantPartsFragmentDoc = gql`
     fragment RestaurantParts on Restaurant {
   id
   name
-  coverImg
+  coverImageUrls
+  address
+  isPromoted
+  logoImageUrl
   categories {
     name
     coverImageUrl
   }
-  address
-  isPromoted
 }
     `;
 export const CategoryPartsFragmentDoc = gql`
@@ -782,6 +793,18 @@ export const OrderPartsFragmentDoc = gql`
   id
   createdAt
   total
+}
+    `;
+export const UserPartsFragmentDoc = gql`
+    fragment UserParts on User {
+  id
+  firstName
+  lastName
+  email
+  isVerified
+  createdAt
+  photoURL
+  roles
 }
     `;
 export const AdminCreateRestaurantDocument = gql`
@@ -1043,25 +1066,20 @@ export const AdminGetRestaurantsDocument = gql`
         slug
         updatedAt
       }
-      coverImg
+      coverImageUrls
       createdAt
       id
       isPromoted
       name
       promotedUntil
       updatedAt
-      vendor {
-        createdAt
-        email
-        id
-        roles
-        updatedAt
-        verified
+      vendors {
+        ...UserParts
       }
     }
   }
 }
-    `;
+    ${UserPartsFragmentDoc}`;
 
 /**
  * __useAdminGetRestaurantsQuery__
@@ -1107,7 +1125,7 @@ export const AdminGetUsersDocument = gql`
       id
       roles
       updatedAt
-      verified
+      isVerified
     }
   }
 }

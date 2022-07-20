@@ -5,18 +5,20 @@
 input AdminCreateRestaurantInput {
   address: String!
   categories: [String!]
-  coverImg: String!
+  coverImageUrls: [String!]
+  logoImageUrl: String
   name: String!
-  vendorId: String!
+  vendorIds: [String!]!
 }
 
 input AdminUpdateRestaurantInput {
   address: String
   categories: [String!]
-  coverImg: String
+  coverImageUrls: [String!]
+  logoImageUrl: String
   name: String
   restaurantId: Float!
-  vendorId: String
+  vendorIds: [String!]
 }
 
 type AllCategoriesOutput {
@@ -320,16 +322,17 @@ type Query {
 type Restaurant {
   address: String!
   categories: [Category!]
-  coverImg: String!
+  coverImageUrls: [String!]
   createdAt: EnhancedDate!
   id: Float!
   isPromoted: Boolean!
+  logoImageUrl: String
   menu: [Dish!]
   name: String!
   orders: [Order!]
   promotedUntil: EnhancedDate
   updatedAt: EnhancedDate!
-  vendor: User!
+  vendors: [User!]!
 }
 
 type RestaurantOutput {
@@ -383,14 +386,17 @@ type UpdateRestaurantOutput {
 type User {
   createdAt: EnhancedDate!
   email: String!
+  firstName: String
   id: String!
+  isVerified: Boolean!
+  lastName: String
   orders: [Order!]
   payments: [Payment!]
+  photoURL: String
   restaurants: [Restaurant!]
   rides: [Order!]
   roles: [UserRole!]!
   updatedAt: EnhancedDate!
-  verified: Boolean!
 }
 
 enum UserRole {
@@ -403,14 +409,16 @@ enum UserRole {
 input VendorCreateRestaurantInput {
   address: String!
   categories: [String!]
-  coverImg: String!
+  coverImageUrls: [String!]
+  logoImageUrl: String
   name: String!
 }
 
 input VendorUpdateRestaurantInput {
   address: String
   categories: [String!]
-  coverImg: String
+  coverImageUrls: [String!]
+  logoImageUrl: String
   name: String
   restaurantId: Float!
 }

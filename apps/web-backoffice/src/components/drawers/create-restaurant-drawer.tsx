@@ -25,7 +25,7 @@ const { useForm } = Form
 export interface CreateRestaurantFormValue {
   name: string
   address: string
-  vendor: SelectOption
+  vendors: SelectOption[]
   categories: SelectOption[]
 }
 
@@ -42,7 +42,7 @@ export function CreateRestaurantDrawer({
 }: CreateRestaurantDrawerProps) {
   const [create, { loading: isUpdating }] = useAdminCreateRestaurantMutation({
     onCompleted: data => {
-      setCoverImageUrl("")
+      setLogoImageUrl("")
       form.resetFields()
       onCompleted?.(data)
     },
@@ -77,7 +77,8 @@ export function CreateRestaurantDrawer({
     }
   }
 
-  const [coverImageUrl, setCoverImageUrl] = useState<string>("")
+  const [logoImageUrl, setLogoImageUrl] = useState<string>("")
+  const [coverImageUrls, setCoverImageUrls] = useState<string[]>([])
   const [isUploadingCoverImage, setIsUploadingCoverImage] = useState(false)
 
   const handleFileChange: UploadProps["onChange"] = (info: UploadChangeParam) => {
@@ -87,7 +88,7 @@ export function CreateRestaurantDrawer({
     }
     if (info.file.status === "done") {
       setIsUploadingCoverImage(false)
-      setCoverImageUrl(info.file.response)
+      setLogoImageUrl(info.file.response)
     }
   }
 
@@ -98,11 +99,12 @@ export function CreateRestaurantDrawer({
           input: {
             name: values.name,
             address: values.address,
-            coverImg: coverImageUrl,
+            logoImageUrl,
+            coverImageUrls,
             categories: values.categories.map(categoryOptions =>
               categoryOptions.value.toString()
             ),
-            vendorId: values.vendor.value as string,
+            vendorIds: values.vendors.map(vendor => vendor.value.toString()),
           },
         },
       })
@@ -158,7 +160,7 @@ export function CreateRestaurantDrawer({
         wrapperCol={{ span: 18 }}
         onFinish={onFinish}
         autoComplete="off"
-        name="update-admin"
+        name="update-restaurant"
       >
         <div className="text-center">
           <ImgCrop grid rotate quality={1} aspect={16 / 9}>
@@ -175,8 +177,8 @@ export function CreateRestaurantDrawer({
                 <div>
                   {isUploadingCoverImage ? <LoadingOutlined /> : <PlusOutlined />}
                 </div>
-              ) : coverImageUrl ? (
-                <img src={coverImageUrl} alt="avatar" style={{ width: "100%" }} />
+              ) : logoImageUrl ? (
+                <img src={logoImageUrl} alt="avatar" style={{ width: "100%" }} />
               ) : (
                 <div style={{ marginTop: 8 }}>Upload</div>
               )}
@@ -198,8 +200,8 @@ export function CreateRestaurantDrawer({
         </Form.Item>
 
         <Form.Item
-          label="Vendor"
-          name="vendor"
+          label="Vendors"
+          name="vendors"
           rules={[
             {
               required: true,
@@ -207,7 +209,7 @@ export function CreateRestaurantDrawer({
             },
           ]}
         >
-          <DebouncedSelect fetchOptions={fetchVendor} />
+          <DebouncedSelect mode="multiple" fetchOptions={fetchVendor} />
         </Form.Item>
 
         <Form.Item

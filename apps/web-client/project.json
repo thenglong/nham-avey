@@ -55,7 +55,7 @@
       }
     },
     "graphql-codegen": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "outputs": [],
       "options": {
         "command": "graphql-codegen --config codegen.yaml",

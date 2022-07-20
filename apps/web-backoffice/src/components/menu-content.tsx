@@ -30,7 +30,7 @@ const MenuContent = () => {
         key: "restaurants",
         title: "Restaurants",
         label: "Restaurants",
-        onClick: () => handleItemClick("/app/restaurants"),
+        onClick: () => handleItemClick("/app/restaurants/restaurants"),
         icon: <QuestionOutlined />,
       },
       {

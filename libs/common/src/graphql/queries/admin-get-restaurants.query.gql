@@ -17,20 +17,15 @@ query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
         slug
         updatedAt
       }
-      coverImg
+      coverImageUrls
       createdAt
       id
       isPromoted
       name
       promotedUntil
       updatedAt
-      vendor {
-        createdAt
-        email
-        id
-        roles
-        updatedAt
-        verified
+      vendors {
+        ...UserParts
       }
     }
   }

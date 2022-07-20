@@ -1,6 +1,9 @@
 import { Args, Int, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql"
-import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
-import { PaginationCategoryRestaurantArgs, PaginatedCategoryRestaurantOutput } from "src/restaurants/dtos/category.dto"
+import {
+  AllCategoriesOutput,
+  PaginatedCategoryRestaurantOutput,
+  PaginationCategoryRestaurantArgs,
+} from "src/restaurants/dtos/categories.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 

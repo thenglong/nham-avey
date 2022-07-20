@@ -125,7 +125,7 @@ export class OrderService {
       } else if (user.roles.includes(UserRole.Vendor)) {
         const restaurants = await this.restaurants.find({
           where: {
-            vendor: Equal(user),
+            vendors: Equal(user),
           },
           relations: ["orders"],
         })

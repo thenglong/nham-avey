@@ -2,13 +2,20 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { AdminCreateRestaurantInput, CreateRestaurantOutput, VendorCreateRestaurantInput } from "src/restaurants/dtos/create-restaurant.dto"
-import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
-import { AdminUpdateRestaurantInput, UpdateRestaurantOutput, VendorUpdateRestaurantInput } from "src/restaurants/dtos/edit.restaurant.dto"
-import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
-import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { RestaurantArgs, RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { PaginationRestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
+import {
+  AdminCreateRestaurantInput,
+  AdminUpdateRestaurantInput,
+  CreateRestaurantOutput,
+  DeleteRestaurantOutput,
+  MyRestaurantOutput,
+  PaginatedRestaurantsOutput,
+  PaginationRestaurantsArgs,
+  RestaurantArgs,
+  RestaurantOutput,
+  UpdateRestaurantOutput,
+  VendorCreateRestaurantInput,
+  VendorUpdateRestaurantInput,
+} from "src/restaurants/dtos"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 import { UserRole } from "src/users/entities/user.entity"
 

@@ -9,9 +9,6 @@ import _logger from "src/utils/logger-utils"
 
 import "src/i18n/i18n"
 
-import "antd/dist/antd.less"
-import "src/styles/styles.css"
-
 const logger = _logger.withTag("DefaultApp")
 
 logger.debug(process.env)

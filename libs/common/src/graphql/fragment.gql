@@ -16,13 +16,14 @@ fragment FullOrderParts on Order {
 fragment RestaurantParts on Restaurant {
   id
   name
-  coverImg
+  coverImageUrls
+  address
+  isPromoted
+  logoImageUrl
   categories {
     name
     coverImageUrl
   }
-  address
-  isPromoted
 }
 
 fragment CategoryParts on Category {
@@ -53,4 +54,16 @@ fragment OrderParts on Order {
   id
   createdAt
   total
+}
+
+
+fragment UserParts on User {
+  id
+  firstName
+  lastName
+  email
+  isVerified
+  createdAt
+  photoURL
+  roles
 }

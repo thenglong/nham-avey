@@ -1,10 +1,10 @@
 import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql"
-import { IsBoolean, IsEmail, IsEnum } from "class-validator"
+import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator"
 import { CoreWithoutIdEntity } from "src/common/entities/core.entity"
 import { Order } from "src/orders/entities/order.entity"
 import { Payment } from "src/payments/entities/payment.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm"
+import { Column, Entity, ManyToMany, OneToMany, PrimaryColumn } from "typeorm"
 
 export enum UserRole {
   Admin = "Admin",
@@ -23,10 +23,25 @@ export class User extends CoreWithoutIdEntity {
   @Field(() => String)
   id: string
 
+  @Column({ nullable: true })
+  @Field(type => String, { nullable: true })
+  @IsString()
+  firstName: string
+
+  @Column({ nullable: true })
+  @Field(type => String, { nullable: true })
+  @IsString()
+  lastName: string
+
   @Column({ unique: true })
   @Field(type => String)
   @IsEmail()
   email: string
+
+  @Column({ nullable: true })
+  @Field(type => String, { nullable: true })
+  @IsString()
+  photoURL: string
 
   @Field(type => [UserRole])
   @IsEnum(UserRole, { each: true })
@@ -42,10 +57,10 @@ export class User extends CoreWithoutIdEntity {
   @Column({ default: false })
   @Field(type => Boolean)
   @IsBoolean()
-  verified: boolean
+  isVerified: boolean
 
   @Field(type => [Restaurant], { nullable: true })
-  @OneToMany(() => Restaurant, restaurant => restaurant.vendor)
+  @ManyToMany(type => Restaurant, restaurant => restaurant.categories)
   restaurants: Restaurant[]
 
   @Field(type => [Order], { nullable: true })

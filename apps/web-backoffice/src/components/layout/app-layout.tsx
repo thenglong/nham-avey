@@ -1,10 +1,10 @@
 import { CSSProperties, Suspense } from "react"
 
-import { Grid, Layout } from "antd"
+import { LoadingOutlined } from "@ant-design/icons"
+import { Grid, Layout, Spin } from "antd"
 import { Outlet } from "react-router-dom"
 import Footer from "src/components/footer"
 import HeaderNav from "src/components/header-nav"
-import LoadingIndicator from "src/components/loading-indicator"
 import { MobileNav } from "src/components/mobile-nav"
 import PageHeader from "src/components/page-header"
 import { SideNav } from "src/components/side-nav"
@@ -17,6 +17,14 @@ import { useTypedSelector } from "src/hooks/redux/use-typed-selector"
 
 const { Content } = Layout
 const { useBreakpoint } = Grid
+
+const AppLayoutSuspenseLoader = () => {
+  return (
+    <div className="grid h-full w-full place-items-center">
+      <Spin indicator={<LoadingOutlined style={{ fontSize: 54 }} spin />} />
+    </div>
+  )
+}
 
 export const AppLayout = () => {
   const breakpoint = useBreakpoint()
@@ -48,8 +56,8 @@ export const AppLayout = () => {
             }}
           >
             <PageHeader title="App Title" />
-            <Content>
-              <Suspense fallback={<LoadingIndicator cover="content" size={54} />}>
+            <Content className="h-full">
+              <Suspense fallback={<AppLayoutSuspenseLoader />}>
                 <Outlet />
               </Suspense>
             </Content>

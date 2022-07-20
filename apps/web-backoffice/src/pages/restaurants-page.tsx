@@ -4,6 +4,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  ReloadOutlined,
   SearchOutlined,
 } from "@ant-design/icons"
 import {
@@ -14,6 +15,7 @@ import {
   Category,
 } from "@nham-avey/common"
 import {
+  Badge,
   Button,
   Card,
   Input,
@@ -23,6 +25,7 @@ import {
   TablePaginationConfig,
   Tag,
   Tooltip,
+  Typography,
 } from "antd"
 import { ColumnsType } from "antd/lib/table/interface"
 import moment from "moment"
@@ -123,7 +126,7 @@ export const RestaurantsPage = () => {
         title: "Basic Info",
         render: (_, restaurant) => (
           <AvatarInfo
-            photoUrl={restaurant.coverImg}
+            photoUrl={restaurant.logoImageUrl as string}
             blurhash=""
             title={restaurant.name}
             subTitle={restaurant.address}
@@ -134,21 +137,27 @@ export const RestaurantsPage = () => {
         title: "Categories",
         render: (_, restaurant) =>
           restaurant.categories?.map((category: Category) => (
-            <Tag color="blue" key={category.id} className="mb-1">
+            <Tag color="blue" key={category.id} className="mb-2">
               {category.name}
             </Tag>
           )),
       },
       {
-        title: "Vendor Info",
-        render: (_, restaurant) => (
-          <AvatarInfo
-            photoUrl={`https://i.pravatar.cc/150?u=${Math.random()}`}
-            blurhash=""
-            title={restaurant.vendor.email}
-            subTitle={moment(new Date(restaurant.vendor.createdAt)).format("Do MMM YYYY")}
-          />
-        ),
+        title: "Vendor Info(Showing 1)",
+        render: (_, restaurant) => {
+          const firstVendor = restaurant.vendors[0]
+          if (!firstVendor) return <Tag color="error">No Vendor</Tag>
+          return (
+            <AvatarInfo
+              photoUrl={`https://i.pravatar.cc/150?u=${Math.random()}`}
+              blurhash=""
+              title={restaurant?.vendors[0]?.email}
+              subTitle={moment(new Date(restaurant.vendors?.[0]?.createdAt)).format(
+                "Do MMM YYYY"
+              )}
+            />
+          )
+        },
       },
       {
         title: "Actions",
@@ -175,7 +184,6 @@ export const RestaurantsPage = () => {
                         await deleteRestaurant({
                           variables: { restaurantId: restaurant.id },
                         }),
-                      onCancel: undefined,
                     })
                   }}
                   size="middle"
@@ -213,58 +221,70 @@ export const RestaurantsPage = () => {
   }, [pageState, data, setPageState])
 
   return (
-    <Card bodyStyle={{ padding: "0px" }}>
-      <Helmet title={PAGE_TITLE} />
-      <div className="mb-1">
-        <div className="flex gap-2 px-4 py-8">
-          <Input
-            className="w-80"
-            placeholder="Search"
-            prefix={<SearchOutlined />}
-            // onChange={onSearch}
+    <div className="flex h-full flex-col">
+      <Typography.Title>Restaurants</Typography.Title>
+      <Card bodyStyle={{ padding: "0px", height: "100%" }} className="h-full">
+        <Helmet title={PAGE_TITLE} />
+        <div className="mb-1 h-full ">
+          <div className="flex gap-2 px-4 py-8">
+            <div>
+              <Input
+                className="w-80"
+                placeholder="Search"
+                prefix={<SearchOutlined />}
+                // onChange={onSearch}
+              />
+              <Tooltip title="Reload">
+                <Button
+                  type="primary"
+                  onClick={() => refetch(pageState)}
+                  icon={<ReloadOutlined />}
+                />
+              </Tooltip>
+            </div>
+
+            {/* grow fill the full width */}
+            <div className="grow" aria-hidden />
+
+            <Button type="primary" onClick={openCreateDrawer} className="min-w-[6rem]">
+              New
+            </Button>
+          </div>
+
+          <Table<TableType<Restaurant>>
+            columns={tableColumns}
+            dataSource={data?.adminGetRestaurants.restaurants || []}
+            rowKey="id"
+            pagination={pagination}
+            loading={loading}
           />
-
-          {/* grow fill the full width */}
-          <div className="grow" aria-hidden />
-
-          <Button type="primary" onClick={openCreateDrawer}>
-            Create New
-          </Button>
         </div>
-
-        <Table<TableType<Restaurant>>
-          columns={tableColumns}
-          dataSource={data?.adminGetRestaurants.restaurants || []}
-          rowKey="id"
-          pagination={pagination}
-          loading={loading}
+        {/*<CreateRestaurantView*/}
+        {/*  visible={userActionState.createRestaurantViewVisible}*/}
+        {/*  close={closeCreateRestaurantView}*/}
+        {/*  loading={isCreatingRestaurant}*/}
+        {/*  onSubmit={createRestaurant}*/}
+        {/*  error={createRestaurantError}*/}
+        {/*/>*/}
+        <CreateRestaurantDrawer
+          visible={userActionState.createDrawerVisible}
+          onClose={closeCreateDrawer}
+          onCompleted={() => {
+            closeCreateDrawer()
+            refetch(pageState)
+          }}
         />
-      </div>
-      {/*<CreateRestaurantView*/}
-      {/*  visible={userActionState.createRestaurantViewVisible}*/}
-      {/*  close={closeCreateRestaurantView}*/}
-      {/*  loading={isCreatingRestaurant}*/}
-      {/*  onSubmit={createRestaurant}*/}
-      {/*  error={createRestaurantError}*/}
-      {/*/>*/}
-      <CreateRestaurantDrawer
-        visible={userActionState.createDrawerVisible}
-        onClose={closeCreateDrawer}
-        onCompleted={() => {
-          closeCreateDrawer()
-          refetch(pageState)
-        }}
-      />
-      <UpdateRestaurantDrawer
-        visible={userActionState.updateDrawerViewVisible}
-        restaurant={userActionState.selectedRestaurant}
-        onClose={closeUpdateDrawer}
-        onCompleted={() => {
-          closeUpdateDrawer()
-          refetch(pageState)
-        }}
-      />
-    </Card>
+        <UpdateRestaurantDrawer
+          visible={userActionState.updateDrawerViewVisible}
+          restaurant={userActionState.selectedRestaurant}
+          onClose={closeUpdateDrawer}
+          onCompleted={() => {
+            closeUpdateDrawer()
+            refetch(pageState)
+          }}
+        />
+      </Card>
+    </div>
   )
 }
 

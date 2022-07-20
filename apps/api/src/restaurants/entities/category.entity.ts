@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from "@nestjs/graphql"
 import { IsString, Length } from "class-validator"
 import { CoreEntity } from "src/common/entities/core.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
-import { Column, Entity, JoinTable, ManyToMany } from "typeorm"
+import { Column, Entity, ManyToMany } from "typeorm"
 
 @InputType("CategoryInputType", { isAbstract: true })
 @ObjectType()

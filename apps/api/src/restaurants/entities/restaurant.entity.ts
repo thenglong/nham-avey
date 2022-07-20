@@ -5,7 +5,7 @@ import { Order } from "src/orders/entities/order.entity"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm"
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, RelationId } from "typeorm"
 
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
@@ -17,10 +17,15 @@ export class Restaurant extends CoreEntity {
   @Length(4)
   name: string
 
-  @Field(() => String)
-  @Column()
+  @Field(() => [String], { nullable: true })
+  @Column("varchar", { array: true, nullable: true })
+  @IsString({ each: true })
+  coverImageUrls: string[]
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   @IsString()
-  coverImg: string
+  logoImageUrl: string
 
   @Field(() => String)
   @Column()
@@ -36,15 +41,16 @@ export class Restaurant extends CoreEntity {
   })
   categories: Category[]
 
-  // TODO: upgrade to m -> m
-  @Field(() => User)
-  @ManyToOne(() => User, user => user.restaurants, {
-    onDelete: "CASCADE",
-    nullable: false,
+  @Field(() => [User])
+  @ManyToMany(type => User, user => user.restaurants, { nullable: false })
+  @JoinTable({
+    name: "restaurant_vendors",
+    joinColumn: { name: "restaurant_id", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "vendor_id", referencedColumnName: "id" },
   })
-  vendor: User
+  vendors: User[]
 
-  @RelationId((restaurant: Restaurant) => restaurant.vendor)
+  @RelationId((restaurant: Restaurant) => restaurant.vendors)
   vendorId: string
 
   @Field(() => [Order], { nullable: true })

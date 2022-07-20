@@ -1,5 +1,5 @@
 {
-  "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/web-backoffice/src",
   "projectType": "application",
   "targets": {
@@ -19,9 +19,9 @@
           "apps/web-backoffice/src/favicon.ico",
           "apps/web-backoffice/src/assets"
         ],
-        "styles": [],
+        "styles": ["apps/web-backoffice/src/styles/styles.less"],
         "scripts": [],
-        "webpackConfig": "apps/web-backoffice/custom-webpack.config.js"
+        "webpackConfig": "@nrwl/react/plugins/webpack"
       },
       "configurations": {
         "development": {

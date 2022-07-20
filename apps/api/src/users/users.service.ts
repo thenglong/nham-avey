@@ -2,14 +2,12 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
-import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { PaginationRestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
 import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
 import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
 import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
 import { PaginatedUsersOutput, PaginationUserArgs } from "src/users/dtos/user.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
-import { Repository } from "typeorm"
+import { In, Repository } from "typeorm"
 
 @Injectable()
 export class UserService {
@@ -37,6 +35,10 @@ export class UserService {
 
   async findUserById(id: string) {
     return this.userRepo.findOneBy({ id })
+  }
+
+  async findUsersByIds(ids: string[]) {
+    return this.userRepo.findBy({ id: In(ids) })
   }
 
   async signUpCustomer(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
@@ -123,7 +125,7 @@ export class UserService {
 
       if (email) {
         user.email = email
-        user.verified = false
+        user.isVerified = false
 
         // TODO: Resend verify email here
       }

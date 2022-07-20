@@ -5,7 +5,7 @@ import restaurantRoute from "src/routes/restaurant-routes"
 import userRoutes from "src/routes/user-routes"
 
 export const USER_PREFIX_PATH = "users"
-export const RESTAURANT_PREFIX_PATH = "users"
+export const RESTAURANT_PREFIX_PATH = "restaurants"
 
 const defaultAppRoutes: RouteObject[] = [
   {

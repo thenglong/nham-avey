@@ -1,18 +1,28 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
-import { AllCategoriesOutput } from "src/restaurants/dtos/all-categories.dto"
-import { PaginatedCategoryRestaurantOutput, PaginationCategoryRestaurantArgs } from "src/restaurants/dtos/category.dto"
-import { CreateDishInput, CreateDishOutput } from "src/restaurants/dtos/create-dish.dto"
-import { AdminCreateRestaurantInput, CreateRestaurantOutput, VendorCreateRestaurantInput } from "src/restaurants/dtos/create-restaurant.dto"
-import { DeleteDishInput, DeleteDishOutput } from "src/restaurants/dtos/delete-dish.dto"
-import { DeleteRestaurantOutput } from "src/restaurants/dtos/delete-restaurant.dto"
-import { EditDishInput, EditDishOutput } from "src/restaurants/dtos/edit-dish.dto"
-import { AdminUpdateRestaurantInput, UpdateRestaurantOutput, VendorUpdateRestaurantInput } from "src/restaurants/dtos/edit.restaurant.dto"
-import { MyRestaurantOutput } from "src/restaurants/dtos/my-restaurant"
-import { PaginatedRestaurantsOutput } from "src/restaurants/dtos/my-restaurants.dto"
-import { RestaurantOutput } from "src/restaurants/dtos/restaurant.dto"
-import { PaginationRestaurantsArgs } from "src/restaurants/dtos/restaurants.dto"
+import {
+  AdminCreateRestaurantInput,
+  AdminUpdateRestaurantInput,
+  AllCategoriesOutput,
+  CreateDishInput,
+  CreateDishOutput,
+  CreateRestaurantOutput,
+  DeleteDishInput,
+  DeleteDishOutput,
+  DeleteRestaurantOutput,
+  EditDishInput,
+  EditDishOutput,
+  MyRestaurantOutput,
+  PaginatedCategoryRestaurantOutput,
+  PaginatedRestaurantsOutput,
+  PaginationCategoryRestaurantArgs,
+  PaginationRestaurantsArgs,
+  RestaurantOutput,
+  UpdateRestaurantOutput,
+  VendorCreateRestaurantInput,
+  VendorUpdateRestaurantInput,
+} from "src/restaurants/dtos"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -57,7 +67,7 @@ export class RestaurantService {
       const categoryEntities = await this.getOrCreateCategories(categories ?? [])
 
       const restaurant = this.restaurantRepo.create(restaurantPayload)
-      restaurant.vendor = vendorEntity
+      restaurant.vendors = [vendorEntity]
       restaurant.categories = categoryEntities
 
       await this.restaurantRepo.save(restaurant)
@@ -75,17 +85,17 @@ export class RestaurantService {
 
   async createRestaurantByAdmin(admin: DecodedIdToken, input: AdminCreateRestaurantInput): Promise<CreateRestaurantOutput> {
     try {
-      const { categories, vendorId, ...restaurantPayload } = input
+      const { categories, vendorIds, ...restaurantPayload } = input
 
-      const vendorEntity = await this.userService.findUserById(vendorId)
-      if (!vendorEntity) {
-        throw new Error(`Vendor with id ${input.vendorId} not found`)
+      const vendorEntities = await this.userService.findUsersByIds(vendorIds)
+      if (vendorEntities.length < vendorIds.length) {
+        throw new Error(`Cannot Find All Vendors with ids ${vendorIds.join(", ")}`)
       }
 
       const categoryEntities = await this.getOrCreateCategories(categories ?? [])
 
       const restaurant = this.restaurantRepo.create(restaurantPayload)
-      restaurant.vendor = vendorEntity
+      restaurant.vendors = vendorEntities
       restaurant.categories = categoryEntities
       const saved = await this.restaurantRepo.save(restaurant)
 
@@ -132,11 +142,11 @@ export class RestaurantService {
   }
 
   async updateRestaurantByAdmin(input: AdminUpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
-    const { restaurantId, categories, vendorId, ...restaurantPayload } = input
+    const { restaurantId, categories, vendorIds, ...restaurantPayload } = input
 
     const existing = await this.restaurantRepo.findOne({
       where: { id: restaurantId },
-      relations: ["vendor"],
+      relations: ["vendors"],
     })
 
     if (!existing) {
@@ -145,14 +155,14 @@ export class RestaurantService {
 
     const restaurant = Object.assign(existing, restaurantPayload)
 
-    if (vendorId) {
-      const user = await this.userService.findUserById(vendorId)
-      if (!user) {
-        throw new Error(`Vendor with id ${input.vendorId} not found`)
-      } else if (!user.roles.includes(UserRole.Vendor)) {
-        throw new Error(`User with id ${input.vendorId} is not a vendor`)
+    if (vendorIds) {
+      const vendorEntities = await this.userService.findUsersByIds(vendorIds)
+      if (vendorEntities.length < vendorIds.length) {
+        throw new Error(`Cannot Find All Vendors with ids ${vendorIds.join(", ")}`)
+      } else if (!vendorEntities.some(vendor => vendor.roles.includes(UserRole.Vendor))) {
+        throw new Error(`Users with ids ${vendorIds.join(", ")} includes non-vendor`)
       }
-      restaurant.vendor = user
+      restaurant.vendors = vendorEntities
     }
 
     restaurant.categories = await this.getOrCreateCategories(categories ?? [])
@@ -230,7 +240,7 @@ export class RestaurantService {
       const restaurants = await this.restaurantRepo
         .createQueryBuilder("restaurant")
         .leftJoinAndSelect("restaurant.categories", "category")
-        .leftJoinAndSelect("restaurant.vendor", "vendor")
+        .leftJoinAndSelect("restaurant.vendors", "vendor")
         .where(`category.id = :categoryId`, { categoryId: category.id })
         .orderBy("restaurant.isPromoted", "DESC")
         .take(take)
@@ -278,7 +288,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.vendor", "vendor") //
+        .leftJoinAndSelect("restaurant.vendors", "vendor") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")
@@ -458,7 +468,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.vendor", "vendor") //
+        .leftJoinAndSelect("restaurant.vendors", "vendor") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
         .orderBy("restaurant.isPromoted", "DESC")
@@ -507,7 +517,7 @@ export class RestaurantService {
       queryBuilder
         .skip(skip)
         .take(take)
-        .leftJoinAndSelect("restaurant.vendor", "vendor") //
+        .leftJoinAndSelect("restaurant.vendors", "vendor") //
         .leftJoinAndSelect("restaurant.categories", "categories") //
         .leftJoinAndSelect("restaurant.orders", "orders") //
         .leftJoinAndSelect("restaurant.menu", "menu") //
@@ -524,10 +534,10 @@ export class RestaurantService {
         matchedCount,
         ok: true,
       }
-    } catch {
+    } catch (err) {
       return {
         ok: false,
-        error: "[App] Could not find restaurantRepo",
+        error: `[App] Could not find restaurantRepo ${err}`,
       }
     }
   }
