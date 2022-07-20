@@ -25,7 +25,7 @@ const LazyAvatar = ({
         src={photoUrl}
         useIntersectionObserver
         style={{ height: size, width: size }}
-        className="rounded-full"
+        className="rounded-full object-contain"
         placeholder={<BlurhashPlaceholder blurhash={blurhash} size={size} />}
       />
     )

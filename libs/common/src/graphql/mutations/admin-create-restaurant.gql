@@ -1,4 +1,4 @@
-mutation AdminCreateRestaurant($input: AdminCreateRestaurantByInput!) {
+mutation AdminCreateRestaurant($input: AdminCreateRestaurantInput!) {
   adminCreateRestaurant(input: $input) {
     error
     ok

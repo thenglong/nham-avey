@@ -18,7 +18,7 @@ import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
-import { Equal, Repository, SelectQueryBuilder } from "typeorm"
+import { Equal, Repository } from "typeorm"
 
 @Injectable()
 export class RestaurantService {
@@ -132,34 +132,34 @@ export class RestaurantService {
   }
 
   async updateRestaurantByAdmin(input: AdminUpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
-    try {
-      const { restaurantId, categories, ...restaurantPayload } = input
-      const restaurant = await this.restaurantRepo.findOneBy({
-        id: restaurantId,
-      })
-      if (!restaurant) {
-        return {
-          ok: false,
-          error: "[App] Restaurant not found",
-        }
-      }
+    const { restaurantId, categories, vendorId, ...restaurantPayload } = input
 
-      const categoryEntities = await this.getOrCreateCategories(categories ?? [])
+    const existing = await this.restaurantRepo.findOne({
+      where: { id: restaurantId },
+      relations: ["vendor"],
+    })
 
-      await this.restaurantRepo.save({
-        id: input.restaurantId,
-        ...restaurantPayload,
-        vendorId: input.vendorId,
-        categories: categoryEntities,
-      })
-      return {
-        ok: true,
+    if (!existing) {
+      return { ok: false, error: "[App] Restaurant not found" }
+    }
+
+    const restaurant = Object.assign(existing, restaurantPayload)
+
+    if (vendorId) {
+      const user = await this.userService.findUserById(vendorId)
+      if (!user) {
+        throw new Error(`Vendor with id ${input.vendorId} not found`)
+      } else if (!user.roles.includes(UserRole.Vendor)) {
+        throw new Error(`User with id ${input.vendorId} is not a vendor`)
       }
-    } catch {
-      return {
-        ok: false,
-        error: "[App] Could not edit Restaurant",
-      }
+      restaurant.vendor = user
+    }
+
+    restaurant.categories = await this.getOrCreateCategories(categories ?? [])
+
+    await this.restaurantRepo.save(restaurant)
+    return {
+      ok: true,
     }
   }
 
@@ -515,7 +515,6 @@ export class RestaurantService {
         .addOrderBy("restaurant.name", "ASC")
 
       const { entities } = await queryBuilder.getRawAndEntities()
-
       const pageCount = Math.ceil(matchedCount / take)
       return {
         restaurants: entities,

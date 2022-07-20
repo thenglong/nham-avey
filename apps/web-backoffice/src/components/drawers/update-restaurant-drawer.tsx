@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import {
-  AdminUpdateRestaurantMutationHookResult,
   AdminUpdateRestaurantMutationOptions,
   Restaurant,
   useAdminGetUsersLazyQuery,
@@ -11,7 +10,7 @@ import {
   User,
   UserRole,
 } from "@nham-avey/common"
-import { Button, Drawer, Form, Input, Select, Typography, Upload } from "antd"
+import { Button, Drawer, Form, Input, Select, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import type { UploadChangeParam } from "antd/es/upload"
 import type { UploadProps } from "antd/es/upload/interface"
@@ -28,19 +27,21 @@ export interface UpdateRestaurantFormValue {
   name: string
   address: string
   vendor: SelectOption
-  category: SelectOption
+  categories: SelectOption[]
 }
 
 interface UpdateRestaurantDrawerProps {
   restaurant: Restaurant | null
   visible: boolean
   onCompleted: AdminUpdateRestaurantMutationOptions["onCompleted"]
+  onClose: () => void
 }
 
 export function UpdateRestaurantDrawer({
   restaurant,
   visible,
   onCompleted,
+  onClose,
 }: UpdateRestaurantDrawerProps) {
   const [update, { loading: isUpdating }] = useAdminUpdateRestaurantMutation({
     onCompleted: data => {
@@ -97,7 +98,10 @@ export function UpdateRestaurantDrawer({
     if (restaurant) {
       form.setFieldsValue({
         ...restaurant,
-        category: { label: restaurant.category?.name, value: restaurant.category?.name },
+        categories: restaurant.categories?.map(category => ({
+          label: category.name,
+          value: category.name,
+        })),
         vendor: { label: restaurant.vendor.email, value: restaurant.vendor.id },
       })
       setCoverImageUrl(restaurant.coverImg)
@@ -113,7 +117,9 @@ export function UpdateRestaurantDrawer({
             address: values.address,
             restaurantId: restaurant?.id as number,
             coverImg: coverImageUrl,
-            categoryName: values.category.value as string,
+            categories: values.categories.map(categoryOptions =>
+              categoryOptions.value.toString()
+            ),
             vendorId: values.vendor.value as string,
           },
         },
@@ -121,7 +127,7 @@ export function UpdateRestaurantDrawer({
     } catch (e) {} // do nothing
   }
 
-  const [getVendors] = useAdminGetUsersLazyQuery()
+  const [_, { refetch: getVendors }] = useAdminGetUsersLazyQuery()
   const { data: categoriesData } = useAllCategoriesQuery()
 
   const categoryOptions: SelectOption[] = useMemo(() => {
@@ -135,12 +141,9 @@ export function UpdateRestaurantDrawer({
 
   const fetchVendor = useCallback(
     async (search: string): Promise<SelectOption[]> => {
-      const { data } = await getVendors({
-        variables: { take: 10, q: search, role: UserRole.Vendor },
-      })
+      const { data } = await getVendors({ take: 10, q: search, role: UserRole.Vendor })
 
       const { ok, users } = data?.adminGetUsers || {}
-
       if (ok && users) {
         return users.map((vendor: User) => ({
           label: vendor.email,
@@ -159,6 +162,7 @@ export function UpdateRestaurantDrawer({
       placement="right"
       visible={visible}
       forceRender
+      onClose={onClose}
       title="Update Restaurant"
       className="max-w-full"
       contentWrapperStyle={{
@@ -167,32 +171,36 @@ export function UpdateRestaurantDrawer({
     >
       <Form
         form={form}
-        className="mt-3 text-center"
+        className="mt-3"
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         onFinish={onFinish}
         autoComplete="off"
         name="update-admin"
       >
-        <ImgCrop grid rotate quality={1} aspect={16 / 9}>
-          <Upload
-            name="coverImg"
-            listType="picture-card"
-            className="mb-10"
-            accept="image/*"
-            showUploadList={false}
-            customRequest={customRequest}
-            onChange={handleFileChange}
-          >
-            {isUploadingCoverImage ? (
-              <div>{isUploadingCoverImage ? <LoadingOutlined /> : <PlusOutlined />}</div>
-            ) : coverImageUrl ? (
-              <img src={coverImageUrl} alt="avatar" style={{ width: "100%" }} />
-            ) : (
-              <div style={{ marginTop: 8 }}>Upload</div>
-            )}
-          </Upload>
-        </ImgCrop>
+        <div className="text-center">
+          <ImgCrop grid rotate quality={1} aspect={16 / 9}>
+            <Upload
+              name="coverImg"
+              listType="picture-card"
+              className="mb-10"
+              accept="image/*"
+              showUploadList={false}
+              customRequest={customRequest}
+              onChange={handleFileChange}
+            >
+              {isUploadingCoverImage ? (
+                <div>
+                  {isUploadingCoverImage ? <LoadingOutlined /> : <PlusOutlined />}
+                </div>
+              ) : coverImageUrl ? (
+                <img src={coverImageUrl} alt="avatar" style={{ width: "100%" }} />
+              ) : (
+                <div style={{ marginTop: 8 }}>Upload</div>
+              )}
+            </Upload>
+          </ImgCrop>
+        </div>
 
         <Form.Item
           label="Name"
@@ -217,16 +225,12 @@ export function UpdateRestaurantDrawer({
             },
           ]}
         >
-          <DebouncedSelect
-            placeholder="Start Typing to Search"
-            fetchOptions={fetchVendor}
-            style={{ width: "100%" }}
-          />
+          <DebouncedSelect fetchOptions={fetchVendor} />
         </Form.Item>
 
         <Form.Item
-          label="Category"
-          name="category"
+          label="Categories"
+          name="categories"
           rules={[
             {
               required: true,

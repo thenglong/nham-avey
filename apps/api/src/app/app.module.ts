@@ -14,6 +14,7 @@ import { AuthMiddleware } from "src/auth/auth.middleware"
 import { AuthModule } from "src/auth/auth.module"
 import { AUTHORIZATION_HEADER, SWAGGER_PATH } from "src/common/common.constants"
 import { CommonModule } from "src/common/common.module"
+import { EnhancedDate } from "src/common/scalar/enhanced-date.scalar"
 import configuration from "src/config/configuration"
 import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
 import { FirebaseAdminModule } from "src/firebase-admin/firebase-admin.module"
@@ -37,21 +38,23 @@ import * as Yup from "yup"
       }),
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeormConfigService }),
-    GraphQLModule.forRoot({
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
       driver: ApolloDriver,
-      installSubscriptionHandlers: true,
-      playground: false,
-      introspection: true,
-      plugins: [
-        process.env.NODE_ENV === "production"
-          ? ApolloServerPluginLandingPageProductionDefault()
-          : ApolloServerPluginLandingPageLocalDefault(),
-      ],
-      sortSchema: true,
-      autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
-      context: ({ req, connection }: ApolloServer["context"]) => {
+      useFactory: (config: ConfigService) => {
         return {
-          [AUTHORIZATION_HEADER]: req ? req.headers[AUTHORIZATION_HEADER] : connection.context[AUTHORIZATION_HEADER],
+          installSubscriptionHandlers: true,
+          playground: false,
+          introspection: true,
+          plugins: [config.get("isProd") ? ApolloServerPluginLandingPageProductionDefault() : ApolloServerPluginLandingPageLocalDefault()],
+          sortSchema: true,
+          autoSchemaFile: join(process.cwd(), "apps/api/src/schema.gql"),
+          context: ({ req, connection }: ApolloServer["context"]) => {
+            return {
+              [AUTHORIZATION_HEADER]: req ? req.headers[AUTHORIZATION_HEADER] : connection.context[AUTHORIZATION_HEADER],
+            }
+          },
         }
       },
     }),
@@ -82,7 +85,9 @@ import * as Yup from "yup"
     FileUploadsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    EnhancedDate, // override default graphql date since default one doesn't parse from string
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -9,7 +9,7 @@ query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
     restaurants {
       address
       categories {
-        countRestaurants
+        restaurantCount
         coverImageUrl
         createdAt
         id

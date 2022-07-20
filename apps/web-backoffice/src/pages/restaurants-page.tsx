@@ -8,20 +8,21 @@ import {
 } from "@ant-design/icons"
 import {
   Restaurant,
+  useAdminCreateRestaurantMutation,
   useAdminGetRestaurantsQuery,
   useDeleteRestaurantMutation,
-  useAdminCreateRestaurantMutation,
-  useAdminUpdateRestaurantMutation,
+  Category,
 } from "@nham-avey/common"
 import {
   Button,
   Card,
+  Input,
   Modal,
   notification,
   Table,
   TablePaginationConfig,
+  Tag,
   Tooltip,
-  Input,
 } from "antd"
 import { ColumnsType } from "antd/lib/table/interface"
 import moment from "moment"
@@ -30,9 +31,6 @@ import AvatarInfo from "src/components/avatar-info"
 import UpdateRestaurantDrawer from "src/components/drawers/update-restaurant-drawer"
 import { APP_NAME } from "src/config/app-config"
 import { TableType } from "src/typing/common-type"
-
-// import CreateRestaurantView from "./create-admin-view"
-// import UpdateRestaurantView from "./update-admin-view"
 
 const { confirm } = Modal
 
@@ -46,8 +44,8 @@ interface RestaurantPageState {
 
 interface UserActionState {
   selectedRestaurant: Restaurant | null
-  createRestaurantViewVisible: boolean
-  updateRestaurantViewVisible: boolean
+  createDrawerVisible: boolean
+  updateDrawerViewVisible: boolean
   deleteConfirmationVisible: boolean
 }
 
@@ -59,9 +57,9 @@ export const RestaurantsPage = () => {
   })
   const [userActionState, setUserActionState] = useState<UserActionState>({
     selectedRestaurant: null,
-    createRestaurantViewVisible: false,
+    createDrawerVisible: false,
     deleteConfirmationVisible: false,
-    updateRestaurantViewVisible: false,
+    updateDrawerViewVisible: false,
   })
   const { data, loading, refetch } = useAdminGetRestaurantsQuery({
     variables: pageState,
@@ -72,11 +70,35 @@ export const RestaurantsPage = () => {
     onCompleted: () => refetch(pageState),
   })
 
-  const onOpenCreateView = useCallback((restaurant: Restaurant) => {
+  const openCreateDrawer = useCallback((restaurant: Restaurant) => {
     setUserActionState(prevState => ({
       ...prevState,
       selectedRestaurant: restaurant,
-      updateRestaurantViewVisible: true,
+      createDrawerVisible: true,
+    }))
+  }, [])
+
+  const closeCreateDrawer = useCallback(() => {
+    setUserActionState(userActionState => ({
+      ...userActionState,
+      selectedRestaurant: null,
+      createDrawerVisible: false,
+    }))
+  }, [])
+
+  const openUpdateDrawer = useCallback((restaurant: Restaurant) => {
+    setUserActionState(userActionState => ({
+      ...userActionState,
+      selectedRestaurant: restaurant,
+      updateDrawerViewVisible: true,
+    }))
+  }, [])
+
+  const closeUpdateDrawer = useCallback(() => {
+    setUserActionState(userActionState => ({
+      ...userActionState,
+      selectedRestaurant: null,
+      updateDrawerViewVisible: false,
     }))
   }, [])
 
@@ -109,6 +131,15 @@ export const RestaurantsPage = () => {
         ),
       },
       {
+        title: "Categories",
+        render: (_, restaurant) =>
+          restaurant.categories?.map((category: Category) => (
+            <Tag color="blue" key={category.id} className="mb-1">
+              {category.name}
+            </Tag>
+          )),
+      },
+      {
         title: "Vendor Info",
         render: (_, restaurant) => (
           <AvatarInfo
@@ -120,14 +151,14 @@ export const RestaurantsPage = () => {
         ),
       },
       {
-        title: "Action",
+        title: "Actions",
         render: (_, restaurant) => {
           return (
             <div className="flex flex-wrap gap-1">
               <Tooltip title="Update" zIndex={999}>
                 <Button
                   icon={<EditOutlined />}
-                  onClick={() => onOpenCreateView(restaurant)}
+                  onClick={() => openUpdateDrawer(restaurant)}
                   size="middle"
                 />
               </Tooltip>
@@ -155,7 +186,7 @@ export const RestaurantsPage = () => {
         },
       },
     ],
-    [deleteRestaurant, onOpenCreateView]
+    [deleteRestaurant, openUpdateDrawer]
   )
 
   const pagination: TablePaginationConfig = useMemo(() => {
@@ -180,34 +211,6 @@ export const RestaurantsPage = () => {
       },
     }
   }, [pageState, data, setPageState])
-
-  const openCreateDrawer = useCallback(() => {
-    setUserActionState(userActionState => ({
-      ...userActionState,
-      createRestaurantViewVisible: true,
-    }))
-  }, [])
-
-  const closeCreateDrawer = useCallback(() => {
-    setUserActionState(userActionState => ({
-      ...userActionState,
-      createRestaurantViewVisible: false,
-    }))
-  }, [])
-
-  const openUpdateDrawer = useCallback(() => {
-    setUserActionState(userActionState => ({
-      ...userActionState,
-      updateRestaurantViewVisible: true,
-    }))
-  }, [])
-
-  const closeUpdateDrawer = useCallback(() => {
-    setUserActionState(userActionState => ({
-      ...userActionState,
-      updateRestaurantViewVisible: false,
-    }))
-  }, [])
 
   return (
     <Card bodyStyle={{ padding: "0px" }}>
@@ -249,8 +252,9 @@ export const RestaurantsPage = () => {
       {/*  error={createRestaurantError}*/}
       {/*/>*/}
       <UpdateRestaurantDrawer
-        visible={userActionState.updateRestaurantViewVisible}
+        visible={userActionState.updateDrawerViewVisible}
         restaurant={userActionState.selectedRestaurant}
+        onClose={closeUpdateDrawer}
         onCompleted={() => {
           closeUpdateDrawer()
           refetch(pageState)

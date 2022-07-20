@@ -17,6 +17,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
 
   public createTypeOrmOptions(): TypeOrmModuleOptions {
     const { host, port, database, user, password } = parse(this.config.get<string>("db.url") as string)
+
     return {
       type: "postgres",
       host: host as string,
@@ -34,6 +35,13 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       keepConnectionAlive: !this.config.get("isProd"),
       ssl: {
         rejectUnauthorized: false, // this should be true outside heroku!
+      },
+      cache: {
+        duration: 1500, // override default 1000ms
+        type: "redis",
+        options: {
+          url: this.config.get("REDIS_URL"),
+        },
       },
     }
   }

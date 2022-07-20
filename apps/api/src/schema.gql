@@ -27,12 +27,12 @@ type AllCategoriesOutput {
 
 type Category {
   coverImageUrl: String
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   id: Float!
   name: String!
   restaurantCount: Int!
   slug: String!
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
 }
 
 input CreateAccountInput {
@@ -91,11 +91,6 @@ type CreateRestaurantOutput {
   restaurant: Restaurant
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 input DeleteDishInput {
   dishId: Int!
 }
@@ -111,7 +106,7 @@ type DeleteRestaurantOutput {
 }
 
 type Dish {
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   description: String!
   id: Float!
   name: String!
@@ -119,7 +114,7 @@ type Dish {
   photo: String
   price: Int!
   restaurant: Restaurant
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
 }
 
 type DishChoice {
@@ -166,6 +161,11 @@ type EditOrderOutput {
   error: String
   ok: Boolean!
 }
+
+"""
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar EnhancedDate
 
 input GetOrderInput {
   id: Float!
@@ -221,7 +221,7 @@ type MyRestaurantOutput {
 }
 
 type Order {
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   customer: User
   driver: User
   id: Float!
@@ -229,15 +229,15 @@ type Order {
   restaurant: Restaurant
   status: OrderStatus!
   total: Float
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
 }
 
 type OrderItem {
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   dish: Dish!
   id: Float!
   options: [OrderItemOption!]
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
 }
 
 type OrderItemOption {
@@ -294,12 +294,12 @@ type PaginatedUsersOutput {
 }
 
 type Payment {
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   id: Float!
   restaurant: Restaurant!
   restaurantId: Int!
   transactionId: String!
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
   user: User!
 }
 
@@ -321,14 +321,14 @@ type Restaurant {
   address: String!
   categories: [Category!]
   coverImg: String!
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   id: Float!
   isPromoted: Boolean!
   menu: [Dish!]
   name: String!
   orders: [Order!]
-  promotedUntil: DateTime
-  updatedAt: DateTime!
+  promotedUntil: EnhancedDate
+  updatedAt: EnhancedDate!
   vendor: User!
 }
 
@@ -381,7 +381,7 @@ type UpdateRestaurantOutput {
 }
 
 type User {
-  createdAt: DateTime!
+  createdAt: EnhancedDate!
   email: String!
   id: String!
   orders: [Order!]
@@ -389,7 +389,7 @@ type User {
   restaurants: [Restaurant!]
   rides: [Order!]
   roles: [UserRole!]!
-  updatedAt: DateTime!
+  updatedAt: EnhancedDate!
   verified: Boolean!
 }
 

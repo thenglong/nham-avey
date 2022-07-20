@@ -17,8 +17,8 @@ const defaultAppRoutes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       {
-        path: "*",
-        element: <Navigate to={USER_PREFIX_PATH} />,
+        path: "",
+        element: <Navigate to={RESTAURANT_PREFIX_PATH} />,
       },
       {
         path: RESTAURANT_PREFIX_PATH,
