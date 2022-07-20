@@ -28,6 +28,7 @@ import { ColumnsType } from "antd/lib/table/interface"
 import moment from "moment"
 import { Helmet } from "react-helmet-async"
 import AvatarInfo from "src/components/avatar-info"
+import CreateRestaurantDrawer from "src/components/drawers/create-restaurant-drawer"
 import UpdateRestaurantDrawer from "src/components/drawers/update-restaurant-drawer"
 import { APP_NAME } from "src/config/app-config"
 import { TableType } from "src/typing/common-type"
@@ -70,10 +71,9 @@ export const RestaurantsPage = () => {
     onCompleted: () => refetch(pageState),
   })
 
-  const openCreateDrawer = useCallback((restaurant: Restaurant) => {
+  const openCreateDrawer = useCallback(() => {
     setUserActionState(prevState => ({
       ...prevState,
-      selectedRestaurant: restaurant,
       createDrawerVisible: true,
     }))
   }, [])
@@ -227,11 +227,7 @@ export const RestaurantsPage = () => {
           {/* grow fill the full width */}
           <div className="grow" aria-hidden />
 
-          <Button
-            type="primary"
-            // onClick={openCreateRestaurantView}
-            // disabled={isLoading || isCreatingRestaurant}
-          >
+          <Button type="primary" onClick={openCreateDrawer}>
             Create New
           </Button>
         </div>
@@ -251,6 +247,14 @@ export const RestaurantsPage = () => {
       {/*  onSubmit={createRestaurant}*/}
       {/*  error={createRestaurantError}*/}
       {/*/>*/}
+      <CreateRestaurantDrawer
+        visible={userActionState.createDrawerVisible}
+        onClose={closeCreateDrawer}
+        onCompleted={() => {
+          closeCreateDrawer()
+          refetch(pageState)
+        }}
+      />
       <UpdateRestaurantDrawer
         visible={userActionState.updateDrawerViewVisible}
         restaurant={userActionState.selectedRestaurant}
