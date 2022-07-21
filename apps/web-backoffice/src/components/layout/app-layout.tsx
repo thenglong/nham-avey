@@ -6,7 +6,6 @@ import { Outlet } from "react-router-dom"
 import Footer from "src/components/footer"
 import HeaderNav from "src/components/header-nav"
 import { MobileNav } from "src/components/mobile-nav"
-import PageHeader from "src/components/page-header"
 import { SideNav } from "src/components/side-nav"
 import {
   HEADER_HEIGHT,
@@ -20,7 +19,7 @@ const { useBreakpoint } = Grid
 
 const AppLayoutSuspenseLoader = () => {
   return (
-    <div className="grid h-full w-full place-items-center">
+    <div className="flex h-full w-full items-center justify-center">
       <Spin indicator={<LoadingOutlined style={{ fontSize: 54 }} spin />} />
     </div>
   )
@@ -52,10 +51,9 @@ export const AppLayout = () => {
           <div
             className="relative mt-[70px] p-[25px]"
             style={{
-              minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
+              height: `calc(100vh - ${HEADER_HEIGHT}px)`,
             }}
           >
-            <PageHeader title="App Title" />
             <Content className="h-full">
               <Suspense fallback={<AppLayoutSuspenseLoader />}>
                 <Outlet />

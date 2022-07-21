@@ -35,7 +35,7 @@ export interface RestaurantFormSubmitValue {
 }
 
 export interface RestaurantFormProps {
-  initialValue: Restaurant
+  initialValue?: Restaurant
   onSubmit: (values: RestaurantFormSubmitValue) => Promise<void>
   isLoading: boolean
 }

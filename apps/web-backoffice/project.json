@@ -19,7 +19,7 @@
           "apps/web-backoffice/src/favicon.ico",
           "apps/web-backoffice/src/assets"
         ],
-        "styles": ["apps/web-backoffice/src/styles/styles.less"],
+        "styles": ["apps/web-backoffice/src/styles/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },

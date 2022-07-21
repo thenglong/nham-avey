@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react"
 
 import {
   DeleteOutlined,
@@ -8,14 +8,12 @@ import {
   SearchOutlined,
 } from "@ant-design/icons"
 import {
+  Category,
   Restaurant,
-  useAdminCreateRestaurantMutation,
   useAdminGetRestaurantsQuery,
   useDeleteRestaurantMutation,
-  Category,
 } from "@nham-avey/common"
 import {
-  Badge,
   Button,
   Card,
   Input,
@@ -35,6 +33,7 @@ import CreateRestaurantDrawer from "src/components/drawers/create-restaurant-dra
 import UpdateRestaurantDrawer from "src/components/drawers/update-restaurant-drawer"
 import { APP_NAME } from "src/config/app-config"
 import { TableType } from "src/typing/common-type"
+import { useDebouncedCallback } from "use-debounce"
 
 const { confirm } = Modal
 
@@ -68,10 +67,6 @@ export const RestaurantsPage = () => {
   const { data, loading, refetch } = useAdminGetRestaurantsQuery({
     variables: pageState,
     fetchPolicy: "cache-and-network",
-  })
-
-  const [create] = useAdminCreateRestaurantMutation({
-    onCompleted: () => refetch(pageState),
   })
 
   const openCreateDrawer = useCallback(() => {
@@ -220,19 +215,29 @@ export const RestaurantsPage = () => {
     }
   }, [pageState, data, setPageState])
 
+  const setDebouncedPageState = useDebouncedCallback(setPageState, 300)
+
+  const onSearch: ChangeEventHandler<HTMLInputElement> = evt => {
+    setDebouncedPageState({
+      ...pageState,
+      page: 1,
+      q: evt.target.value,
+    })
+  }
+
   return (
     <div className="flex h-full flex-col">
       <Typography.Title>Restaurants</Typography.Title>
       <Card bodyStyle={{ padding: "0px", height: "100%" }} className="h-full">
         <Helmet title={PAGE_TITLE} />
-        <div className="mb-1 h-full ">
+        <div className="h-full">
           <div className="flex gap-2 px-4 py-8">
-            <div>
+            <div className="flex">
               <Input
-                className="w-80"
+                className="w-40 md:w-80"
                 placeholder="Search"
                 prefix={<SearchOutlined />}
-                // onChange={onSearch}
+                onChange={onSearch}
               />
               <Tooltip title="Reload">
                 <Button
@@ -252,6 +257,7 @@ export const RestaurantsPage = () => {
           </div>
 
           <Table<TableType<Restaurant>>
+            className="overflow-x-auto"
             columns={tableColumns}
             dataSource={data?.adminGetRestaurants.restaurants || []}
             rowKey="id"
@@ -259,13 +265,6 @@ export const RestaurantsPage = () => {
             loading={loading}
           />
         </div>
-        {/*<CreateRestaurantView*/}
-        {/*  visible={userActionState.createRestaurantViewVisible}*/}
-        {/*  close={closeCreateRestaurantView}*/}
-        {/*  loading={isCreatingRestaurant}*/}
-        {/*  onSubmit={createRestaurant}*/}
-        {/*  error={createRestaurantError}*/}
-        {/*/>*/}
         <CreateRestaurantDrawer
           visible={userActionState.createDrawerVisible}
           onClose={closeCreateDrawer}
