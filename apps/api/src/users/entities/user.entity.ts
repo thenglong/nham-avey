@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql"
 import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator"
 import { CoreWithoutIdEntity } from "src/common/entities/core.entity"
 import { Order } from "src/orders/entities/order.entity"
-import { Payment } from "src/payments/entities/payment.entity"
+import { Payment } from "src/payments/payment.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { Column, Entity, ManyToMany, OneToMany, PrimaryColumn } from "typeorm"
 

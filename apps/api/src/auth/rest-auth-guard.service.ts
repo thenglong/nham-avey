@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Inject, Injectable } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { RequestWithUser } from "src/auth/auth.middleware"
-import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
 import { UserRole } from "src/users/entities/user.entity"
 
 @Injectable()

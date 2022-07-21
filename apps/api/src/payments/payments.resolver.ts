@@ -1,11 +1,11 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
+import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { CreatePaymentInput, CreatePaymentOutput } from "src/payments/dtos/create-payment.dto"
-import { GetPaymentsOutput } from "src/payments/dtos/get-payments.dto"
-import { Payment } from "src/payments/entities/payment.entity"
+import { Payment } from "src/payments/payment.entity"
+import { CreatePaymentInput, CreatePaymentOutput, GetPaymentsOutput } from "src/payments/payments.dto"
 import { PaymentService } from "src/payments/payments.service"
-import { UserRole, User } from "src/users/entities/user.entity"
+import { UserRole } from "src/users/entities/user.entity"
 
 @Resolver(() => Payment)
 export class PaymentResolver {
@@ -13,13 +13,16 @@ export class PaymentResolver {
 
   @Mutation(() => CreatePaymentOutput)
   @Roles(UserRole.Vendor)
-  createPayment(@GraphqlAuthUser() vendor: User, @Args("input") createPaymentInput: CreatePaymentInput): Promise<CreatePaymentOutput> {
-    return this.paymentService.createPayment(vendor, createPaymentInput)
+  createPayment(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") createPaymentInput: CreatePaymentInput,
+  ): Promise<CreatePaymentOutput> {
+    return this.paymentService.createPayment(decodedIdToken.uid, createPaymentInput)
   }
 
   @Query(() => GetPaymentsOutput)
   @Roles(UserRole.Vendor)
-  getPayments(@GraphqlAuthUser() user: User): Promise<GetPaymentsOutput> {
-    return this.paymentService.getPayments(user)
+  getPayments(@GraphqlAuthUser() decodedIdToken: DecodedIdToken): Promise<GetPaymentsOutput> {
+    return this.paymentService.getPayments(decodedIdToken.uid)
   }
 }

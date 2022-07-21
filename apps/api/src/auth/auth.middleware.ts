@@ -1,7 +1,7 @@
 import { Inject, Injectable, InternalServerErrorException, NestMiddleware, UnauthorizedException } from "@nestjs/common"
 import { NextFunction, Request, Response } from "express"
 import { DecodedIdToken } from "firebase-admin/auth"
-import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
 import { UserRole } from "src/users/entities/user.entity"
 
 export interface UserClaims extends DecodedIdToken {

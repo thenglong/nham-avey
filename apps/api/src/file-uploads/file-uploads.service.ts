@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { getFileExtension } from "src/common/common.helpers"
-import { FirebaseStorageService } from "src/firebase-admin/firebase-admin-storage.service"
+import { FirebaseStorageService } from "src/firebase-admin/services/firebase-admin-storage.service"
 import { v4 as uuidv4 } from "uuid"
 
 @Injectable()

@@ -1,5 +1,6 @@
 import { Inject } from "@nestjs/common"
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql"
+import { DecodedIdToken } from "firebase-admin/auth"
 import { PubSub } from "graphql-subscriptions"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
@@ -12,7 +13,7 @@ import { OrderUpdatesInput } from "src/orders/dtos/order-updates.dto"
 import { TakeOrderInput, TakeOrderOutput } from "src/orders/dtos/take-order.dto"
 import { Order } from "src/orders/entities/order.entity"
 import { OrderService } from "src/orders/orders.service"
-import { UserRole, User } from "src/users/entities/user.entity"
+import { User, UserRole } from "src/users/entities/user.entity"
 
 @Resolver(() => Order)
 export class OrderResolver {
@@ -20,22 +21,29 @@ export class OrderResolver {
 
   @Mutation(() => CreateOrderOutput)
   @Roles(UserRole.Customer)
-  async createOrder(@GraphqlAuthUser() customer: User, @Args("input") createOrderInput: CreateOrderInput): Promise<CreateOrderOutput> {
-    return this.ordersService.createOrder(customer, createOrderInput)
+  async createOrder(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") createOrderInput: CreateOrderInput,
+  ): Promise<CreateOrderOutput> {
+    return this.ordersService.createOrder(decodedIdToken.uid, createOrderInput)
   }
 
   @Query(() => GetOrdersOutput)
-  async getOrders(@GraphqlAuthUser() user: User, @Args("input") getOrdersInput: GetOrdersInput): Promise<GetOrdersOutput> {
-    return this.ordersService.getOrders(user, getOrdersInput)
+  @Roles(UserRole.Customer, UserRole.Admin, UserRole.Vendor, UserRole.Driver)
+  async getOrders(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") getOrdersInput: GetOrdersInput,
+  ): Promise<GetOrdersOutput> {
+    return this.ordersService.getOrders(decodedIdToken.uid, getOrdersInput)
   }
 
   @Query(() => GetOrderOutput)
-  async getOrder(@GraphqlAuthUser() user: User, @Args("input") getOrderInput: GetOrderInput): Promise<GetOrderOutput> {
+  async getOrder(@GraphqlAuthUser() user: DecodedIdToken, @Args("input") getOrderInput: GetOrderInput): Promise<GetOrderOutput> {
     return this.ordersService.getOrder(user, getOrderInput)
   }
 
   @Mutation(() => EditOrderOutput)
-  async editOrder(@GraphqlAuthUser() user: User, @Args("input") editOrderInput: EditOrderInput): Promise<EditOrderOutput> {
+  async editOrder(@GraphqlAuthUser() user: DecodedIdToken, @Args("input") editOrderInput: EditOrderInput): Promise<EditOrderOutput> {
     return this.ordersService.editOrder(user, editOrderInput)
   }
 

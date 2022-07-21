@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core"
 import { GqlExecutionContext } from "@nestjs/graphql"
 import { AuthMiddleware } from "src/auth/auth.middleware"
 import { AUTHORIZATION_HEADER } from "src/common/common.constants"
-import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
 import { UserRole } from "src/users/entities/user.entity"
 
 @Injectable()

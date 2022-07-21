@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
-import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
+import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
 import { User, UserRole } from "src/users/entities/user.entity"
 import {
   AdminUpdateUserInput,

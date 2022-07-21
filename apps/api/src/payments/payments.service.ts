@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common"
 import { Interval } from "@nestjs/schedule"
 import { InjectRepository } from "@nestjs/typeorm"
-import { CreatePaymentInput, CreatePaymentOutput } from "src/payments/dtos/create-payment.dto"
-import { GetPaymentsOutput } from "src/payments/dtos/get-payments.dto"
-import { Payment } from "src/payments/entities/payment.entity"
+import { Payment } from "src/payments/payment.entity"
+import { CreatePaymentInput, CreatePaymentOutput, GetPaymentsOutput } from "src/payments/payments.dto"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { User } from "src/users/entities/user.entity"
+import { UserService } from "src/users/users.service"
 import { Equal, LessThan, Repository } from "typeorm"
 
 @Injectable()
@@ -15,40 +15,42 @@ export class PaymentService {
     private readonly payments: Repository<Payment>,
     @InjectRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
+    private readonly userService: UserService,
   ) {}
 
-  async createPayment(vendor: User, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
+  async createPayment(vendorId: string, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
     try {
       const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
-
       if (!restaurant) {
-        return {
-          ok: false,
-          error: "[App] Restaurant not found",
-        }
+        return { ok: false, error: "[App] Restaurant not found" }
       }
-
-      if (restaurant.vendorId !== vendor.id) {
+      if (restaurant.vendorId !== vendorId) {
         return {
           ok: false,
           error: "[App] You can't do this",
         }
       }
 
-      await this.payments.save(
-        this.payments.create({
-          transactionId,
-          user: vendor,
-          restaurant,
-        }),
-      )
+      const vendorEntity = (await this.userService.findUserById(vendorId)) as User
+
+      if (!vendorEntity) {
+        return { ok: false, error: "[App] Vendor deleted" }
+      }
+
+      const payment = this.payments.create({
+        transactionId,
+        user: vendorEntity,
+        restaurant,
+      })
+
+      await this.payments.save(payment)
 
       restaurant.isPromoted = true
       const date = new Date()
       date.setDate(date.getDate() + 7)
       restaurant.promotedUntil = date
 
-      this.restaurants.save(restaurant)
+      await this.restaurants.save(restaurant)
 
       return {
         ok: true,
@@ -61,9 +63,11 @@ export class PaymentService {
     }
   }
 
-  async getPayments(user: User): Promise<GetPaymentsOutput> {
+  async getPayments(vendorId: string): Promise<GetPaymentsOutput> {
     try {
-      const payments = await this.payments.findBy({ user: Equal(user) })
+      const vendor = await this.userService.findUserById(vendorId)
+      if (!vendor) return { ok: false, error: "[App] Vendor not found" }
+      const payments = await this.payments.findBy({ user: Equal(vendor) })
       return {
         ok: true,
         payments,
@@ -85,10 +89,12 @@ export class PaymentService {
       },
     })
 
-    restaurants.forEach(async restaurant => {
-      restaurant.isPromoted = false
-      restaurant.promotedUntil = null
-      await this.restaurants.save(restaurant)
-    })
+    await Promise.all(
+      restaurants.map(async restaurant => {
+        restaurant.isPromoted = false
+        restaurant.promotedUntil = null
+        await this.restaurants.save(restaurant)
+      }),
+    )
   }
 }

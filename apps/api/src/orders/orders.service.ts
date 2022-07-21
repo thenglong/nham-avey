@@ -12,6 +12,7 @@ import { Order, OrderStatus } from "src/orders/entities/order.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { User, UserRole } from "src/users/entities/user.entity"
+import { UserService } from "src/users/users.service"
 import { Equal, Repository } from "typeorm"
 
 @Injectable()
@@ -26,37 +27,30 @@ export class OrderService {
     @InjectRepository(Dish)
     private readonly dishes: Repository<Dish>,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
+    private readonly userService: UserService,
   ) {}
 
-  async createOrder(customer: User, { restaurantId, items }: CreateOrderInput): Promise<CreateOrderOutput> {
+  async createOrder(customerId: string, { restaurantId, items }: CreateOrderInput): Promise<CreateOrderOutput> {
     try {
-      const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
-      if (!restaurant) {
-        return {
-          ok: false,
-          error: "[App] Restaurant not found",
-        }
-      }
+      const customer = await this.userService.findUserById(customerId)
+      if (!customer) return { ok: false, error: "[App] Cannot get Customer details" }
 
-      let orderFinalPrice = 0
+      const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
+      if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
+
+      let finalOrderPrice = 0
       const orderItems: OrderItem[] = []
 
       for (const item of items) {
         const dish = await this.dishes.findOneBy({ id: item.dishId })
-        if (!dish) {
-          return {
-            ok: false,
-            error: "[App] Dish not found",
-          }
-        }
-        let dishFinalPrice = dish.price
+        if (!dish) return { ok: false, error: "[App] Dish not found" }
 
+        let dishFinalPrice = dish.price
         for (const itemOption of item.options) {
           const dishOption = dish.options?.find(dishOption => dishOption.name === itemOption.name)
           if (dishOption) {
-            if (dishOption.extra) {
-              dishFinalPrice = dishFinalPrice + dishOption.extra
-            } else {
+            if (dishOption.extra) dishFinalPrice = dishFinalPrice + dishOption.extra
+            else {
               const dishOptionChoice = dishOption.choices?.find(optionChoice => optionChoice.name === itemOption.choice)
               if (dishOptionChoice) {
                 if (dishOptionChoice.extra) {
@@ -67,7 +61,7 @@ export class OrderService {
           }
         }
 
-        orderFinalPrice = orderFinalPrice + dishFinalPrice
+        finalOrderPrice = finalOrderPrice + dishFinalPrice
 
         const orderItem = await this.orderItems.save(
           this.orderItems.create({
@@ -83,7 +77,7 @@ export class OrderService {
         this.orders.create({
           customer,
           restaurant,
-          total: orderFinalPrice,
+          total: finalOrderPrice,
           items: orderItems,
         }),
       )
@@ -104,50 +98,45 @@ export class OrderService {
     }
   }
 
-  async getOrders(user: User, { status }: GetOrdersInput): Promise<GetOrdersOutput> {
+  async getOrders(userId: string, { status }: GetOrdersInput): Promise<GetOrdersOutput> {
     try {
+      const user = await this.userService.findUserById(userId)
+      if (!user) return { ok: false, error: "[App] Cannot get User details" }
+
       let orders: Order[] = []
 
       if (user.roles.includes(UserRole.Customer)) {
         orders = await this.orders.find({
           where: {
-            customer: Equal(user),
+            customer: Equal(userId),
             ...(status && { status }),
           },
         })
       } else if (user.roles.includes(UserRole.Driver)) {
         orders = await this.orders.find({
           where: {
-            driver: Equal(user),
+            driver: Equal(userId),
             ...(status && { status }),
           },
         })
       } else if (user.roles.includes(UserRole.Vendor)) {
         const restaurants = await this.restaurants.find({
           where: {
-            vendors: Equal(user),
+            vendors: Equal(userId),
           },
           relations: ["orders"],
         })
         orders = restaurants.map(restaurant => restaurant.orders).flat()
 
-        if (status) {
-          orders = orders.filter(order => order.status === status)
-        }
+        if (status) orders = orders.filter(order => order.status === status)
       }
-      return {
-        ok: true,
-        orders,
-      }
+      return { ok: true, orders }
     } catch {
-      return {
-        ok: false,
-        error: "[App] Could not get orders",
-      }
+      return { ok: false, error: "[App] Could not get orders" }
     }
   }
 
-  canSeeOrder(user: User, order: Order): boolean {
+  private canSeeOrder(user: User, order: Order): boolean {
     let canSee = true
     if (user.roles.includes(UserRole.Customer) && order.customerId !== user.id) {
       canSee = false

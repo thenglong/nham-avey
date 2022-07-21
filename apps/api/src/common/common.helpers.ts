@@ -21,7 +21,7 @@ export const createSwagger = async (app: INestApplication) => {
         description: "API Key",
         bearerFormat: "apiKey",
       },
-      API_KEY_NAME
+      API_KEY_NAME,
     )
     .build()
   const document = SwaggerModule.createDocument(app, swaggerConfig)
