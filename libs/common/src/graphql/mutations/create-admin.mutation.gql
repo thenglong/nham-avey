@@ -1,0 +1,9 @@
+mutation CreateAdmin($input: CreateAccountInput!) {
+  createAdmin(input: $input) {
+    ok
+    error
+    user {
+      ...UserParts
+    }
+  }
+}

@@ -3,7 +3,6 @@ import { IsEmail, MinLength } from "class-validator"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { PaginationOutput, PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
-import { Column } from "typeorm"
 
 @ArgsType()
 export class PaginationUserArgs extends PaginationWithSearchArgs {
@@ -18,16 +17,7 @@ export class PaginatedUsersOutput extends PaginationOutput {
 }
 
 @InputType()
-export class CreateAccountInput {
-  @Field(type => String)
-  @MinLength(8)
-  password: string
-
-  @Column({ unique: true })
-  @Field(type => String)
-  @IsEmail()
-  email: string
-}
+export class CreateAccountInput extends PickType(User, ["email", "firstName", "lastName", "photoURL"]) {}
 
 @InputType()
 export class SignUpAccountInput extends CreateAccountInput {}

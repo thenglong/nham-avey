@@ -8,6 +8,8 @@ query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
     pageCount
     users {
       createdAt
+      firstName
+      lastName
       email
       id
       roles

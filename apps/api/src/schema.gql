@@ -50,7 +50,9 @@ type Category {
 
 input CreateAccountInput {
   email: String!
-  password: String!
+  firstName: String
+  lastName: String
+  photoURL: String
 }
 
 type CreateAccountOutput {
@@ -352,7 +354,9 @@ type RestaurantOutput {
 
 input SignUpAccountInput {
   email: String!
-  password: String!
+  firstName: String
+  lastName: String
+  photoURL: String
 }
 
 type SignUpAccountOutput {

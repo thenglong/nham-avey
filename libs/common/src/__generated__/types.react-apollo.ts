@@ -35,6 +35,17 @@ export type AdminUpdateRestaurantInput = {
   vendorIds?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type AdminUpdateUserInput = {
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  isVerified?: InputMaybe<Scalars['Boolean']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
+  photoURL?: InputMaybe<Scalars['String']>;
+  roles?: InputMaybe<Array<UserRole>>;
+};
+
 export type AllCategoriesOutput = {
   __typename?: 'AllCategoriesOutput';
   categories?: Maybe<Array<Category>>;
@@ -114,8 +125,16 @@ export type CreateRestaurantOutput = {
   restaurant?: Maybe<Restaurant>;
 };
 
-export type DeleteDishInput = {
-  dishId: Scalars['Int'];
+export type DeleteAccountOutput = {
+  __typename?: 'DeleteAccountOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+};
+
+export type DeleteCategoryOutput = {
+  __typename?: 'DeleteCategoryOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
 };
 
 export type DeleteDishOutput = {
@@ -167,20 +186,6 @@ export type DishOptionInputType = {
   name: Scalars['String'];
 };
 
-export type EditDishInput = {
-  description?: InputMaybe<Scalars['String']>;
-  dishId: Scalars['Int'];
-  name?: InputMaybe<Scalars['String']>;
-  options?: InputMaybe<Array<DishOptionInputType>>;
-  price?: InputMaybe<Scalars['Int']>;
-};
-
-export type EditDishOutput = {
-  __typename?: 'EditDishOutput';
-  error?: Maybe<Scalars['String']>;
-  ok: Scalars['Boolean'];
-};
-
 export type EditOrderInput = {
   id: Scalars['Float'];
   status: OrderStatus;
@@ -223,29 +228,49 @@ export type GetPaymentsOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  adminCreateDish: CreateDishOutput;
   adminCreateRestaurant: CreateRestaurantOutput;
+  adminDeleteDish: DeleteDishOutput;
+  adminUpdateDish: UpdateDishOutput;
   adminUpdateRestaurant: UpdateRestaurantOutput;
   createAdmin: CreateAccountOutput;
-  createDish: CreateDishOutput;
   createOrder: CreateOrderOutput;
   createPayment: CreatePaymentOutput;
-  deleteDish: DeleteDishOutput;
+  deleteCategory: DeleteCategoryOutput;
   deleteRestaurant: DeleteRestaurantOutput;
-  editDish: EditDishOutput;
+  deleteUser: DeleteAccountOutput;
   editOrder: EditOrderOutput;
   signUpCustomer: SignUpAccountOutput;
   signUpVendor: SignUpAccountOutput;
   takeOrder: TakeOrderOutput;
-  updateMeAsAdmin: UpdateProfileOutput;
   updateMeAsCustomer: UpdateProfileOutput;
   updateMeAsVendor: UpdateProfileOutput;
+  updateUser: DeleteAccountOutput;
+  vendorCreateDish: CreateDishOutput;
   vendorCreateRestaurant: CreateRestaurantOutput;
+  vendorDeleteDish: DeleteDishOutput;
+  vendorUpdateDish: UpdateDishOutput;
   vendorUpdateRestaurant: UpdateRestaurantOutput;
+};
+
+
+export type MutationAdminCreateDishArgs = {
+  input: CreateDishInput;
 };
 
 
 export type MutationAdminCreateRestaurantArgs = {
   input: AdminCreateRestaurantInput;
+};
+
+
+export type MutationAdminDeleteDishArgs = {
+  dishId: Scalars['Int'];
+};
+
+
+export type MutationAdminUpdateDishArgs = {
+  input: UpdateDishInput;
 };
 
 
@@ -259,11 +284,6 @@ export type MutationCreateAdminArgs = {
 };
 
 
-export type MutationCreateDishArgs = {
-  input: CreateDishInput;
-};
-
-
 export type MutationCreateOrderArgs = {
   input: CreateOrderInput;
 };
@@ -274,8 +294,8 @@ export type MutationCreatePaymentArgs = {
 };
 
 
-export type MutationDeleteDishArgs = {
-  input: DeleteDishInput;
+export type MutationDeleteCategoryArgs = {
+  categoryId: Scalars['Int'];
 };
 
 
@@ -284,8 +304,8 @@ export type MutationDeleteRestaurantArgs = {
 };
 
 
-export type MutationEditDishArgs = {
-  input: EditDishInput;
+export type MutationDeleteUserArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -309,11 +329,6 @@ export type MutationTakeOrderArgs = {
 };
 
 
-export type MutationUpdateMeAsAdminArgs = {
-  input: UpdateProfileInput;
-};
-
-
 export type MutationUpdateMeAsCustomerArgs = {
   input: UpdateProfileInput;
 };
@@ -324,8 +339,28 @@ export type MutationUpdateMeAsVendorArgs = {
 };
 
 
+export type MutationUpdateUserArgs = {
+  input: AdminUpdateUserInput;
+};
+
+
+export type MutationVendorCreateDishArgs = {
+  input: CreateDishInput;
+};
+
+
 export type MutationVendorCreateRestaurantArgs = {
   input: VendorCreateRestaurantInput;
+};
+
+
+export type MutationVendorDeleteDishArgs = {
+  dishId: Scalars['Int'];
+};
+
+
+export type MutationVendorUpdateDishArgs = {
+  input: UpdateDishInput;
 };
 
 
@@ -560,9 +595,26 @@ export type TakeOrderOutput = {
   ok: Scalars['Boolean'];
 };
 
+export type UpdateDishInput = {
+  description?: InputMaybe<Scalars['String']>;
+  dishId: Scalars['Int'];
+  name?: InputMaybe<Scalars['String']>;
+  options?: InputMaybe<Array<DishOptionInputType>>;
+  price?: InputMaybe<Scalars['Int']>;
+};
+
+export type UpdateDishOutput = {
+  __typename?: 'UpdateDishOutput';
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+};
+
 export type UpdateProfileInput = {
   email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
   password: Scalars['String'];
+  photoURL?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProfileOutput = {
@@ -644,12 +696,19 @@ export type AdminUpdateRestaurantMutationVariables = Exact<{
 
 export type AdminUpdateRestaurantMutation = { __typename?: 'Mutation', adminUpdateRestaurant: { __typename?: 'UpdateRestaurantOutput', error?: string | null, ok: boolean } };
 
+export type CreateAdminMutationVariables = Exact<{
+  input: CreateAccountInput;
+}>;
+
+
+export type CreateAdminMutation = { __typename?: 'Mutation', createAdmin: { __typename?: 'CreateAccountOutput', ok: boolean, error?: string | null, user?: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> } | null } };
+
 export type CreateDishMutationVariables = Exact<{
   input: CreateDishInput;
 }>;
 
 
-export type CreateDishMutation = { __typename?: 'Mutation', createDish: { __typename?: 'CreateDishOutput', ok: boolean, error?: string | null } };
+export type CreateDishMutation = { __typename?: 'Mutation', vendorCreateDish: { __typename?: 'CreateDishOutput', ok: boolean, error?: string | null } };
 
 export type CreateOrderMutationVariables = Exact<{
   input: CreateOrderInput;
@@ -696,7 +755,7 @@ export type AdminGetUsersQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, email: string, id: string, roles: Array<UserRole>, updatedAt: any, isVerified: boolean }> | null } };
+export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, firstName?: string | null, lastName?: string | null, email: string, id: string, roles: Array<UserRole>, updatedAt: any, isVerified: boolean }> | null } };
 
 export type AllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -875,9 +934,46 @@ export function useAdminUpdateRestaurantMutation(baseOptions?: Apollo.MutationHo
 export type AdminUpdateRestaurantMutationHookResult = ReturnType<typeof useAdminUpdateRestaurantMutation>;
 export type AdminUpdateRestaurantMutationResult = Apollo.MutationResult<AdminUpdateRestaurantMutation>;
 export type AdminUpdateRestaurantMutationOptions = Apollo.BaseMutationOptions<AdminUpdateRestaurantMutation, AdminUpdateRestaurantMutationVariables>;
+export const CreateAdminDocument = gql`
+    mutation CreateAdmin($input: CreateAccountInput!) {
+  createAdmin(input: $input) {
+    ok
+    error
+    user {
+      ...UserParts
+    }
+  }
+}
+    ${UserPartsFragmentDoc}`;
+export type CreateAdminMutationFn = Apollo.MutationFunction<CreateAdminMutation, CreateAdminMutationVariables>;
+
+/**
+ * __useCreateAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAdminMutation, { data, loading, error }] = useCreateAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAdminMutation(baseOptions?: Apollo.MutationHookOptions<CreateAdminMutation, CreateAdminMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAdminMutation, CreateAdminMutationVariables>(CreateAdminDocument, options);
+      }
+export type CreateAdminMutationHookResult = ReturnType<typeof useCreateAdminMutation>;
+export type CreateAdminMutationResult = Apollo.MutationResult<CreateAdminMutation>;
+export type CreateAdminMutationOptions = Apollo.BaseMutationOptions<CreateAdminMutation, CreateAdminMutationVariables>;
 export const CreateDishDocument = gql`
     mutation createDish($input: CreateDishInput!) {
-  createDish(input: $input) {
+  vendorCreateDish(input: $input) {
     ok
     error
   }
@@ -1121,6 +1217,8 @@ export const AdminGetUsersDocument = gql`
     pageCount
     users {
       createdAt
+      firstName
+      lastName
       email
       id
       roles

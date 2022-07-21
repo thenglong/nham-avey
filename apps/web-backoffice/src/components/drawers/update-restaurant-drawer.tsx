@@ -9,14 +9,14 @@ import RestaurantForm, {
 } from "src/components/form/restaurant-form"
 
 interface UpdateRestaurantDrawerProps {
-  restaurant: Restaurant | null
+  user: Restaurant | null
   visible: boolean
   onCompleted: AdminUpdateRestaurantMutationOptions["onCompleted"]
   onClose: () => void
 }
 
 export function UpdateRestaurantDrawer({
-  restaurant,
+  user,
   visible,
   onCompleted,
   onClose,
@@ -37,7 +37,7 @@ export function UpdateRestaurantDrawer({
             name,
             address,
             vendorIds,
-            restaurantId: restaurant?.id as number,
+            restaurantId: user?.id as number,
           },
         },
       })
@@ -58,7 +58,7 @@ export function UpdateRestaurantDrawer({
       }}
     >
       <RestaurantForm
-        initialValue={restaurant as Restaurant}
+        initialValue={user as Restaurant}
         onSubmit={onFinish}
         isLoading={isUpdating}
       />

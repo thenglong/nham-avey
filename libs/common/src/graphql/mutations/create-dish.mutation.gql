@@ -1,5 +1,5 @@
 mutation createDish($input: CreateDishInput!) {
-  createDish(input: $input) {
+  vendorCreateDish(input: $input) {
     ok
     error
   }
