@@ -43,7 +43,7 @@
     "class-validator": "^0.13.2",
     "clsx": "^1.2.1",
     "core-js": "^3.22.5",
-    "daisyui": "^2.19.0",
+    "daisyui": "^2.19.1",
     "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
     "firebase": "^9.9.0",
