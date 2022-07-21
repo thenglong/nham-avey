@@ -30,7 +30,7 @@
     "@nestjs/typeorm": "^9.0.0",
     "@nrwl/next": "14.4.3",
     "@reduxjs/toolkit": "^1.8.3",
-    "@tanstack/react-query": "^4.0.5",
+    "@tanstack/react-query": "^4.0.8",
     "@tanstack/react-query-devtools": "^4.0.5",
     "antd": "^4.21.7",
     "antd-img-crop": "^4.2.3",
