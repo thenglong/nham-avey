@@ -8,11 +8,11 @@ import {
   CreateDishInput,
   CreateDishOutput,
   CreateRestaurantOutput,
-  DeleteDishInput,
-  DeleteDishOutput,
+  DeleteCategoryArgs,
+  DeleteCategoryOutput,
   DeleteRestaurantOutput,
-  EditDishInput,
-  EditDishOutput,
+  UpdateDishInput,
+  UpdateDishOutput,
   MyRestaurantOutput,
   PaginatedCategoryRestaurantOutput,
   PaginatedRestaurantsOutput,
@@ -22,6 +22,7 @@ import {
   UpdateRestaurantOutput,
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
+  DeleteDishArgs,
 } from "src/restaurants/dtos"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
@@ -338,10 +339,10 @@ export class RestaurantService {
     }
   }
 
-  async createDish(vendorId: UserRecord["uid"], createDishInput: CreateDishInput): Promise<CreateDishOutput> {
+  async createDishByVendor(vendorId: UserRecord["uid"], input: CreateDishInput): Promise<CreateDishOutput> {
     try {
       const restaurant = await this.restaurantRepo.findOneBy({
-        id: createDishInput.restaurantId,
+        id: input.restaurantId,
       })
 
       if (!restaurant) {
@@ -358,7 +359,7 @@ export class RestaurantService {
         }
       }
 
-      await this.dishRepo.save(this.dishRepo.create({ ...createDishInput, restaurant }))
+      await this.dishRepo.save(this.dishRepo.create({ ...input, restaurant, createdAt: vendorId }))
 
       return {
         ok: true,
@@ -371,48 +372,37 @@ export class RestaurantService {
     }
   }
 
-  async editDish(vendorId: UserRecord["uid"], editDishInput: EditDishInput): Promise<EditDishOutput> {
+  async createDishByAdmin(adminId: UserRecord["uid"], input: CreateDishInput): Promise<CreateDishOutput> {
     try {
-      const dish = await this.dishRepo.findOne({
-        where: { id: editDishInput.dishId },
-        relations: ["restaurant"],
+      const { restaurantId } = input
+      const restaurant = await this.restaurantRepo.findOneBy({
+        id: restaurantId,
       })
 
-      if (!dish) {
+      if (!restaurant) {
         return {
           ok: false,
-          error: "[App] Dish not found",
+          error: "[App] Restaurant not found",
         }
       }
 
-      if (dish.restaurant.vendorId !== vendorId) {
-        return {
-          ok: false,
-          error: "[App] You can't do that",
-        }
-      }
+      await this.dishRepo.save(this.dishRepo.create({ ...input, restaurant, createdBy: adminId }))
 
-      await this.dishRepo.save([
-        {
-          id: editDishInput.dishId,
-          ...editDishInput,
-        },
-      ])
       return {
         ok: true,
       }
     } catch (error) {
       return {
         ok: false,
-        error: "[App] Could not edit dish",
+        error: "[App] Could not create the dish",
       }
     }
   }
 
-  async deleteDish(vendorId: UserRecord["uid"], { dishId }: DeleteDishInput): Promise<DeleteDishOutput> {
+  async updateDishByVendor(vendorId: UserRecord["uid"], input: UpdateDishInput): Promise<UpdateDishOutput> {
     try {
       const dish = await this.dishRepo.findOne({
-        where: { id: dishId },
+        where: { id: input.dishId },
         relations: ["restaurant"],
       })
 
@@ -430,16 +420,76 @@ export class RestaurantService {
         }
       }
 
-      await this.dishRepo.delete(dishId)
-
+      await this.dishRepo.save([{ id: input.dishId, ...input, updatedBy: vendorId }])
       return {
         ok: true,
       }
-    } catch {
+    } catch (error) {
       return {
         ok: false,
-        error: "[App] Could not delete dish",
+        error: `[App] Could not edit dish ${error}`,
       }
+    }
+  }
+
+  async updateDishByAdmin(adminId: UserRecord["uid"], input: UpdateDishInput): Promise<UpdateDishOutput> {
+    try {
+      const { dishId } = input
+      const existing = await this.dishRepo.findOneBy({
+        id: dishId,
+      })
+
+      if (!existing) {
+        return {
+          ok: false,
+          error: "[App] Dish not found",
+        }
+      }
+
+      const dish = Object.assign(existing, input)
+      dish.updatedBy = adminId
+
+      await this.dishRepo.save(dish)
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, error: "[App] Could not edit dish" }
+    }
+  }
+
+  async deleteDishByVendor(vendorId: UserRecord["uid"], { dishId }: DeleteDishArgs): Promise<DeleteCategoryOutput> {
+    try {
+      const existing = await this.dishRepo.findOne({
+        where: { id: dishId },
+        relations: ["restaurant"],
+      })
+
+      if (!existing) return { ok: false, error: "[App] Dish not found" }
+      if (existing.restaurant.vendorId !== vendorId) return { ok: false, error: "[App] You can't do that" }
+
+      existing.deletedBy = vendorId
+      const saved = await this.dishRepo.save(existing)
+      await this.dishRepo.softDelete({ id: saved.id })
+      return { ok: true }
+    } catch {
+      return { ok: false, error: "[App] Could not delete dish" }
+    }
+  }
+
+  async deleteDishByAdmin(adminId: UserRecord["uid"], { dishId }: DeleteDishArgs): Promise<DeleteCategoryOutput> {
+    try {
+      const existing = await this.dishRepo.findOne({
+        where: { id: dishId },
+        relations: ["restaurant"],
+      })
+
+      if (!existing) return { ok: false, error: "[App] Dish not found" }
+
+      existing.deletedBy = adminId
+      const saved = await this.dishRepo.save(existing)
+      await this.dishRepo.softDelete({ id: saved.id })
+      return { ok: true }
+    } catch {
+      return { ok: false, error: "[App] Could not delete dish" }
     }
   }
 
@@ -562,5 +612,14 @@ export class RestaurantService {
         error: "[App] Could not find restaurantRepo",
       }
     }
+  }
+
+  async deleteCategory(adminId: UserRecord["uid"], { categoryId }: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
+    const existing = await this.categoryRepo.findOneBy({ id: categoryId })
+    if (!existing) return { ok: false, error: "[App] Category not found" }
+    existing.deletedBy = adminId
+    const saved = await this.categoryRepo.save(existing)
+    await this.categoryRepo.softDelete({ id: saved.id })
+    return { ok: true }
   }
 }

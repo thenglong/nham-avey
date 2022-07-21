@@ -21,6 +21,17 @@ input AdminUpdateRestaurantInput {
   vendorIds: [String!]
 }
 
+input AdminUpdateUserInput {
+  email: String
+  firstName: String
+  id: String
+  isVerified: Boolean
+  lastName: String
+  password: String!
+  photoURL: String
+  roles: [UserRole!]
+}
+
 type AllCategoriesOutput {
   categories: [Category!]
   error: String
@@ -93,8 +104,14 @@ type CreateRestaurantOutput {
   restaurant: Restaurant
 }
 
-input DeleteDishInput {
-  dishId: Int!
+type DeleteAccountOutput {
+  error: String
+  ok: Boolean!
+}
+
+type DeleteCategoryOutput {
+  error: String
+  ok: Boolean!
 }
 
 type DeleteDishOutput {
@@ -141,19 +158,6 @@ input DishOptionInputType {
   name: String!
 }
 
-input EditDishInput {
-  description: String
-  dishId: Int!
-  name: String
-  options: [DishOptionInputType!]
-  price: Int
-}
-
-type EditDishOutput {
-  error: String
-  ok: Boolean!
-}
-
 input EditOrderInput {
   id: Float!
   status: OrderStatus!
@@ -196,23 +200,28 @@ type GetPaymentsOutput {
 }
 
 type Mutation {
+  adminCreateDish(input: CreateDishInput!): CreateDishOutput!
   adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
+  adminDeleteDish(dishId: Int!): DeleteDishOutput!
+  adminUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
   adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
   createAdmin(input: CreateAccountInput!): CreateAccountOutput!
-  createDish(input: CreateDishInput!): CreateDishOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
-  deleteDish(input: DeleteDishInput!): DeleteDishOutput!
+  deleteCategory(categoryId: Int!): DeleteCategoryOutput!
   deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
-  editDish(input: EditDishInput!): EditDishOutput!
+  deleteUser(userId: String!): DeleteAccountOutput!
   editOrder(input: EditOrderInput!): EditOrderOutput!
   signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!
   signUpVendor(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
-  updateMeAsAdmin(input: UpdateProfileInput!): UpdateProfileOutput!
   updateMeAsCustomer(input: UpdateProfileInput!): UpdateProfileOutput!
   updateMeAsVendor(input: UpdateProfileInput!): UpdateProfileOutput!
+  updateUser(input: AdminUpdateUserInput!): DeleteAccountOutput!
+  vendorCreateDish(input: CreateDishInput!): CreateDishOutput!
   vendorCreateRestaurant(input: VendorCreateRestaurantInput!): CreateRestaurantOutput!
+  vendorDeleteDish(dishId: Int!): DeleteDishOutput!
+  vendorUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
   vendorUpdateRestaurant(input: VendorUpdateRestaurantInput!): UpdateRestaurantOutput!
 }
 
@@ -368,9 +377,25 @@ type TakeOrderOutput {
   ok: Boolean!
 }
 
+input UpdateDishInput {
+  description: String
+  dishId: Int!
+  name: String
+  options: [DishOptionInputType!]
+  price: Int
+}
+
+type UpdateDishOutput {
+  error: String
+  ok: Boolean!
+}
+
 input UpdateProfileInput {
   email: String
+  firstName: String
+  lastName: String
   password: String!
+  photoURL: String
 }
 
 type UpdateProfileOutput {

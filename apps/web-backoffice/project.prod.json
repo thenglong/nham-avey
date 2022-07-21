@@ -1,0 +1,83 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/web-backoffice/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "swc",
+        "outputPath": "dist/apps/web-backoffice",
+        "index": "apps/web-backoffice/src/index.html",
+        "baseHref": "/",
+        "main": "apps/web-backoffice/src/main.tsx",
+        "polyfills": "apps/web-backoffice/src/polyfills.ts",
+        "tsConfig": "apps/web-backoffice/tsconfig.app.json",
+        "assets": [
+          "apps/web-backoffice/src/favicon.ico",
+          "apps/web-backoffice/src/assets"
+        ],
+        "styles": ["apps/web-backoffice/src/styles/styles.less"],
+        "scripts": [],
+        "webpackConfig": "apps/web-backoffice/custom-webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/web-backoffice/src/environments/environment.ts",
+              "with": "apps/web-backoffice/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "web-backoffice:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "web-backoffice:build:development"
+        },
+        "production": {
+          "buildTarget": "web-backoffice:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/web-backoffice/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/web-backoffice"],
+      "options": {
+        "jestConfig": "apps/web-backoffice/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

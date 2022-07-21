@@ -1,9 +1,8 @@
 import { Args, Mutation, Resolver } from "@nestjs/graphql"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
-import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
+import { SignUpAccountInput, SignUpAccountOutput, UpdateProfileInput, UpdateProfileOutput } from "src/users/users.dto"
 import { UserService } from "src/users/users.service"
 
 @Resolver()

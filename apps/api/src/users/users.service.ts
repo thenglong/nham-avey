@@ -2,11 +2,21 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/firebase-admin-authentication.service"
-import { CreateAccountInput, CreateAccountOutput, SignUpAccountInput, SignUpAccountOutput } from "src/users/dtos/create-account.dto"
-import { UpdateProfileInput, UpdateProfileOutput } from "src/users/dtos/edit-profile.dto"
-import { UserProfileOutput } from "src/users/dtos/user-profile.dto"
-import { PaginatedUsersOutput, PaginationUserArgs } from "src/users/dtos/user.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
+import {
+  AdminUpdateUserInput,
+  AdminUpdateUserOutput,
+  CreateAccountInput,
+  CreateAccountOutput,
+  DeleteAccountOutput,
+  PaginatedUsersOutput,
+  PaginationUserArgs,
+  SignUpAccountInput,
+  SignUpAccountOutput,
+  UpdateProfileInput,
+  UpdateProfileOutput,
+  UserProfileOutput,
+} from "src/users/users.dto"
 import { In, Repository } from "typeorm"
 
 @Injectable()
@@ -178,5 +188,24 @@ export class UserService {
         error: "[App] Could not find restaurantRepo",
       }
     }
+  }
+
+  async deleteUser(userId: string): Promise<DeleteAccountOutput> {
+    const result = await this.userRepo.softDelete({ id: userId })
+    return {
+      ok: (result.affected as number) > 0,
+      error: null,
+    }
+  }
+
+  async updateUserByAdmin(input: AdminUpdateUserInput): Promise<AdminUpdateUserOutput> {
+    const { id } = input
+    const existing = await this.userRepo.findOneBy({ id })
+    if (!existing) {
+      return { ok: false, error: `[App] User with id ${id} not found!` }
+    }
+    const user = Object.assign(existing, input)
+    await this.userRepo.save(user)
+    return { ok: true }
   }
 }

@@ -23,7 +23,7 @@ import { UserRole } from "src/users/entities/user.entity"
 export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
-  @Mutation(() => CreateRestaurantOutput)
+  @Mutation(returns => CreateRestaurantOutput)
   @Roles(UserRole.Vendor)
   async vendorCreateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
@@ -32,7 +32,7 @@ export class RestaurantResolver {
     return await this.restaurantService.createRestaurantByVendor(decodedIdToken.uid, input)
   }
 
-  @Mutation(() => CreateRestaurantOutput)
+  @Mutation(returns => CreateRestaurantOutput)
   @Roles(UserRole.Admin)
   async adminCreateRestaurant(
     @GraphqlAuthUser() admin: DecodedIdToken,
@@ -41,7 +41,7 @@ export class RestaurantResolver {
     return await this.restaurantService.createRestaurantByAdmin(admin, input)
   }
 
-  @Query(() => PaginatedRestaurantsOutput)
+  @Query(returns => PaginatedRestaurantsOutput)
   @Roles(UserRole.Vendor)
   myRestaurants(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
@@ -50,19 +50,19 @@ export class RestaurantResolver {
     return this.restaurantService.getRestaurantsByVendor(decodedIdToken.uid, args)
   }
 
-  @Query(() => MyRestaurantOutput)
+  @Query(returns => MyRestaurantOutput)
   @Roles(UserRole.Vendor)
   myRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: RestaurantArgs): Promise<MyRestaurantOutput> {
     return this.restaurantService.findRestaurantByIdAndVendorId(decodedIdToken.uid, args.restaurantId)
   }
 
-  @Query(() => PaginatedRestaurantsOutput)
+  @Query(returns => PaginatedRestaurantsOutput)
   @Roles(UserRole.Admin)
   adminGetRestaurants(@Args() args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     return this.restaurantService.getRestaurantsByAdmin(args)
   }
 
-  @Mutation(() => UpdateRestaurantOutput)
+  @Mutation(returns => UpdateRestaurantOutput)
   @Roles(UserRole.Vendor)
   vendorUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
@@ -71,7 +71,7 @@ export class RestaurantResolver {
     return this.restaurantService.updateRestaurantByVendor(decodedIdToken.uid, input)
   }
 
-  @Mutation(() => UpdateRestaurantOutput)
+  @Mutation(returns => UpdateRestaurantOutput)
   @Roles(UserRole.Admin)
   adminUpdateRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
@@ -80,7 +80,7 @@ export class RestaurantResolver {
     return this.restaurantService.updateRestaurantByAdmin(input)
   }
 
-  @Mutation(() => DeleteRestaurantOutput)
+  @Mutation(returns => DeleteRestaurantOutput)
   @Roles(UserRole.Vendor, UserRole.Admin)
   deleteRestaurant(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
@@ -89,12 +89,12 @@ export class RestaurantResolver {
     return this.restaurantService.deleteRestaurant(decodedIdToken, restaurantId)
   }
 
-  @Query(() => PaginatedRestaurantsOutput)
+  @Query(returns => PaginatedRestaurantsOutput)
   pubicGetRestaurants(@Args() args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
     return this.restaurantService.getRestaurantsByPublic(args)
   }
 
-  @Query(() => RestaurantOutput)
+  @Query(returns => RestaurantOutput)
   publicGetRestaurantById(@Args() { restaurantId }: RestaurantArgs): Promise<RestaurantOutput> {
     return this.restaurantService.findRestaurantById(restaurantId)
   }

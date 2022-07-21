@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { AdminsResolver } from "src/users/admins.resolvers"
-import { CustomersResolver } from "src/users/customers.resolvers"
 import { User } from "src/users/entities/user.entity"
+import { AdminsResolver } from "src/users/resolvers/admins.resolvers"
+import { CustomersResolver } from "src/users/resolvers/customers.resolvers"
+import { VendorsResolver } from "src/users/resolvers/vendors.resolvers"
 import { UserService } from "src/users/users.service"
-import { VendorsResolver } from "src/users/vendors.resolvers"
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
