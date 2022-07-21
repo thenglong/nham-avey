@@ -19,7 +19,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@hookform/resolvers": "^2.9.5",
     "@nestjs-modules/mailer": "^1.7.1",
-    "@nestjs/apollo": "^10.0.17",
+    "@nestjs/apollo": "^10.0.19",
     "@nestjs/common": "^9.0.4",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.4",
