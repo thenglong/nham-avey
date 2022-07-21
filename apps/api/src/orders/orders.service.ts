@@ -152,30 +152,17 @@ export class OrderService {
     return canSee
   }
 
-  async getOrder(user: User, { id: orderId }: GetOrderInput): Promise<GetOrderOutput> {
+  async getOrder(userId: string, { id }: GetOrderInput): Promise<GetOrderOutput> {
     try {
+      const user = await this.userService.findUserById(userId)
+      if (!user) return { ok: false, error: "[App] Cannot get User details" }
       const order = await this.orders.findOne({
-        where: { id: orderId },
+        where: { id },
         relations: ["restaurant"],
       })
-      if (!order) {
-        return {
-          ok: false,
-          error: "[App] Order not found",
-        }
-      }
-
-      if (!this.canSeeOrder(user, order)) {
-        return {
-          ok: false,
-          error: "[App] You can't see that",
-        }
-      }
-
-      return {
-        ok: true,
-        order,
-      }
+      if (!order) return { ok: false, error: "[App] Order not found" }
+      if (!this.canSeeOrder(user, order)) return { ok: false, error: "[App] You can't see that" }
+      return { ok: true, order }
     } catch {
       return {
         ok: false,
@@ -184,23 +171,15 @@ export class OrderService {
     }
   }
 
-  async editOrder(user: User, { id: orderId, status }: EditOrderInput): Promise<EditOrderOutput> {
+  async editOrder(userId: string, { id: orderId, status }: EditOrderInput): Promise<EditOrderOutput> {
     try {
+      const user = await this.userService.findUserById(userId)
+      if (!user) return { ok: false, error: "[App] Cannot get User details" }
+
       const order = await this.orders.findOneBy({ id: orderId })
+      if (!order) return { ok: false, error: "[App] Order not found" }
 
-      if (!order) {
-        return {
-          ok: false,
-          error: "[App] Order not found",
-        }
-      }
-
-      if (!this.canSeeOrder(user, order)) {
-        return {
-          ok: false,
-          error: "[App] You can't see that",
-        }
-      }
+      if (!this.canSeeOrder(user, order)) return { ok: false, error: "[App] You can't see that" }
 
       let canEdit = true
 

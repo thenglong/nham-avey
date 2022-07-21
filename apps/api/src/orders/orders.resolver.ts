@@ -38,13 +38,16 @@ export class OrderResolver {
   }
 
   @Query(() => GetOrderOutput)
-  async getOrder(@GraphqlAuthUser() user: DecodedIdToken, @Args("input") getOrderInput: GetOrderInput): Promise<GetOrderOutput> {
-    return this.ordersService.getOrder(user, getOrderInput)
+  async getOrder(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args("input") getOrderInput: GetOrderInput): Promise<GetOrderOutput> {
+    return this.ordersService.getOrder(decodedIdToken.uid, getOrderInput)
   }
 
   @Mutation(() => EditOrderOutput)
-  async editOrder(@GraphqlAuthUser() user: DecodedIdToken, @Args("input") editOrderInput: EditOrderInput): Promise<EditOrderOutput> {
-    return this.ordersService.editOrder(user, editOrderInput)
+  async editOrder(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") editOrderInput: EditOrderInput,
+  ): Promise<EditOrderOutput> {
+    return this.ordersService.editOrder(decodedIdToken.uid, editOrderInput)
   }
 
   @Subscription(() => Order, {

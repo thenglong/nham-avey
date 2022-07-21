@@ -10,6 +10,7 @@ import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { User } from "src/users/entities/user.entity"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
+import { LoggerOptions } from "typeorm/logger/LoggerOptions"
 
 @Injectable()
 export class TypeormConfigService implements TypeOrmOptionsFactory {
@@ -30,7 +31,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       migrationsTableName: "migrations",
       namingStrategy: new SnakeNamingStrategy(),
       logger: "advanced-console",
-      logging: this.config.get<boolean>("db.logging"),
+      logging: this.config.get<LoggerOptions>("db.logging"),
       synchronize: false,
       keepConnectionAlive: !this.config.get("isProd"),
       ssl: {
