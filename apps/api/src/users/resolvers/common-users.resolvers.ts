@@ -8,29 +8,20 @@ import { User, UserRole } from "src/users/entities/user.entity"
 import { UpdateProfileInput, UpdateProfileOutput } from "src/users/users.dto"
 import { UserService } from "src/users/users.service"
 
-@Resolver(() => User)
+@Resolver()
 export class CommonUsersResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => User)
+  @Query(returns => User)
   @UseGuards(GraphqlAuthGuard)
+  @Roles(UserRole.Admin, UserRole.Vendor, UserRole.Driver, UserRole.Customer)
   getMe(@GraphqlAuthUser() authUser: DecodedIdToken): Promise<User | null> {
     return this.userService.findUserById(authUser.uid)
   }
 
   @Roles(UserRole.Admin, UserRole.Vendor, UserRole.Driver, UserRole.Customer)
-  @Mutation(() => UpdateProfileOutput)
-  async updateMe(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
-    try {
-      await this.userService.editProfile(authUser.id, input)
-      return {
-        ok: true,
-      }
-    } catch (error) {
-      return {
-        ok: false,
-        error,
-      }
-    }
+  @Mutation(returns => UpdateProfileOutput)
+  updateMe(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
+    return this.userService.updateProfile(authUser.id, input)
   }
 }

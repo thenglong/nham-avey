@@ -43,7 +43,7 @@ export class RestaurantResolver {
 
   @Query(returns => PaginatedRestaurantsOutput)
   @Roles(UserRole.Vendor)
-  myRestaurants(
+  getMyRestaurants(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
     @Args() args: PaginationRestaurantsArgs,
   ): Promise<PaginatedRestaurantsOutput> {
@@ -52,7 +52,7 @@ export class RestaurantResolver {
 
   @Query(returns => MyRestaurantOutput)
   @Roles(UserRole.Vendor)
-  myRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: RestaurantArgs): Promise<MyRestaurantOutput> {
+  getMyRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: RestaurantArgs): Promise<MyRestaurantOutput> {
     return this.restaurantService.findRestaurantByIdAndVendorId(decodedIdToken.uid, args.restaurantId)
   }
 

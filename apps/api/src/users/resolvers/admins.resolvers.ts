@@ -18,24 +18,24 @@ export class AdminsResolver {
   constructor(private readonly userService: UserService) {}
 
   @Roles(UserRole.Admin)
-  @Mutation(() => CreateAccountOutput)
+  @Mutation(returns => CreateAccountOutput)
   async createAdmin(@Args("input") input: CreateAccountInput): Promise<CreateAccountOutput> {
     return this.userService.createAdmin(input)
   }
 
   @Roles(UserRole.Admin)
-  @Mutation(() => DeleteAccountOutput)
+  @Mutation(returns => DeleteAccountOutput)
   async deleteUser(@Args() { userId }: UserArgs): Promise<DeleteAccountOutput> {
     return this.userService.deleteUser(userId)
   }
 
   @Roles(UserRole.Admin)
-  @Mutation(() => DeleteAccountOutput)
+  @Mutation(returns => DeleteAccountOutput)
   async updateUser(@Args("input") input: AdminUpdateUserInput): Promise<AdminUpdateUserOutput> {
     return this.userService.updateUserByAdmin(input)
   }
 
-  @Query(() => PaginatedUsersOutput)
+  @Query(returns => PaginatedUsersOutput)
   @Roles(UserRole.Admin)
   adminGetUsers(@Args() args: PaginationUserArgs): Promise<PaginatedUsersOutput> {
     return this.userService.getUsersByAdmin(args)

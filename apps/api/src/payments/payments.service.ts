@@ -19,65 +19,36 @@ export class PaymentService {
   ) {}
 
   async createPayment(vendorId: string, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
-    try {
-      const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
-      if (!restaurant) {
-        return { ok: false, error: "[App] Restaurant not found" }
-      }
-      if (restaurant.vendorId !== vendorId) {
-        return {
-          ok: false,
-          error: "[App] You can't do this",
-        }
-      }
+    const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
+    if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
+    if (restaurant.vendorId !== vendorId) return { ok: false, error: "[App] You can't do this" }
 
-      const vendorEntity = (await this.userService.findUserById(vendorId)) as User
+    const vendorEntity = (await this.userService.findUserById(vendorId)) as User
+    if (!vendorEntity) return { ok: false, error: "[App] Vendor deleted" }
 
-      if (!vendorEntity) {
-        return { ok: false, error: "[App] Vendor deleted" }
-      }
+    const payment = this.payments.create({
+      transactionId,
+      user: vendorEntity,
+      restaurant,
+    })
 
-      const payment = this.payments.create({
-        transactionId,
-        user: vendorEntity,
-        restaurant,
-      })
+    await this.payments.save(payment)
 
-      await this.payments.save(payment)
+    restaurant.isPromoted = true
+    const date = new Date()
+    date.setDate(date.getDate() + 7)
+    restaurant.promotedUntil = date
+    await this.restaurants.save(restaurant)
 
-      restaurant.isPromoted = true
-      const date = new Date()
-      date.setDate(date.getDate() + 7)
-      restaurant.promotedUntil = date
-
-      await this.restaurants.save(restaurant)
-
-      return {
-        ok: true,
-      }
-    } catch {
-      return {
-        ok: false,
-        error: "[App] Could not create payment",
-      }
-    }
+    return { ok: true }
   }
 
   async getPayments(vendorId: string): Promise<GetPaymentsOutput> {
-    try {
-      const vendor = await this.userService.findUserById(vendorId)
-      if (!vendor) return { ok: false, error: "[App] Vendor not found" }
-      const payments = await this.payments.findBy({ user: Equal(vendor) })
-      return {
-        ok: true,
-        payments,
-      }
-    } catch {
-      return {
-        ok: false,
-        error: "[App] Could not load payments",
-      }
-    }
+    const vendor = await this.userService.findUserById(vendorId)
+    if (!vendor) return { ok: false, error: "[App] Vendor not found" }
+
+    const payments = await this.payments.findBy({ user: Equal(vendor) })
+    return { ok: true, payments }
   }
 
   @Interval(2000)

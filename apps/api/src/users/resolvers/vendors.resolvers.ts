@@ -7,18 +7,18 @@ import { UserService } from "src/users/users.service"
 
 @Resolver()
 export class VendorsResolver {
-  constructor(private readonly UserService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => SignUpAccountOutput)
+  @Mutation(returns => SignUpAccountOutput)
   async signUpVendor(@Args("input") input: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    return this.UserService.signUpVendor(input)
+    return this.userService.signUpVendor(input)
   }
 
   @Roles(UserRole.Vendor)
-  @Mutation(() => UpdateProfileOutput)
+  @Mutation(returns => UpdateProfileOutput)
   async updateMeAsVendor(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      await this.UserService.editProfile(authUser.id, input)
+      await this.userService.updateProfile(authUser.id, input)
       return {
         ok: true,
       }

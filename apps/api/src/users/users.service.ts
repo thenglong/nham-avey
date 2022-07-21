@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
+import { PaginatedRestaurantsOutput } from "src/restaurants/dtos"
 import { User, UserRole } from "src/users/entities/user.entity"
 import {
   AdminUpdateUserInput,
@@ -15,7 +16,6 @@ import {
   SignUpAccountOutput,
   UpdateProfileInput,
   UpdateProfileOutput,
-  UserProfileOutput,
 } from "src/users/users.dto"
 import { In, Repository } from "typeorm"
 
@@ -68,13 +68,8 @@ export class UserService {
   }
 
   async signUpVendor(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    const exist = await this.checkIfUserExistByEmail(signUpAccountInput.email)
-    if (exist) {
-      return {
-        ok: false,
-        error: `[App] User with email ${signUpAccountInput.email} already exist!`,
-      }
-    }
+    const existing = await this.checkIfUserExistByEmail(signUpAccountInput.email)
+    if (existing) return { ok: false, error: `[App] User with email ${signUpAccountInput.email} already exist!` }
 
     const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Vendor] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
@@ -84,109 +79,54 @@ export class UserService {
   }
 
   async createAdmin(input: CreateAccountInput): Promise<CreateAccountOutput> {
-    try {
-      const { email } = input
-      const exist = await this.checkIfUserExistByEmail(email)
-      if (exist) {
-        return {
-          ok: false,
-          error: "[App] There is a user with that email already!",
-        }
-      }
+    const { email } = input
+    const existing = await this.checkIfUserExistByEmail(email)
 
-      const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Admin] })
-      const user = await this.createUser(firebaseUser.uid, input, [UserRole.Admin])
+    if (existing) return { ok: false, error: "[App] There is a user with that email already!" }
 
-      // TODO: send verify email here
+    const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Admin] })
+    const user = await this.createUser(firebaseUser.uid, input, [UserRole.Admin])
+    // TODO: send verify email here
 
-      return { ok: true, user }
-    } catch (err) {
-      return {
-        ok: false,
-        error: "[App] Couldn't create account",
-      }
-    }
+    return { ok: true, user }
   }
 
-  async findById(id: string): Promise<UserProfileOutput> {
-    try {
-      const user = await this.userRepo.findOneByOrFail({ id })
-      return {
-        ok: true,
-        user,
-      }
-    } catch (error) {
-      return {
-        ok: false,
-        error: "[App] User Not Found",
-      }
+  async updateProfile(id: string, { email }: UpdateProfileInput): Promise<UpdateProfileOutput> {
+    const user = await this.userRepo.findOneBy({ id: id })
+    if (!user) return { ok: false, error: "[App] User not found" }
+
+    if (email) {
+      user.email = email
+      user.isVerified = false
+      // TODO: Resend verify email here
     }
+    await this.userRepo.save(user)
+    return { ok: true }
   }
 
-  async editProfile(id: string, { email }: UpdateProfileInput): Promise<UpdateProfileOutput> {
-    try {
-      const user = await this.userRepo.findOneBy({ id: id })
-      if (!user) {
-        return {
-          ok: false,
-          error: "[App] User not found",
-        }
-      }
+  async getUsersByAdmin(args: PaginationUserArgs): Promise<PaginatedUsersOutput> {
+    const {
+      searchQuery,
+      pageOptions: { skip, take },
+      role,
+    } = args
+    const queryBuilder = this.userRepo.createQueryBuilder("user")
 
-      if (email) {
-        user.email = email
-        user.isVerified = false
+    if (searchQuery) queryBuilder.where(`user.email ILIKE :searchQuery`, { searchQuery })
+    if (role) queryBuilder.andWhere(`:role = ANY(user.roles)`, { role })
 
-        // TODO: Resend verify email here
-      }
+    const matchedCount = await queryBuilder.getCount()
 
-      await this.userRepo.save(user)
-      return {
-        ok: true,
-      }
-    } catch (error) {
-      return {
-        ok: false,
-        error: "[App] Could not update profile",
-      }
-    }
-  }
+    queryBuilder
+      .orderBy("user.email", "ASC")
+      .skip(skip) //
+      .take(take) //
 
-  async getUsersByAdmin({ searchQuery, pageOptions: { skip, page, take }, role }: PaginationUserArgs): Promise<PaginatedUsersOutput> {
-    try {
-      const queryBuilder = this.userRepo.createQueryBuilder("user")
-
-      if (searchQuery) {
-        queryBuilder.where(`user.email ILIKE :searchQuery`, { searchQuery })
-      }
-
-      if (role) {
-        queryBuilder.andWhere(`:role = ANY(user.roles)`, { role })
-      }
-
-      const matchedCount = await queryBuilder.getCount()
-
-      queryBuilder
-        .orderBy("user.email", "ASC")
-        .skip(skip) //
-        .take(take) //
-
-      const users = await queryBuilder.getMany()
-
-      const pageCount = Math.ceil(matchedCount / take)
-      return {
-        users,
-        pageCount,
-        hasPrevious: page > 1 && page <= pageCount,
-        hasNext: page < pageCount,
-        matchedCount,
-        ok: true,
-      }
-    } catch {
-      return {
-        ok: false,
-        error: "[App] Could not find restaurantRepo",
-      }
+    const users = await queryBuilder.getMany()
+    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
+    return {
+      users,
+      ...paginatedOutput,
     }
   }
 

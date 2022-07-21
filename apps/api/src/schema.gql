@@ -213,12 +213,13 @@ type Mutation {
   deleteCategory(categoryId: Int!): DeleteCategoryOutput!
   deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
   deleteUser(userId: String!): DeleteAccountOutput!
-  editOrder(input: EditOrderInput!): EditOrderOutput!
   signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!
   signUpVendor(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
+  updateMe(input: UpdateProfileInput!): UpdateProfileOutput!
   updateMeAsCustomer(input: UpdateProfileInput!): UpdateProfileOutput!
   updateMeAsVendor(input: UpdateProfileInput!): UpdateProfileOutput!
+  updateOrder(input: EditOrderInput!): EditOrderOutput!
   updateUser(input: AdminUpdateUserInput!): DeleteAccountOutput!
   vendorCreateDish(input: CreateDishInput!): CreateDishOutput!
   vendorCreateRestaurant(input: VendorCreateRestaurantInput!): CreateRestaurantOutput!
@@ -319,13 +320,14 @@ type Payment {
 type Query {
   adminGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   adminGetUsers(page: Int = 1, q: String, role: UserRole, take: Int = 20): PaginatedUsersOutput!
-  allCategories: AllCategoriesOutput!
-  categoryRestaurantBySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
+  getAllCategories: AllCategoriesOutput!
+  getCategoryRestaurantBySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
+  getMe: User!
+  getMyRestaurantById(restaurantId: Int!): MyRestaurantOutput!
+  getMyRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  myRestaurantById(restaurantId: Int!): MyRestaurantOutput!
-  myRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   pubicGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   publicGetRestaurantById(restaurantId: Int!): RestaurantOutput!
 }

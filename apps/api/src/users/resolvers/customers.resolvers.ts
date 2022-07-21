@@ -9,16 +9,16 @@ import { UserService } from "src/users/users.service"
 export class CustomersResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => SignUpAccountOutput)
+  @Mutation(returns => SignUpAccountOutput)
   async signUpCustomer(@Args("input") input: SignUpAccountInput): Promise<SignUpAccountOutput> {
     return this.userService.signUpCustomer(input)
   }
 
   @Roles(UserRole.Customer)
-  @Mutation(() => UpdateProfileOutput)
+  @Mutation(returns => UpdateProfileOutput)
   async updateMeAsCustomer(@GraphqlAuthUser() authUser: User, @Args("input") input: UpdateProfileInput): Promise<UpdateProfileOutput> {
     try {
-      await this.userService.editProfile(authUser.id, input)
+      await this.userService.updateProfile(authUser.id, input)
       return {
         ok: true,
       }

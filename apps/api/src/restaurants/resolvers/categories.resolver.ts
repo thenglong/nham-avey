@@ -22,12 +22,12 @@ export class CategoryResolver {
   }
 
   @Query(returns => AllCategoriesOutput)
-  allCategories(): Promise<AllCategoriesOutput> {
+  getAllCategories(): Promise<AllCategoriesOutput> {
     return this.restaurantService.allCategories()
   }
 
   @Query(returns => PaginatedCategoryRestaurantOutput)
-  categoryRestaurantBySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
+  getCategoryRestaurantBySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
     return this.restaurantService.findRestaurantsByCategorySlug(args)
   }
 

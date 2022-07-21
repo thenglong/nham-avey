@@ -14,11 +14,11 @@ const TAKE_DEFAULT_VALUE = 20
 export abstract class PaginationArgs {
   @Field(() => Int, { defaultValue: PAGE_DEFAULT_VALUE })
   // use options getter instead
-  page: number
+  private readonly page: number
 
   @Field(() => Int, { defaultValue: TAKE_DEFAULT_VALUE })
   // use options getter instead
-  take: number
+  private readonly take: number
 
   /**
    * https://github.com/nestjs/graphql/issues/1511
@@ -38,7 +38,7 @@ export abstract class PaginationArgs {
 @ArgsType()
 export abstract class PaginationWithSearchArgs extends PaginationArgs {
   @Field(() => String, { nullable: true })
-  q: string | null
+  readonly q: string | null
 
   get searchQuery() {
     if (this.q) return `%${this.q.trim()}%`
@@ -49,14 +49,27 @@ export abstract class PaginationWithSearchArgs extends PaginationArgs {
 @ObjectType()
 export class PaginationOutput extends CoreOutput {
   @Field(() => Int, { nullable: true })
-  pageCount?: number
+  private readonly pageCount?: number
 
   @Field(() => Int, { nullable: true })
-  matchedCount?: number
+  private readonly matchedCount?: number
 
   @Field(() => Boolean, { nullable: true })
-  hasPrevious?: boolean
+  private readonly hasPrevious?: boolean
 
   @Field(() => Boolean, { nullable: true })
-  hasNext?: boolean
+  private readonly hasNext?: boolean
+
+  constructor(paginationArgs: PaginationArgs, matchedCount: number) {
+    super()
+    const {
+      pageOptions: { page, take },
+    } = paginationArgs
+    const pageCount = Math.ceil(matchedCount / take)
+    this.pageCount = pageCount
+    this.hasNext = page < pageCount
+    this.hasPrevious = page > 1 && page <= pageCount
+    this.matchedCount = matchedCount
+    this.ok = true
+  }
 }

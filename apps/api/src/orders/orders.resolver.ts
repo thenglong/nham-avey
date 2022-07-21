@@ -43,11 +43,11 @@ export class OrderResolver {
   }
 
   @Mutation(() => EditOrderOutput)
-  async editOrder(
+  async updateOrder(
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
     @Args("input") editOrderInput: EditOrderInput,
   ): Promise<EditOrderOutput> {
-    return this.ordersService.editOrder(decodedIdToken.uid, editOrderInput)
+    return this.ordersService.updateOrder(decodedIdToken.uid, editOrderInput)
   }
 
   @Subscription(() => Order, {
