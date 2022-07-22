@@ -33,6 +33,7 @@ export type AdminUpdateCategoryInput = {
 
 export type AdminUpdateCategoryOutput = {
   __typename?: 'AdminUpdateCategoryOutput';
+  category?: Maybe<Category>;
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
 };
@@ -479,6 +480,17 @@ export type PaginatedUsersOutput = {
   users?: Maybe<Array<User>>;
 };
 
+export type PaginationCategoriesOutput = {
+  __typename?: 'PaginationCategoriesOutput';
+  categories?: Maybe<Array<Category>>;
+  error?: Maybe<Scalars['String']>;
+  hasNext?: Maybe<Scalars['Boolean']>;
+  hasPrevious?: Maybe<Scalars['Boolean']>;
+  matchedCount?: Maybe<Scalars['Int']>;
+  ok: Scalars['Boolean'];
+  pageCount?: Maybe<Scalars['Int']>;
+};
+
 export type Payment = {
   __typename?: 'Payment';
   createdAt: Scalars['EnhancedDate'];
@@ -495,13 +507,14 @@ export type Query = {
   adminGetRestaurants: PaginatedRestaurantsOutput;
   adminGetUsers: PaginatedUsersOutput;
   getAllCategories: AllCategoriesOutput;
-  getCategoryRestaurantBySlug: PaginatedCategoryRestaurantOutput;
+  getCategories: PaginationCategoriesOutput;
   getMe: User;
   getMyRestaurantById: MyRestaurantOutput;
   getMyRestaurants: PaginatedRestaurantsOutput;
   getOrder: GetOrderOutput;
   getOrders: GetOrdersOutput;
   getPayments: GetPaymentsOutput;
+  getRestaurantsByCategorySlug: PaginatedCategoryRestaurantOutput;
   pubicGetRestaurants: PaginatedRestaurantsOutput;
   publicGetRestaurantById: RestaurantOutput;
 };
@@ -522,9 +535,9 @@ export type QueryAdminGetUsersArgs = {
 };
 
 
-export type QueryGetCategoryRestaurantBySlugArgs = {
+export type QueryGetCategoriesArgs = {
   page?: InputMaybe<Scalars['Int']>;
-  slug: Scalars['String'];
+  q?: InputMaybe<Scalars['String']>;
   take?: InputMaybe<Scalars['Int']>;
 };
 
@@ -548,6 +561,13 @@ export type QueryGetOrderArgs = {
 
 export type QueryGetOrdersArgs = {
   input: GetOrdersInput;
+};
+
+
+export type QueryGetRestaurantsByCategorySlugArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  slug: Scalars['String'];
+  take?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -718,12 +738,26 @@ export type AdminCreateRestaurantMutationVariables = Exact<{
 
 export type AdminCreateRestaurantMutation = { __typename?: 'Mutation', adminCreateRestaurant: { __typename?: 'CreateRestaurantOutput', error?: string | null, ok: boolean } };
 
+export type AdminDeleteCategoryMutationVariables = Exact<{
+  categoryId: Scalars['Int'];
+}>;
+
+
+export type AdminDeleteCategoryMutation = { __typename?: 'Mutation', adminDeleteCategory: { __typename?: 'DeleteCategoryOutput', error?: string | null, ok: boolean } };
+
 export type AdminDeleteUserMutationVariables = Exact<{
   userId: Scalars['String'];
 }>;
 
 
 export type AdminDeleteUserMutation = { __typename?: 'Mutation', adminDeleteUser: { __typename?: 'DeleteAccountOutput', error?: string | null, ok: boolean } };
+
+export type AdminUpdateCategoryMutationVariables = Exact<{
+  input: AdminUpdateCategoryInput;
+}>;
+
+
+export type AdminUpdateCategoryMutation = { __typename?: 'Mutation', adminUpdateCategory: { __typename?: 'AdminUpdateCategoryOutput', error?: string | null, ok: boolean } };
 
 export type AdminUpdateRestaurantMutationVariables = Exact<{
   input: AdminUpdateRestaurantInput;
@@ -804,6 +838,15 @@ export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: { __typename?: 'AllCategoriesOutput', error?: string | null, ok: boolean, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
+
+export type GetCategoriesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  q?: InputMaybe<Scalars['String']>;
+  take?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'PaginationCategoriesOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
 
 export type GetOrderQueryVariables = Exact<{
   input: GetOrderInput;
@@ -943,6 +986,40 @@ export function useAdminCreateRestaurantMutation(baseOptions?: Apollo.MutationHo
 export type AdminCreateRestaurantMutationHookResult = ReturnType<typeof useAdminCreateRestaurantMutation>;
 export type AdminCreateRestaurantMutationResult = Apollo.MutationResult<AdminCreateRestaurantMutation>;
 export type AdminCreateRestaurantMutationOptions = Apollo.BaseMutationOptions<AdminCreateRestaurantMutation, AdminCreateRestaurantMutationVariables>;
+export const AdminDeleteCategoryDocument = gql`
+    mutation AdminDeleteCategory($categoryId: Int!) {
+  adminDeleteCategory(categoryId: $categoryId) {
+    error
+    ok
+  }
+}
+    `;
+export type AdminDeleteCategoryMutationFn = Apollo.MutationFunction<AdminDeleteCategoryMutation, AdminDeleteCategoryMutationVariables>;
+
+/**
+ * __useAdminDeleteCategoryMutation__
+ *
+ * To run a mutation, you first call `useAdminDeleteCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminDeleteCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminDeleteCategoryMutation, { data, loading, error }] = useAdminDeleteCategoryMutation({
+ *   variables: {
+ *      categoryId: // value for 'categoryId'
+ *   },
+ * });
+ */
+export function useAdminDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptions<AdminDeleteCategoryMutation, AdminDeleteCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminDeleteCategoryMutation, AdminDeleteCategoryMutationVariables>(AdminDeleteCategoryDocument, options);
+      }
+export type AdminDeleteCategoryMutationHookResult = ReturnType<typeof useAdminDeleteCategoryMutation>;
+export type AdminDeleteCategoryMutationResult = Apollo.MutationResult<AdminDeleteCategoryMutation>;
+export type AdminDeleteCategoryMutationOptions = Apollo.BaseMutationOptions<AdminDeleteCategoryMutation, AdminDeleteCategoryMutationVariables>;
 export const AdminDeleteUserDocument = gql`
     mutation AdminDeleteUser($userId: String!) {
   adminDeleteUser(userId: $userId) {
@@ -977,6 +1054,40 @@ export function useAdminDeleteUserMutation(baseOptions?: Apollo.MutationHookOpti
 export type AdminDeleteUserMutationHookResult = ReturnType<typeof useAdminDeleteUserMutation>;
 export type AdminDeleteUserMutationResult = Apollo.MutationResult<AdminDeleteUserMutation>;
 export type AdminDeleteUserMutationOptions = Apollo.BaseMutationOptions<AdminDeleteUserMutation, AdminDeleteUserMutationVariables>;
+export const AdminUpdateCategoryDocument = gql`
+    mutation AdminUpdateCategory($input: AdminUpdateCategoryInput!) {
+  adminUpdateCategory(input: $input) {
+    error
+    ok
+  }
+}
+    `;
+export type AdminUpdateCategoryMutationFn = Apollo.MutationFunction<AdminUpdateCategoryMutation, AdminUpdateCategoryMutationVariables>;
+
+/**
+ * __useAdminUpdateCategoryMutation__
+ *
+ * To run a mutation, you first call `useAdminUpdateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminUpdateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminUpdateCategoryMutation, { data, loading, error }] = useAdminUpdateCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminUpdateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<AdminUpdateCategoryMutation, AdminUpdateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminUpdateCategoryMutation, AdminUpdateCategoryMutationVariables>(AdminUpdateCategoryDocument, options);
+      }
+export type AdminUpdateCategoryMutationHookResult = ReturnType<typeof useAdminUpdateCategoryMutation>;
+export type AdminUpdateCategoryMutationResult = Apollo.MutationResult<AdminUpdateCategoryMutation>;
+export type AdminUpdateCategoryMutationOptions = Apollo.BaseMutationOptions<AdminUpdateCategoryMutation, AdminUpdateCategoryMutationVariables>;
 export const AdminUpdateRestaurantDocument = gql`
     mutation AdminUpdateRestaurant($input: AdminUpdateRestaurantInput!) {
   adminUpdateRestaurant(input: $input) {
@@ -1415,6 +1526,57 @@ export function useGetAllCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetAllCategoriesQueryHookResult = ReturnType<typeof useGetAllCategoriesQuery>;
 export type GetAllCategoriesLazyQueryHookResult = ReturnType<typeof useGetAllCategoriesLazyQuery>;
 export type GetAllCategoriesQueryResult = Apollo.QueryResult<GetAllCategoriesQuery, GetAllCategoriesQueryVariables>;
+export const GetCategoriesDocument = gql`
+    query GetCategories($page: Int, $q: String, $take: Int) {
+  getCategories(page: $page, q: $q, take: $take) {
+    categories {
+      coverImageUrl
+      createdAt
+      id
+      name
+      restaurantCount
+      slug
+      updatedAt
+    }
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+  }
+}
+    `;
+
+/**
+ * __useGetCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoriesQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      q: // value for 'q'
+ *      take: // value for 'take'
+ *   },
+ * });
+ */
+export function useGetCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+      }
+export function useGetCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+        }
+export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQuery>;
+export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
+export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
 export const GetOrderDocument = gql`
     query GetOrder($input: GetOrderInput!) {
   getOrder(input: $input) {

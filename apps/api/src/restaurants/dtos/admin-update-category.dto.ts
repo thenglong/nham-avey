@@ -9,4 +9,7 @@ export class AdminUpdateCategoryInput extends PartialType(PickType(Category, ["n
 }
 
 @ObjectType()
-export class AdminUpdateCategoryOutput extends CoreOutput {}
+export class AdminUpdateCategoryOutput extends CoreOutput {
+  @Field(type => Category, { nullable: true })
+  category?: Category
+}

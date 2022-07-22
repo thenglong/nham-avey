@@ -1,0 +1,6 @@
+mutation AdminUpdateCategory($input: AdminUpdateCategoryInput!) {
+  adminUpdateCategory(input: $input) {
+    error
+    ok
+  }
+}

@@ -38,7 +38,7 @@ export abstract class PaginationArgs {
 @ArgsType()
 export abstract class PaginationWithSearchArgs extends PaginationArgs {
   @Field(() => String, { nullable: true })
-  readonly q: string | null
+  private readonly q: string | null
 
   get searchQuery() {
     if (this.q) return `%${this.q.trim()}%`

@@ -30,8 +30,23 @@ const MenuContent = () => {
         key: "restaurants",
         title: "Restaurants",
         label: "Restaurants",
-        onClick: () => handleItemClick("/app/restaurants/restaurants"),
         icon: <QuestionOutlined />,
+        children: [
+          {
+            key: "restaurants.all-restaurants",
+            title: "All Restaurants",
+            label: "All Restaurants",
+            onClick: () => handleItemClick("/app/restaurants/all-restaurants"),
+            icon: <QuestionOutlined />,
+          },
+          {
+            key: "restaurants.categories",
+            title: "Categories",
+            label: "Categories",
+            onClick: () => handleItemClick("/app/restaurants/categories"),
+            icon: <QuestionOutlined />,
+          },
+        ],
       },
       {
         key: "users",

@@ -18,6 +18,7 @@ input AdminUpdateCategoryInput {
 }
 
 type AdminUpdateCategoryOutput {
+  category: Category
   error: String
   ok: Boolean!
 }
@@ -322,6 +323,16 @@ type PaginatedUsersOutput {
   users: [User!]
 }
 
+type PaginationCategoriesOutput {
+  categories: [Category!]
+  error: String
+  hasNext: Boolean
+  hasPrevious: Boolean
+  matchedCount: Int
+  ok: Boolean!
+  pageCount: Int
+}
+
 type Payment {
   createdAt: EnhancedDate!
   id: Float!
@@ -336,13 +347,14 @@ type Query {
   adminGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   adminGetUsers(page: Int = 1, q: String, role: UserRole, take: Int = 20): PaginatedUsersOutput!
   getAllCategories: AllCategoriesOutput!
-  getCategoryRestaurantBySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
+  getCategories(page: Int = 1, q: String, take: Int = 20): PaginationCategoriesOutput!
   getMe: User!
   getMyRestaurantById(restaurantId: Int!): MyRestaurantOutput!
   getMyRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
+  getRestaurantsByCategorySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
   pubicGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   publicGetRestaurantById(restaurantId: Int!): RestaurantOutput!
 }

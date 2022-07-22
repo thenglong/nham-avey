@@ -2,7 +2,14 @@ import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nes
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { AdminUpdateCategoryInput, AdminUpdateCategoryOutput, DeleteCategoryArgs, DeleteCategoryOutput } from "src/restaurants/dtos"
+import {
+  AdminUpdateCategoryInput,
+  AdminUpdateCategoryOutput,
+  DeleteCategoryArgs,
+  DeleteCategoryOutput,
+  PaginationCategoriesArgs,
+  PaginationCategoriesOutput,
+} from "src/restaurants/dtos"
 import {
   AllCategoriesOutput,
   PaginatedCategoryRestaurantOutput,
@@ -23,11 +30,16 @@ export class CategoryResolver {
 
   @Query(returns => AllCategoriesOutput)
   getAllCategories(): Promise<AllCategoriesOutput> {
-    return this.restaurantService.allCategories()
+    return this.restaurantService.getAllCategories()
+  }
+
+  @Query(returns => PaginationCategoriesOutput)
+  getCategories(@Args() args: PaginationCategoriesArgs): Promise<PaginationCategoriesOutput> {
+    return this.restaurantService.getCategories(args)
   }
 
   @Query(returns => PaginatedCategoryRestaurantOutput)
-  getCategoryRestaurantBySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
+  getRestaurantsByCategorySlug(@Args() args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
     return this.restaurantService.findRestaurantsByCategorySlug(args)
   }
 

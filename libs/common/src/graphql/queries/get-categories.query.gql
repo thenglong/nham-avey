@@ -1,0 +1,19 @@
+query GetCategories($page: Int, $q: String, $take: Int) {
+  getCategories(page: $page, q: $q, take: $take) {
+    categories {
+      coverImageUrl
+      createdAt
+      id
+      name
+      restaurantCount
+      slug
+      updatedAt
+    }
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+  }
+}

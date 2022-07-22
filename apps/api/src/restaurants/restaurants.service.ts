@@ -17,6 +17,8 @@ import {
   MyRestaurantOutput,
   PaginatedCategoryRestaurantOutput,
   PaginatedRestaurantsOutput,
+  PaginationCategoriesArgs,
+  PaginationCategoriesOutput,
   PaginationCategoryRestaurantArgs,
   PaginationRestaurantsArgs,
   RestaurantOutput,
@@ -139,23 +141,37 @@ export class RestaurantService {
 
   async deleteRestaurant(decodedIdToken: DecodedIdToken, restaurantId: Restaurant["id"]): Promise<DeleteRestaurantOutput> {
     const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
-    if (!restaurant)
-      return {
-        ok: false,
-        error: "[App] Restaurant not found",
-      }
-
+    if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
     if (!decodedIdToken.roles.includes(UserRole.Admin) && decodedIdToken.uid !== restaurant.vendorId)
       return { ok: false, error: "[App] You can't delete a restaurant that you don't own" }
 
     await this.restaurantRepo.delete(restaurantId)
-
     return { ok: true }
   }
 
-  async allCategories(): Promise<AllCategoriesOutput> {
+  async getAllCategories(): Promise<AllCategoriesOutput> {
     const categories = await this.categoryRepo.find()
     return { ok: true, categories }
+  }
+
+  async getCategories(args: PaginationCategoriesArgs): Promise<PaginationCategoriesOutput> {
+    const {
+      pageOptions: { take, skip },
+      searchQuery,
+    } = args
+
+    const queryBuilder = this.categoryRepo.createQueryBuilder("category")
+    if (searchQuery) queryBuilder.where(`category.name ILIKE :searchQuery`, { searchQuery })
+
+    const matchedCount = await queryBuilder.getCount()
+    const categories = await queryBuilder
+      .skip(skip)
+      .take(take) //
+      .getMany() //
+
+    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
+
+    return { ...paginatedOutput, categories }
   }
 
   countRestaurantsByCategory(category: Category) {
@@ -428,6 +444,6 @@ export class RestaurantService {
     const category = Object.assign(existing, updatePayload)
     category.updatedBy = adminId
     const saved = await this.categoryRepo.save(category)
-    return { ok: true }
+    return { ok: true, category: saved }
   }
 }
