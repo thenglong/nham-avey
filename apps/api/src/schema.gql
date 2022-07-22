@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AdminCreateCategoryInput {
+  coverImageUrl: String
+  name: String!
+}
+
+type AdminCreateCategoryOutput {
+  category: Category
+  error: String
+  ok: Boolean!
+}
+
 input AdminCreateRestaurantInput {
   address: String!
   categories: [String!]
@@ -219,6 +230,7 @@ type GetPaymentsOutput {
 
 type Mutation {
   adminCreateAdmin(input: CreateAccountInput!): CreateAccountOutput!
+  adminCreateCategory(input: AdminCreateCategoryInput!): AdminCreateCategoryOutput!
   adminCreateDish(input: CreateDishInput!): CreateDishOutput!
   adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
   adminDeleteCategory(categoryId: Int!): DeleteCategoryOutput!

@@ -28,6 +28,7 @@ import {
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
 } from "src/restaurants/dtos"
+import { AdminCreateCategoryInput, AdminCreateCategoryOutput } from "src/restaurants/dtos/admin-create-category.dto"
 import { Category } from "src/restaurants/entities/category.entity"
 import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
@@ -47,13 +48,13 @@ export class RestaurantService {
     private readonly userService: UserService,
   ) {}
 
-  private async getOrCreateCategories(names: string[]): Promise<Category[]> {
+  private async getOrCreateCategories(request: { name: string; coverImageUrl?: string }[]): Promise<Category[]> {
     return Promise.all<Category>(
-      names.map(async name => {
+      request.map(async ({ name, coverImageUrl }) => {
         const slug = name.trim().toLowerCase().replace(/ /g, "-")
         let category = await this.categoryRepo.findOneBy({ slug })
         if (!category) {
-          const entity = this.categoryRepo.create({ name, slug })
+          const entity = this.categoryRepo.create({ name, slug, coverImageUrl })
           category = await this.categoryRepo.save(entity)
         }
         return category
@@ -67,7 +68,7 @@ export class RestaurantService {
 
     if (!vendorEntity) return { ok: false, error: `Vendor with id ${vendorId} not found` }
 
-    const categoryEntities = await this.getOrCreateCategories(categories ?? [])
+    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
     const restaurant = this.restaurantRepo.create(restaurantPayload)
     restaurant.vendors = [vendorEntity]
     restaurant.categories = categoryEntities
@@ -83,7 +84,8 @@ export class RestaurantService {
 
     if (vendorEntities.length < vendorIds.length) return { ok: false, error: `Cannot Find All Vendors with ids ${vendorIds.join(", ")}` }
 
-    const categoryEntities = await this.getOrCreateCategories(categories ?? [])
+    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
+
     const restaurant = this.restaurantRepo.create(restaurantPayload)
     restaurant.vendors = vendorEntities
     restaurant.categories = categoryEntities
@@ -98,7 +100,7 @@ export class RestaurantService {
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
     if (vendorId !== restaurant.vendorId) return { ok: false, error: "[App] You can't update a restaurant that you don't own" }
 
-    const categoryEntities = await this.getOrCreateCategories(categories ?? [])
+    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
     await this.restaurantRepo.save({
       id: restaurantId,
       ...restaurantPayload,
@@ -131,7 +133,7 @@ export class RestaurantService {
       restaurant.vendors = vendorEntities
     }
 
-    restaurant.categories = await this.getOrCreateCategories(categories ?? [])
+    restaurant.categories = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
 
     await this.restaurantRepo.save(restaurant)
     return {
@@ -434,6 +436,16 @@ export class RestaurantService {
     const saved = await this.categoryRepo.save(existing)
     await this.categoryRepo.softDelete({ id: saved.id })
     return { ok: true }
+  }
+
+  async createCategoryByAdmin(adminId: UserRecord["uid"], input: AdminCreateCategoryInput): Promise<AdminCreateCategoryOutput> {
+    const { name, coverImageUrl } = input
+    const [category] = await this.getOrCreateCategories([{ name, coverImageUrl }])
+    category.updatedBy = adminId
+
+    // TODO: Make it just one insert query
+    const saved = await this.categoryRepo.save(category)
+    return { ok: true, category: saved }
   }
 
   async updateCategoryByAdmin(adminId: UserRecord["uid"], input: AdminUpdateCategoryInput): Promise<AdminUpdateCategoryOutput> {

@@ -10,6 +10,7 @@ import {
   PaginationCategoriesArgs,
   PaginationCategoriesOutput,
 } from "src/restaurants/dtos"
+import { AdminCreateCategoryInput, AdminCreateCategoryOutput } from "src/restaurants/dtos/admin-create-category.dto"
 import {
   AllCategoriesOutput,
   PaginatedCategoryRestaurantOutput,
@@ -47,6 +48,14 @@ export class CategoryResolver {
   @Roles(UserRole.Admin)
   adminDeleteCategory(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
     return this.restaurantService.deleteCategoryByAdmin(decodedIdToken.uid, args)
+  }
+  @Mutation(returns => AdminCreateCategoryOutput)
+  @Roles(UserRole.Admin)
+  adminCreateCategory(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") input: AdminCreateCategoryInput,
+  ): Promise<AdminUpdateCategoryOutput> {
+    return this.restaurantService.createCategoryByAdmin(decodedIdToken.uid, input)
   }
 
   @Mutation(returns => AdminUpdateCategoryOutput)
