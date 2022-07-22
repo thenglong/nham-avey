@@ -57,45 +57,57 @@ export class UserService {
     return this.userRepo.findBy({ id: In(ids) })
   }
 
-  async signUpVendor(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    const existing = await this.checkIfUserExistByEmail(signUpAccountInput.email)
-    if (existing) return { ok: false, error: `[App] User with email ${signUpAccountInput.email} already exist!` }
+  async signUpVendor(input: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const { lastName, photoURL, firstName, email } = input
+    const existing = await this.checkIfUserExistByEmail(input.email)
+    if (existing) return { ok: false, error: `[App] User with email ${input.email} already exist!` }
 
-    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Vendor] })
+    const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Vendor] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
     const user = await this.createUser({
-      ...signUpAccountInput,
       id: firebaseUser.uid,
+      email,
+      firstName,
+      lastName,
+      photoURL,
       roles: [UserRole.Vendor],
     })
 
     return { ok: true, user, signInToken }
   }
 
-  async signUpDriver(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    const existing = await this.checkIfUserExistByEmail(signUpAccountInput.email)
-    if (existing) return { ok: false, error: `[App] User with email ${signUpAccountInput.email} already exist!` }
+  async signUpDriver(input: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const { lastName, photoURL, firstName, email } = input
+    const existing = await this.checkIfUserExistByEmail(email)
+    if (existing) return { ok: false, error: `[App] User with email ${email} already exist!` }
 
-    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Driver] })
+    const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Driver] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
     const user = await this.createUser({
-      ...signUpAccountInput,
       id: firebaseUser.uid,
+      email,
+      firstName,
+      lastName,
+      photoURL,
       roles: [UserRole.Driver],
     })
 
     return { ok: true, user, signInToken }
   }
 
-  async signUpCustomer(signUpAccountInput: SignUpAccountInput): Promise<SignUpAccountOutput> {
-    const existing = await this.checkIfUserExistByEmail(signUpAccountInput.email)
-    if (existing) return { ok: false, error: `[App] User with email ${signUpAccountInput.email} already exist!` }
+  async signUpCustomer(input: SignUpAccountInput): Promise<SignUpAccountOutput> {
+    const { email, photoURL, firstName, lastName } = input
+    const existing = await this.checkIfUserExistByEmail(email)
+    if (existing) return { ok: false, error: `[App] User with email ${email} already exist!` }
 
-    const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Customer] })
+    const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Customer] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
     const user = await this.createUser({
-      ...signUpAccountInput,
       id: firebaseUser.uid,
+      email,
+      firstName,
+      lastName,
+      photoURL,
       roles: [UserRole.Customer],
     })
 

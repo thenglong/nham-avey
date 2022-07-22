@@ -19,9 +19,9 @@
           "apps/web-backoffice/src/favicon.ico",
           "apps/web-backoffice/src/assets"
         ],
-        "styles": ["apps/web-backoffice/src/styles/styles.less"],
+        "styles": ["apps/web-backoffice/src/styles/styles.css"],
         "scripts": [],
-        "webpackConfig": "apps/web-backoffice/custom-webpack.config.js"
+        "webpackConfig": "@nrwl/react/plugins/webpack"
       },
       "configurations": {
         "development": {
