@@ -8,9 +8,8 @@ import {
   SearchOutlined,
 } from "@ant-design/icons"
 import {
-  Category,
+  useAdminDeleteUserMutation,
   useAdminGetUsersQuery,
-  useDeleteUserMutation,
   User,
   UserRole,
 } from "@nham-avey/common"
@@ -22,16 +21,14 @@ import {
   notification,
   Table,
   TablePaginationConfig,
-  Tag,
   Tooltip,
   Typography,
 } from "antd"
 import { ColumnsType } from "antd/lib/table/interface"
-import moment from "moment"
 import { Helmet } from "react-helmet-async"
 import AvatarInfo from "src/components/avatar-info"
-import CreateUserDrawer from "src/components/drawers/create-restaurant-drawer"
-import UpdateUserDrawer from "src/components/drawers/update-restaurant-drawer"
+import CreateAdminDrawer from "src/components/drawers/create-admin-drawer"
+import UpdateUserDrawer from "src/components/drawers/update-user-drawer"
 import { APP_NAME } from "src/config/app-config"
 import { TableType } from "src/typing/common-type"
 import { useDebouncedCallback } from "use-debounce"
@@ -103,7 +100,7 @@ export const AdminsPage = () => {
     }))
   }, [])
 
-  const [deleteUser] = useDeleteUserMutation({
+  const [deleteUser] = useAdminDeleteUserMutation({
     onCompleted: async () => {
       notification.success({
         message: "Success",
@@ -124,38 +121,12 @@ export const AdminsPage = () => {
         title: "Basic Info",
         render: (_, user) => (
           <AvatarInfo
-            photoUrl={user.logoImageUrl as string}
+            photoUrl={user.photoURL as string}
             blurhash=""
-            title={user.name}
-            subTitle={user.address}
+            title={`${user.firstName ?? ""} ${user.lastName ?? ""}`}
+            subTitle={user.email}
           />
         ),
-      },
-      {
-        title: "Categories",
-        render: (_, user) =>
-          user.categories?.map((category: Category) => (
-            <Tag color="blue" key={category.id} className="mb-2">
-              {category.name}
-            </Tag>
-          )),
-      },
-      {
-        title: "Vendor Info(Showing 1)",
-        render: (_, user) => {
-          const firstVendor = user.vendors[0]
-          if (!firstVendor) return <Tag color="error">No Vendor</Tag>
-          return (
-            <AvatarInfo
-              photoUrl={`https://i.pravatar.cc/150?u=${Math.random()}`}
-              blurhash=""
-              title={user?.vendors[0]?.email}
-              subTitle={moment(new Date(user.vendors?.[0]?.createdAt)).format(
-                "Do MMM YYYY"
-              )}
-            />
-          )
-        },
       },
       {
         title: "Actions",
@@ -268,7 +239,7 @@ export const AdminsPage = () => {
             loading={loading}
           />
         </div>
-        <CreateUserDrawer
+        <CreateAdminDrawer
           visible={userActionState.createDrawerVisible}
           onClose={closeCreateDrawer}
           onCompleted={() => {
@@ -278,7 +249,7 @@ export const AdminsPage = () => {
         />
         <UpdateUserDrawer
           visible={userActionState.updateDrawerViewVisible}
-          user={userActionState.selectedUser}
+          user={userActionState.selectedUser as User}
           onClose={closeUpdateDrawer}
           onCompleted={() => {
             closeUpdateDrawer()

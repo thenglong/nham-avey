@@ -1,5 +1,5 @@
 import { ArgsType, Field, InputType, ObjectType, PartialType, PickType } from "@nestjs/graphql"
-import { IsEmail, MinLength } from "class-validator"
+import { MinLength } from "class-validator"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { PaginationOutput, PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
 import { User, UserRole } from "src/users/entities/user.entity"
@@ -19,13 +19,16 @@ export class PaginatedUsersOutput extends PaginationOutput {
 @InputType()
 export class CreateAccountInput extends PickType(User, ["email", "firstName", "lastName", "photoURL"]) {}
 
-@InputType()
-export class SignUpAccountInput extends CreateAccountInput {}
-
 @ObjectType()
 export class CreateAccountOutput extends CoreOutput {
   @Field(type => User, { nullable: true })
   user?: User
+}
+
+@InputType()
+export class SignUpAccountInput extends CreateAccountInput {
+  @Field(type => String)
+  password: string
 }
 
 @ObjectType()
@@ -55,11 +58,10 @@ export class UserProfileOutput extends CoreOutput {
 
 @InputType()
 export class AdminUpdateUserInput extends PartialType(
-  PickType(User, ["id", "email", "firstName", "lastName", "photoURL", "roles", "isVerified"]),
+  PickType(User, ["email", "firstName", "lastName", "photoURL", "roles", "isVerified"]),
 ) {
   @Field(type => String)
-  @MinLength(8)
-  password: string
+  userId: string
 }
 
 @ObjectType()

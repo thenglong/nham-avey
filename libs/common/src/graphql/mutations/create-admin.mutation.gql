@@ -1,5 +1,5 @@
-mutation CreateAdmin($input: CreateAccountInput!) {
-  createAdmin(input: $input) {
+mutation AdminCreateAdmin($input: CreateAccountInput!) {
+  adminCreateAdmin(input: $input) {
     ok
     error
     user {

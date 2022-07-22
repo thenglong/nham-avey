@@ -18,6 +18,7 @@ import {
   UpdateProfileOutput,
 } from "src/users/users.dto"
 import { In, Repository } from "typeorm"
+import { DeepPartial } from "typeorm/common/DeepPartial"
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,11 @@ export class UserService {
   ) {}
 
   private async createFirebaseUser(createRequest: CreateRequest, customClaims: object): Promise<UserRecord> {
+    // prevent auth/invalid-photo-url
+    if (!createRequest.photoURL) {
+      delete createRequest.photoURL
+    }
+
     const firebaseUser = await this.firebaseAuthService.createUser(createRequest)
     await this.firebaseAuthService.setCustomUserClaims(firebaseUser.uid, customClaims)
     return firebaseUser
@@ -38,8 +44,8 @@ export class UserService {
     return user !== null
   }
 
-  private async createUser(id: string, input: CreateAccountInput, roles: UserRole[]): Promise<User> {
-    const userEntity = this.userRepo.create({ id, ...input, roles })
+  private async createUser(entityLike: DeepPartial<User>): Promise<User> {
+    const userEntity = this.userRepo.create(entityLike)
     return this.userRepo.save(userEntity)
   }
 
@@ -57,7 +63,11 @@ export class UserService {
 
     const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Vendor] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
-    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Vendor])
+    const user = await this.createUser({
+      ...signUpAccountInput,
+      id: firebaseUser.uid,
+      roles: [UserRole.Vendor],
+    })
 
     return { ok: true, user, signInToken }
   }
@@ -68,7 +78,11 @@ export class UserService {
 
     const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Driver] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
-    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Driver])
+    const user = await this.createUser({
+      ...signUpAccountInput,
+      id: firebaseUser.uid,
+      roles: [UserRole.Driver],
+    })
 
     return { ok: true, user, signInToken }
   }
@@ -79,20 +93,29 @@ export class UserService {
 
     const firebaseUser = await this.createFirebaseUser(signUpAccountInput, { roles: [UserRole.Customer] })
     const signInToken = await this.firebaseAuthService.createCustomToken(firebaseUser.uid)
-    const user = await this.createUser(firebaseUser.uid, signUpAccountInput, [UserRole.Customer])
+    const user = await this.createUser({
+      ...signUpAccountInput,
+      id: firebaseUser.uid,
+      roles: [UserRole.Customer],
+    })
 
     return { ok: true, user, signInToken }
   }
 
   async createAdmin(input: CreateAccountInput): Promise<CreateAccountOutput> {
-    const { email } = input
+    const { email, photoURL, firstName, lastName } = input
     const existing = await this.checkIfUserExistByEmail(email)
-
     if (existing) return { ok: false, error: "[App] There is a user with that email already!" }
 
     const firebaseUser = await this.createFirebaseUser(input, { roles: [UserRole.Admin] })
-    const user = await this.createUser(firebaseUser.uid, input, [UserRole.Admin])
-    // TODO: send verify email here
+    const user = await this.createUser({
+      id: firebaseUser.uid,
+      email,
+      firstName,
+      lastName,
+      photoURL,
+      roles: [UserRole.Admin],
+    })
 
     return { ok: true, user }
   }
@@ -118,7 +141,18 @@ export class UserService {
     } = args
     const queryBuilder = this.userRepo.createQueryBuilder("user")
 
-    if (searchQuery) queryBuilder.where(`user.email ILIKE :searchQuery`, { searchQuery })
+    if (searchQuery)
+      queryBuilder.where(
+        `
+                user.email ILIKE :searchQuery
+                OR
+                user.firstName ILIKE :searchQuery
+                OR
+                user.lastName ILIKE :searchQuery
+
+           `,
+        { searchQuery },
+      )
     if (role) queryBuilder.andWhere(`:role = ANY(user.roles)`, { role })
 
     const matchedCount = await queryBuilder.getCount()
@@ -137,6 +171,7 @@ export class UserService {
   }
 
   async deleteUser(userId: string): Promise<DeleteAccountOutput> {
+    await this.firebaseAuthService.deleteUser(userId)
     const result = await this.userRepo.softDelete({ id: userId })
     return {
       ok: (result.affected as number) > 0,
@@ -145,11 +180,10 @@ export class UserService {
   }
 
   async updateUserByAdmin(input: AdminUpdateUserInput): Promise<AdminUpdateUserOutput> {
-    const { id } = input
-    const existing = await this.userRepo.findOneBy({ id })
-    if (!existing) {
-      return { ok: false, error: `[App] User with id ${id} not found!` }
-    }
+    const { userId } = input
+    const existing = await this.userRepo.findOneBy({ id: userId })
+    if (!existing) return { ok: false, error: `[App] User with id ${userId} not found!` }
+
     const user = Object.assign(existing, input)
     await this.userRepo.save(user)
     return { ok: true }

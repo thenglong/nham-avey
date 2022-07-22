@@ -1,51 +1,40 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
-import { User, UserRole } from "@nham-avey/common"
-import { Button, Form, Input, Select, Upload } from "antd"
+import { useAdminCreateAdminMutation, User } from "@nham-avey/common"
+import { Button, Form, Input, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import { UploadChangeParam } from "antd/es/upload"
 import { UploadProps } from "antd/es/upload/interface"
-import { SelectOption } from "src/typing/common-type"
 import { antUIUploadCustomRequest } from "src/utils/common-utils"
 
 const { useForm } = Form
 
-export interface UserFormValue {
+export interface CreateAdminFormValue {
   firstName: string | null
   lastName: string | null
   email: string
-  isVerified: boolean
-  roles: SelectOption[]
 }
 
-export interface UserFormSubmitValue {
-  firstName: string | null
-  lastName: string | null
-  email: string
-  isVerified: boolean
-  photoURL?: string
-  roles: UserRole[]
-}
-
-export interface UserFormProps {
+export interface CreateAdminFormProps {
   initialValue?: User
-  onSubmit: (values: UserFormSubmitValue) => Promise<void>
+  onSubmit: ReturnType<typeof useAdminCreateAdminMutation>[0]
   isLoading: boolean
 }
 
-export const UserForm = ({ initialValue, onSubmit, isLoading }: UserFormProps) => {
-  const [form] = useForm<UserFormValue>()
-  const [photoURL, setPhotoURL] = useState<string>()
+export const CreateAdminForm = ({
+  initialValue,
+  onSubmit,
+  isLoading,
+}: CreateAdminFormProps) => {
+  const [form] = useForm<CreateAdminFormValue>()
+  const [photoURL, setPhotoURL] = useState<string | null>(null)
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false)
 
   useEffect(() => {
     if (initialValue) {
-      form.setFieldsValue({
-        ...initialValue,
-        roles: initialValue.roles.map(role => ({ label: role, value: role })),
-      })
-      setPhotoURL(initialValue.photoURL as string | undefined)
+      form.setFieldsValue(initialValue)
+      setPhotoURL(initialValue.photoURL as string | null)
     }
   }, [form, initialValue])
 
@@ -60,24 +49,24 @@ export const UserForm = ({ initialValue, onSubmit, isLoading }: UserFormProps) =
     }
   }
 
-  const roleOptions: SelectOption[] = useMemo(
-    () => [
-      { label: UserRole.Admin, value: UserRole.Admin },
-      { label: UserRole.Vendor, value: UserRole.Vendor },
-      { label: UserRole.Driver, value: UserRole.Driver },
-      { label: UserRole.Customer, value: UserRole.Customer },
-    ],
-    []
-  )
-
-  const onFinish = async (values: UserFormValue) => {
-    await onSubmit({
-      ...values,
-      roles: values.roles.map(option => option.value as UserRole),
-      photoURL,
-    })
-    setPhotoURL("")
-    form.resetFields()
+  const onFinish = async (values: CreateAdminFormValue) => {
+    const { lastName, firstName, email } = values
+    try {
+      const { data } = await onSubmit({
+        variables: {
+          input: {
+            email,
+            lastName,
+            firstName,
+            photoURL,
+          },
+        },
+      })
+      if (data?.adminCreateAdmin.ok) {
+        setPhotoURL(null)
+        form.resetFields()
+      }
+    } catch (e) {} // do nothing
   }
 
   return (
@@ -144,38 +133,16 @@ export const UserForm = ({ initialValue, onSubmit, isLoading }: UserFormProps) =
         name="email"
         rules={[
           {
+            type: "email",
+            message: "The input is not valid E-mail!",
+          },
+          {
             required: true,
-            message: "Email is required!",
+            message: "Please input your E-mail!",
           },
         ]}
       >
         <Input className="w-full" />
-      </Form.Item>
-
-      <Form.Item
-        label="Roles"
-        name="roles"
-        rules={[
-          {
-            required: true,
-            message: "Role",
-          },
-        ]}
-      >
-        <Select mode="multiple" options={roleOptions} />
-      </Form.Item>
-
-      <Form.Item
-        label="Address"
-        name="address"
-        rules={[
-          {
-            required: true,
-            message: "Incorrect email format",
-          },
-        ]}
-      >
-        <Input className="w-full" autoComplete="off" />
       </Form.Item>
 
       <div className="text-right">
@@ -192,4 +159,4 @@ export const UserForm = ({ initialValue, onSubmit, isLoading }: UserFormProps) =
   )
 }
 
-export default UserForm
+export default CreateAdminForm

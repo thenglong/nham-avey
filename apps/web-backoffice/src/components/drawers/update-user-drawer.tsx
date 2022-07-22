@@ -1,37 +1,43 @@
 import {
-  AdminCreateUserMutationOptions,
-  useAdminCreateUserMutation,
+  AdminUpdateUserMutationOptions,
+  useAdminUpdateUserMutation,
+  User,
 } from "@nham-avey/common"
 import { Drawer } from "antd"
-import UserForm, { UserFormSubmitValue } from "src/components/form/restaurant-form"
+import UpdateUserForm, {
+  UpdateUserFormSubmitValue,
+} from "src/components/form/update-user-form"
 
-interface CreateUserDrawerProps {
+interface UpdateUserDrawerProps {
   visible: boolean
-  onCompleted: AdminCreateUserMutationOptions["onCompleted"]
+  onCompleted: AdminUpdateUserMutationOptions["onCompleted"]
   onClose: () => void
+  user: User
 }
 
-export function CreateUserDrawer({
+export function UpdateUserDrawer({
   visible,
   onCompleted,
   onClose,
-}: CreateUserDrawerProps) {
-  const [create, { loading: isCreating }] = useAdminCreateUserMutation({
+  user,
+}: UpdateUserDrawerProps) {
+  const [update, { loading: isUpdating }] = useAdminUpdateUserMutation({
     onCompleted,
   })
 
-  const onFinish = async (values: UserFormSubmitValue) => {
-    const { logoImageUrl, coverImageUrls, categories, name, address, vendorIds } = values
+  const onFinish = async (values: UpdateUserFormSubmitValue) => {
+    const { firstName, lastName, photoURL, roles, isVerified, email } = values
     try {
-      await create({
+      await update({
         variables: {
           input: {
-            logoImageUrl,
-            coverImageUrls,
-            categories,
-            name,
-            address,
-            vendorIds,
+            userId: user.id,
+            firstName,
+            lastName,
+            photoURL,
+            roles,
+            isVerified,
+            email,
           },
         },
       })
@@ -45,15 +51,15 @@ export function CreateUserDrawer({
       visible={visible}
       forceRender
       onClose={onClose}
-      title="Create User"
+      title="Update User"
       className="max-w-full"
       contentWrapperStyle={{
         maxWidth: "100%",
       }}
     >
-      <UserForm onSubmit={onFinish} isLoading={isCreating} />
+      <UpdateUserForm onSubmit={onFinish} isLoading={isUpdating} initialValue={user} />
     </Drawer>
   )
 }
 
-export default CreateUserDrawer
+export default UpdateUserDrawer

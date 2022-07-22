@@ -35,12 +35,16 @@ input AdminUpdateRestaurantInput {
 input AdminUpdateUserInput {
   email: String
   firstName: String
-  id: String
   isVerified: Boolean
   lastName: String
-  password: String!
   photoURL: String
   roles: [UserRole!]
+  userId: String!
+}
+
+type AdminUpdateUserOutput {
+  error: String
+  ok: Boolean!
 }
 
 type AllCategoriesOutput {
@@ -213,29 +217,28 @@ type GetPaymentsOutput {
 }
 
 type Mutation {
+  adminCreateAdmin(input: CreateAccountInput!): CreateAccountOutput!
   adminCreateDish(input: CreateDishInput!): CreateDishOutput!
   adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
   adminDeleteCategory(categoryId: Int!): DeleteCategoryOutput!
   adminDeleteDish(dishId: Int!): DeleteDishOutput!
+  adminDeleteUser(userId: String!): DeleteAccountOutput!
   adminUpdateCategory(input: AdminUpdateCategoryInput!): AdminUpdateCategoryOutput!
   adminUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
   adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
-  createAdmin(input: CreateAccountInput!): CreateAccountOutput!
+  adminUpdateUser(input: AdminUpdateUserInput!): AdminUpdateUserOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
+  customerSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
   deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
-  deleteUser(userId: String!): DeleteAccountOutput!
-  signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!
-  signUpVendor(input: SignUpAccountInput!): SignUpAccountOutput!
+  driverSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
   updateMe(input: UpdateProfileInput!): UpdateProfileOutput!
-  updateMeAsCustomer(input: UpdateProfileInput!): UpdateProfileOutput!
-  updateMeAsVendor(input: UpdateProfileInput!): UpdateProfileOutput!
   updateOrder(input: EditOrderInput!): EditOrderOutput!
-  updateUser(input: AdminUpdateUserInput!): DeleteAccountOutput!
   vendorCreateDish(input: CreateDishInput!): CreateDishOutput!
   vendorCreateRestaurant(input: VendorCreateRestaurantInput!): CreateRestaurantOutput!
   vendorDeleteDish(dishId: Int!): DeleteDishOutput!
+  vendorSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
   vendorUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
   vendorUpdateRestaurant(input: VendorUpdateRestaurantInput!): UpdateRestaurantOutput!
 }
@@ -370,6 +373,7 @@ input SignUpAccountInput {
   email: String!
   firstName: String
   lastName: String
+  password: String!
   photoURL: String
 }
 

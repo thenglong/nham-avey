@@ -4,7 +4,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import {
   Restaurant,
   useAdminGetUsersLazyQuery,
-  useAllCategoriesQuery,
+  useGetAllCategoriesQuery,
   User,
   UserRole,
 } from "@nham-avey/common"
@@ -111,11 +111,11 @@ export const RestaurantForm = ({
     [getVendors]
   )
 
-  const { data: categoriesData } = useAllCategoriesQuery()
+  const { data: categoriesData } = useGetAllCategoriesQuery()
 
   const categoryOptions: SelectOption[] = useMemo(() => {
     return (
-      categoriesData?.allCategories.categories?.map(category => ({
+      categoriesData?.getAllCategories.categories?.map(category => ({
         label: category.name,
         value: category.name,
       })) || []

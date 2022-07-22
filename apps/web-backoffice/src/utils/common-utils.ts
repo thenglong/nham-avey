@@ -13,14 +13,14 @@ export const antUIUploadCustomRequest: UploadProps["customRequest"] = async opti
     maxSizeMB: 0.25,
   })
 
-  const formData = new FormData()
   const config: AxiosRequestConfig = {
     headers: { "content-type": CONTENT_TYPE_FORM_DATA },
     onUploadProgress: event => {
       onProgress?.({ percent: (event.loaded / event.total) * 100 })
     },
   }
-  formData.append("file", compressedFile)
+  const formData = new FormData()
+  formData.append("file", compressedFile, compressedFile.name)
   try {
     const res = await api.post("api/v1/upload", formData, config)
 

@@ -1,0 +1,6 @@
+mutation AdminDeleteUser($userId: String!) {
+  adminDeleteUser(userId: $userId) {
+    error
+    ok
+  }
+}

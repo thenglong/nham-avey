@@ -1,4 +1,4 @@
-query getOrder($input: GetOrderInput!) {
+query GetOrder($input: GetOrderInput!) {
   getOrder(input: $input) {
     ok
     error

@@ -1,0 +1,6 @@
+mutation AdminUpdateUser($input: AdminUpdateUserInput!) {
+  adminUpdateUser(input: $input) {
+    error
+    ok
+  }
+}

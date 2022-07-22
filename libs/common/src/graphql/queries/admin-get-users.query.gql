@@ -15,6 +15,7 @@ query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
       roles
       updatedAt
       isVerified
+      photoURL
     }
   }
 }

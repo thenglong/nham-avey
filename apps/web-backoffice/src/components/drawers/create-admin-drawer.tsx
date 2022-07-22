@@ -1,10 +1,13 @@
-import { CreateAdminMutationOptions, useCreateAdminMutation } from "@nham-avey/common"
+import {
+  AdminCreateAdminMutationOptions,
+  useAdminCreateAdminMutation,
+} from "@nham-avey/common"
 import { Drawer } from "antd"
-import UserForm, { UserFormSubmitValue } from "src/components/form/user-form"
+import CreateAdminForm from "src/components/form/create-admin-form"
 
 interface CreateAdminDrawerProps {
   visible: boolean
-  onCompleted: CreateAdminMutationOptions["onCompleted"]
+  onCompleted: AdminCreateAdminMutationOptions["onCompleted"]
   onClose: () => void
 }
 
@@ -13,27 +16,9 @@ export function CreateAdminDrawer({
   onCompleted,
   onClose,
 }: CreateAdminDrawerProps) {
-  const [create, { loading: isCreating }] = useCreateAdminMutation({
+  const [create, { loading: isCreating }] = useAdminCreateAdminMutation({
     onCompleted,
   })
-
-  const onFinish = async (values: UserFormSubmitValue) => {
-    const { lastName, isVerified, roles, firstName, photoURL, email } = values
-    try {
-      await create({
-        variables: {
-          input: {
-            lastName,
-            isVerified,
-            roles,
-            firstName,
-            photoURL,
-            email,
-          },
-        },
-      })
-    } catch (e) {} // do nothing
-  }
 
   return (
     <Drawer
@@ -48,7 +33,7 @@ export function CreateAdminDrawer({
         maxWidth: "100%",
       }}
     >
-      <UserForm onSubmit={onFinish} isLoading={isCreating} />
+      <CreateAdminForm onSubmit={create} isLoading={isCreating} />
     </Drawer>
   )
 }

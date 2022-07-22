@@ -1,5 +1,5 @@
 mutation editOrder($input: EditOrderInput!) {
-  editOrder(input: $input) {
+  updateOrder(input: $input) {
     ok
     error
   }
