@@ -34,7 +34,7 @@ import { useDebouncedCallback } from "use-debounce"
 
 const { confirm } = Modal
 
-const PAGE_TITLE = `${APP_NAME} - Customers`
+const PAGE_TITLE = `${APP_NAME} - Vendors`
 
 interface UserPageState {
   page: number
@@ -49,12 +49,12 @@ interface UserActionState {
   deleteConfirmationVisible: boolean
 }
 
-export const CustomersPage = () => {
+export const VendorsPage = () => {
   const [pageState, setPageState] = useState<UserPageState>({
     page: 1,
     take: 10,
     q: "",
-    role: UserRole.Customer,
+    role: UserRole.Vendor,
   })
   const [userActionState, setUserActionState] = useState<UserActionState>({
     selectedUser: null,
@@ -183,7 +183,7 @@ export const CustomersPage = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <Typography.Title>Customers</Typography.Title>
+      <Typography.Title>Vendors</Typography.Title>
       <Card bodyStyle={{ padding: "0px", height: "100%" }} className="h-full">
         <Helmet title={PAGE_TITLE} />
         <div className="h-full">
@@ -228,4 +228,4 @@ export const CustomersPage = () => {
   )
 }
 
-export default CustomersPage
+export default VendorsPage

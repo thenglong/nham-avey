@@ -41,9 +41,16 @@ const MenuContent = () => {
         children: [
           {
             key: "users.admins",
-            title: "Restaurants",
-            label: "Administrator",
+            title: "Administrators",
+            label: "Administrators",
             onClick: () => handleItemClick("/app/users/admins"),
+            icon: <UserOutlined />,
+          },
+          {
+            key: "users.vendors",
+            title: "Vendors",
+            label: "Vendors",
+            onClick: () => handleItemClick("/app/users/vendors"),
             icon: <UserOutlined />,
           },
           {

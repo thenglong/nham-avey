@@ -144,7 +144,7 @@ export const RestaurantsPage = () => {
           if (!firstVendor) return <Tag color="error">No Vendor</Tag>
           return (
             <AvatarInfo
-              photoUrl={`https://i.pravatar.cc/150?u=${Math.random()}`}
+              photoUrl={firstVendor.photoURL as string}
               blurhash=""
               title={restaurant?.vendors[0]?.email}
               subTitle={moment(new Date(restaurant.vendors?.[0]?.createdAt)).format(
