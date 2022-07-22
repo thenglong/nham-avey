@@ -32,7 +32,7 @@ jobs:
       - name: Upgrade packages 🔀
         run: |
           npm i
-          npm update --force
+          npm update
 
       - name: Create Commit 💌
         run: |
