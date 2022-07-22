@@ -2,7 +2,7 @@ import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nes
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { DeleteCategoryArgs, DeleteCategoryOutput } from "src/restaurants/dtos"
+import { AdminUpdateCategoryInput, AdminUpdateCategoryOutput, DeleteCategoryArgs, DeleteCategoryOutput } from "src/restaurants/dtos"
 import {
   AllCategoriesOutput,
   PaginatedCategoryRestaurantOutput,
@@ -33,7 +33,16 @@ export class CategoryResolver {
 
   @Mutation(returns => DeleteCategoryOutput)
   @Roles(UserRole.Admin)
-  deleteCategory(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
-    return this.restaurantService.deleteCategory(decodedIdToken.uid, args)
+  adminDeleteCategory(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() args: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
+    return this.restaurantService.deleteCategoryByAdmin(decodedIdToken.uid, args)
+  }
+
+  @Mutation(returns => AdminUpdateCategoryOutput)
+  @Roles(UserRole.Admin)
+  adminUpdateCategory(
+    @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
+    @Args("input") input: AdminUpdateCategoryInput,
+  ): Promise<AdminUpdateCategoryOutput> {
+    return this.restaurantService.updateCategoryByAdmin(decodedIdToken.uid, input)
   }
 }

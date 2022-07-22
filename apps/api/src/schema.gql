@@ -11,6 +11,17 @@ input AdminCreateRestaurantInput {
   vendorIds: [String!]!
 }
 
+input AdminUpdateCategoryInput {
+  categoryId: Int!
+  coverImageUrl: String
+  name: String
+}
+
+type AdminUpdateCategoryOutput {
+  error: String
+  ok: Boolean!
+}
+
 input AdminUpdateRestaurantInput {
   address: String
   categories: [String!]
@@ -204,13 +215,14 @@ type GetPaymentsOutput {
 type Mutation {
   adminCreateDish(input: CreateDishInput!): CreateDishOutput!
   adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
+  adminDeleteCategory(categoryId: Int!): DeleteCategoryOutput!
   adminDeleteDish(dishId: Int!): DeleteDishOutput!
+  adminUpdateCategory(input: AdminUpdateCategoryInput!): AdminUpdateCategoryOutput!
   adminUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
   adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
   createAdmin(input: CreateAccountInput!): CreateAccountOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
-  deleteCategory(categoryId: Int!): DeleteCategoryOutput!
   deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
   deleteUser(userId: String!): DeleteAccountOutput!
   signUpCustomer(input: SignUpAccountInput!): SignUpAccountOutput!

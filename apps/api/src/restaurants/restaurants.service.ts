@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
 import {
   AdminCreateRestaurantInput,
+  AdminUpdateCategoryInput,
+  AdminUpdateCategoryOutput,
   AdminUpdateRestaurantInput,
   AllCategoriesOutput,
   CreateDishInput,
@@ -409,12 +411,23 @@ export class RestaurantService {
     return { ok: true, restaurant }
   }
 
-  async deleteCategory(adminId: UserRecord["uid"], { categoryId }: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
+  async deleteCategoryByAdmin(adminId: UserRecord["uid"], { categoryId }: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
     const existing = await this.categoryRepo.findOneBy({ id: categoryId })
     if (!existing) return { ok: false, error: "[App] Category not found" }
     existing.deletedBy = adminId
     const saved = await this.categoryRepo.save(existing)
     await this.categoryRepo.softDelete({ id: saved.id })
+    return { ok: true }
+  }
+
+  async updateCategoryByAdmin(adminId: UserRecord["uid"], input: AdminUpdateCategoryInput): Promise<AdminUpdateCategoryOutput> {
+    const { categoryId, ...updatePayload } = input
+    const existing = await this.categoryRepo.findOneBy({ id: categoryId })
+    if (!existing) return { ok: false, error: "[App] Category not found" }
+
+    const category = Object.assign(existing, updatePayload)
+    category.updatedBy = adminId
+    const saved = await this.categoryRepo.save(category)
     return { ok: true }
   }
 }
