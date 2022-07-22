@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
-import { User, UserRole } from "@nham-avey/common"
+import { useAdminUpdateUserMutation, User, UserRole } from "@nham-avey/common"
 import { Button, Form, Input, Select, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import { UploadChangeParam } from "antd/es/upload"
@@ -19,18 +19,9 @@ export interface UpdateUserFormValue {
   roles: SelectOption[]
 }
 
-export interface UpdateUserFormSubmitValue {
-  firstName: string | null
-  lastName: string | null
-  email: string
-  isVerified: boolean
-  photoURL: string | null
-  roles: UserRole[]
-}
-
 export interface UpdateUserFormProps {
   initialValue?: User
-  onSubmit: (values: UpdateUserFormSubmitValue) => Promise<void>
+  onSubmit: ReturnType<typeof useAdminUpdateUserMutation>[0]
   isLoading: boolean
 }
 
@@ -75,13 +66,24 @@ export const UpdateUserForm = ({
   )
 
   const onFinish = async (values: UpdateUserFormValue) => {
-    await onSubmit({
-      ...values,
-      roles: values.roles.map(option => option.value as UserRole),
-      photoURL,
+    const { lastName, firstName, email, roles, isVerified } = values
+    const { data } = await onSubmit({
+      variables: {
+        input: {
+          userId: initialValue?.id as string,
+          firstName,
+          lastName,
+          email,
+          isVerified,
+          photoURL,
+          roles: roles.map(option => option.value as UserRole),
+        },
+      },
     })
-    setPhotoURL(null)
-    form.resetFields()
+    if (data?.adminUpdateUser.ok) {
+      setPhotoURL(null)
+      form.resetFields()
+    }
   }
 
   return (

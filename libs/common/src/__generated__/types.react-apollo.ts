@@ -16,6 +16,18 @@ export type Scalars = {
   EnhancedDate: any;
 };
 
+export type AdminCreateCategoryInput = {
+  coverImageUrl?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+};
+
+export type AdminCreateCategoryOutput = {
+  __typename?: 'AdminCreateCategoryOutput';
+  category?: Maybe<Category>;
+  error?: Maybe<Scalars['String']>;
+  ok: Scalars['Boolean'];
+};
+
 export type AdminCreateRestaurantInput = {
   address: Scalars['String'];
   categories?: InputMaybe<Array<Scalars['String']>>;
@@ -249,6 +261,7 @@ export type GetPaymentsOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   adminCreateAdmin: CreateAccountOutput;
+  adminCreateCategory: AdminCreateCategoryOutput;
   adminCreateDish: CreateDishOutput;
   adminCreateRestaurant: CreateRestaurantOutput;
   adminDeleteCategory: DeleteCategoryOutput;
@@ -277,6 +290,11 @@ export type Mutation = {
 
 export type MutationAdminCreateAdminArgs = {
   input: CreateAccountInput;
+};
+
+
+export type MutationAdminCreateCategoryArgs = {
+  input: AdminCreateCategoryInput;
 };
 
 
@@ -731,6 +749,13 @@ export type OrderPartsFragment = { __typename?: 'Order', id: number, createdAt: 
 
 export type UserPartsFragment = { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> };
 
+export type AdminCreateCategoryMutationVariables = Exact<{
+  input: AdminCreateCategoryInput;
+}>;
+
+
+export type AdminCreateCategoryMutation = { __typename?: 'Mutation', adminCreateCategory: { __typename?: 'AdminCreateCategoryOutput', error?: string | null, ok: boolean, category?: { __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any } | null } };
+
 export type AdminCreateRestaurantMutationVariables = Exact<{
   input: AdminCreateRestaurantInput;
 }>;
@@ -952,6 +977,49 @@ export const UserPartsFragmentDoc = gql`
   roles
 }
     `;
+export const AdminCreateCategoryDocument = gql`
+    mutation AdminCreateCategory($input: AdminCreateCategoryInput!) {
+  adminCreateCategory(input: $input) {
+    category {
+      coverImageUrl
+      createdAt
+      id
+      name
+      restaurantCount
+      slug
+      updatedAt
+    }
+    error
+    ok
+  }
+}
+    `;
+export type AdminCreateCategoryMutationFn = Apollo.MutationFunction<AdminCreateCategoryMutation, AdminCreateCategoryMutationVariables>;
+
+/**
+ * __useAdminCreateCategoryMutation__
+ *
+ * To run a mutation, you first call `useAdminCreateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminCreateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminCreateCategoryMutation, { data, loading, error }] = useAdminCreateCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<AdminCreateCategoryMutation, AdminCreateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AdminCreateCategoryMutation, AdminCreateCategoryMutationVariables>(AdminCreateCategoryDocument, options);
+      }
+export type AdminCreateCategoryMutationHookResult = ReturnType<typeof useAdminCreateCategoryMutation>;
+export type AdminCreateCategoryMutationResult = Apollo.MutationResult<AdminCreateCategoryMutation>;
+export type AdminCreateCategoryMutationOptions = Apollo.BaseMutationOptions<AdminCreateCategoryMutation, AdminCreateCategoryMutationVariables>;
 export const AdminCreateRestaurantDocument = gql`
     mutation AdminCreateRestaurant($input: AdminCreateRestaurantInput!) {
   adminCreateRestaurant(input: $input) {

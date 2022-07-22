@@ -26,6 +26,8 @@ import {
 import { ColumnsType } from "antd/lib/table/interface"
 import { Helmet } from "react-helmet-async"
 import AvatarInfo from "src/components/avatar-info"
+import CreateCategoryDrawer from "src/components/drawers/create-category-drawer"
+import UpdateCategoryDrawer from "src/components/drawers/update-category-drawer"
 import { APP_NAME } from "src/config/app-config"
 import { TableType } from "src/typing/common-type"
 import { useDebouncedCallback } from "use-debounce"
@@ -234,23 +236,23 @@ export const CategoriesPage = () => {
             loading={loading}
           />
         </div>
-        {/*<CreateCategoryDrawer*/}
-        {/*  visible={userActionState.createDrawerVisible}*/}
-        {/*  onClose={closeCreateDrawer}*/}
-        {/*  onCompleted={() => {*/}
-        {/*    closeCreateDrawer()*/}
-        {/*    refetch(pageState)*/}
-        {/*  }}*/}
-        {/*/>*/}
-        {/*<UpdateCategoryDrawer*/}
-        {/*  visible={userActionState.updateDrawerViewVisible}*/}
-        {/*  category={userActionState.selectedCategory}*/}
-        {/*  onClose={closeUpdateDrawer}*/}
-        {/*  onCompleted={() => {*/}
-        {/*    closeUpdateDrawer()*/}
-        {/*    refetch(pageState)*/}
-        {/*  }}*/}
-        {/*/>*/}
+        <CreateCategoryDrawer
+          visible={userActionState.createDrawerVisible}
+          onClose={closeCreateDrawer}
+          onCompleted={() => {
+            closeCreateDrawer()
+            refetch(pageState)
+          }}
+        />
+        <UpdateCategoryDrawer
+          visible={userActionState.updateDrawerViewVisible}
+          category={userActionState.selectedCategory}
+          onClose={closeUpdateDrawer}
+          onCompleted={() => {
+            closeUpdateDrawer()
+            refetch(pageState)
+          }}
+        />
       </Card>
     </div>
   )

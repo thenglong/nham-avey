@@ -1,0 +1,15 @@
+mutation AdminCreateCategory($input: AdminCreateCategoryInput!) {
+  adminCreateCategory(input: $input) {
+    category {
+      coverImageUrl
+      createdAt
+      id
+      name
+      restaurantCount
+      slug
+      updatedAt
+    }
+    error
+    ok
+  }
+}

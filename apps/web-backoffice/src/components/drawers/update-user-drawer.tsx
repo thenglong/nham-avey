@@ -4,9 +4,7 @@ import {
   User,
 } from "@nham-avey/common"
 import { Drawer } from "antd"
-import UpdateUserForm, {
-  UpdateUserFormSubmitValue,
-} from "src/components/form/update-user-form"
+import UpdateUserForm from "src/components/form/update-user-form"
 
 interface UpdateUserDrawerProps {
   visible: boolean
@@ -25,25 +23,6 @@ export function UpdateUserDrawer({
     onCompleted,
   })
 
-  const onFinish = async (values: UpdateUserFormSubmitValue) => {
-    const { firstName, lastName, photoURL, roles, isVerified, email } = values
-    try {
-      await update({
-        variables: {
-          input: {
-            userId: user.id,
-            firstName,
-            lastName,
-            photoURL,
-            roles,
-            isVerified,
-            email,
-          },
-        },
-      })
-    } catch (e) {} // do nothing
-  }
-
   return (
     <Drawer
       width={500}
@@ -57,7 +36,7 @@ export function UpdateUserDrawer({
         maxWidth: "100%",
       }}
     >
-      <UpdateUserForm onSubmit={onFinish} isLoading={isUpdating} initialValue={user} />
+      <UpdateUserForm onSubmit={update} isLoading={isUpdating} initialValue={user} />
     </Drawer>
   )
 }
