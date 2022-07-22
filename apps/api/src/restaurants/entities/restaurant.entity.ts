@@ -25,7 +25,7 @@ export class Restaurant extends CoreEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   @IsString()
-  logoImageUrl: string
+  logoImageUrl?: string
 
   @Field(() => String)
   @Column()
@@ -51,7 +51,7 @@ export class Restaurant extends CoreEntity {
   vendors: User[]
 
   @RelationId((restaurant: Restaurant) => restaurant.vendors)
-  vendorId: string
+  vendorId?: string
 
   @Field(() => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.restaurant)

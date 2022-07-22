@@ -4,19 +4,17 @@ import {
   useAdminUpdateRestaurantMutation,
 } from "@nham-avey/common"
 import { Drawer } from "antd"
-import RestaurantForm, {
-  RestaurantFormSubmitValue,
-} from "src/components/form/restaurant-form"
+import UpdateRestaurantForm from "src/components/form/update-restaurant-form"
 
 interface UpdateRestaurantDrawerProps {
-  user: Restaurant | null
+  restaurant: Restaurant | null
   visible: boolean
   onCompleted: AdminUpdateRestaurantMutationOptions["onCompleted"]
   onClose: () => void
 }
 
 export function UpdateRestaurantDrawer({
-  user,
+  restaurant,
   visible,
   onCompleted,
   onClose,
@@ -24,25 +22,6 @@ export function UpdateRestaurantDrawer({
   const [update, { loading: isUpdating }] = useAdminUpdateRestaurantMutation({
     onCompleted,
   })
-
-  const onFinish = async (values: RestaurantFormSubmitValue) => {
-    const { logoImageUrl, coverImageUrls, categories, name, address, vendorIds } = values
-    try {
-      await update({
-        variables: {
-          input: {
-            logoImageUrl,
-            coverImageUrls,
-            categories,
-            name,
-            address,
-            vendorIds,
-            restaurantId: user?.id as number,
-          },
-        },
-      })
-    } catch (e) {} // do nothing
-  }
 
   return (
     <Drawer
@@ -57,9 +36,9 @@ export function UpdateRestaurantDrawer({
         maxWidth: "100%",
       }}
     >
-      <RestaurantForm
-        initialValue={user as Restaurant}
-        onSubmit={onFinish}
+      <UpdateRestaurantForm
+        initialValue={restaurant}
+        onSubmit={update}
         isLoading={isUpdating}
       />
     </Drawer>

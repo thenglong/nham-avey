@@ -275,7 +275,7 @@ export const RestaurantsPage = () => {
         />
         <UpdateRestaurantDrawer
           visible={userActionState.updateDrawerViewVisible}
-          user={userActionState.selectedRestaurant}
+          restaurant={userActionState.selectedRestaurant}
           onClose={closeUpdateDrawer}
           onCompleted={() => {
             closeUpdateDrawer()

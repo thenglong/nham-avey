@@ -3,9 +3,7 @@ import {
   useAdminCreateRestaurantMutation,
 } from "@nham-avey/common"
 import { Drawer } from "antd"
-import RestaurantForm, {
-  RestaurantFormSubmitValue,
-} from "src/components/form/restaurant-form"
+import CreateRestaurantForm from "src/components/form/create-restaurant-form"
 
 interface CreateRestaurantDrawerProps {
   visible: boolean
@@ -22,24 +20,6 @@ export function CreateRestaurantDrawer({
     onCompleted,
   })
 
-  const onFinish = async (values: RestaurantFormSubmitValue) => {
-    const { logoImageUrl, coverImageUrls, categories, name, address, vendorIds } = values
-    try {
-      await create({
-        variables: {
-          input: {
-            logoImageUrl,
-            coverImageUrls,
-            categories,
-            name,
-            address,
-            vendorIds,
-          },
-        },
-      })
-    } catch (e) {} // do nothing
-  }
-
   return (
     <Drawer
       width={500}
@@ -53,7 +33,7 @@ export function CreateRestaurantDrawer({
         maxWidth: "100%",
       }}
     >
-      <RestaurantForm onSubmit={onFinish} isLoading={isCreating} />
+      <CreateRestaurantForm onSubmit={create} isLoading={isCreating} />
     </Drawer>
   )
 }

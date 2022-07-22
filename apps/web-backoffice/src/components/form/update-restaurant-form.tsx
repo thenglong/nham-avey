@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons"
 import {
   Restaurant,
+  useAdminUpdateRestaurantMutation,
   useAdminGetUsersLazyQuery,
   useGetAllCategoriesQuery,
   User,
@@ -25,26 +26,17 @@ export interface RestaurantFormValue {
   categories: SelectOption[]
 }
 
-export interface RestaurantFormSubmitValue {
-  name: string
-  address: string
-  vendorIds: string[]
-  categories: string[]
-  logoImageUrl?: string
-  coverImageUrls: string[]
-}
-
-export interface RestaurantFormProps {
-  initialValue?: Restaurant
-  onSubmit: (values: RestaurantFormSubmitValue) => Promise<void>
+export interface UpdateRestaurantFormProps {
+  initialValue?: Restaurant | null
+  onSubmit: ReturnType<typeof useAdminUpdateRestaurantMutation>[0]
   isLoading: boolean
 }
 
-export const RestaurantForm = ({
+export const UpdateRestaurantForm = ({
   initialValue,
   onSubmit,
   isLoading,
-}: RestaurantFormProps) => {
+}: UpdateRestaurantFormProps) => {
   const [form] = useForm<RestaurantFormValue>()
   const [logoImageUrl, setLogoImageUrl] = useState<string>()
   const [coverImages, setCoverImages] = useState<UploadFile[]>([])
@@ -123,16 +115,27 @@ export const RestaurantForm = ({
   }, [categoriesData])
 
   const onFinish = async (values: RestaurantFormValue) => {
-    await onSubmit({
-      ...values,
-      logoImageUrl,
-      vendorIds: values.vendors.map(option => option.value.toString()),
-      categories: values.categories.map(option => option.value.toString()),
-      coverImageUrls: coverImages?.map(image => image.response),
-    })
-    setLogoImageUrl("")
-    setCoverImages([])
-    form.resetFields()
+    const { name, address } = values
+    try {
+      const { data } = await onSubmit({
+        variables: {
+          input: {
+            restaurantId: initialValue?.id as number,
+            name,
+            address,
+            logoImageUrl,
+            vendorIds: values.vendors.map(option => option.value.toString()),
+            categories: values.categories.map(option => option.value.toString()),
+            coverImageUrls: coverImages?.map(image => image.response),
+          },
+        },
+      })
+      if (data?.adminUpdateRestaurant.ok) {
+        setLogoImageUrl("")
+        setCoverImages([])
+        form.resetFields()
+      }
+    } catch (e) {} // do nothing
   }
 
   return (
@@ -256,4 +259,4 @@ export const RestaurantForm = ({
   )
 }
 
-export default RestaurantForm
+export default UpdateRestaurantForm
