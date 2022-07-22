@@ -1,0 +1,41 @@
+query PubicGetRestaurants($page: Int, $q: String, $take: Int) {
+  pubicGetRestaurants(page: $page, q: $q, take: $take) {
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    ok
+    pageCount
+    restaurants {
+      address
+      categories {
+        ...CategoryParts
+      }
+      coverImageUrls
+      createdAt
+      id
+      isPromoted
+      logoImageUrl
+      menu {
+        createdAt
+        description
+        id
+        name
+        options {
+          choices {
+            extra
+            name
+          }
+          extra
+          name
+        }
+        photo
+        price
+        updatedAt
+      }
+      name
+      promotedUntil
+      updatedAt
+    }
+  }
+}

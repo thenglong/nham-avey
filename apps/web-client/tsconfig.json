@@ -12,7 +12,11 @@
     "isolatedModules": true,
     "incremental": true,
     "types": ["jest", "node"],
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      // This is just a workaround https://stackoverflow.com/a/68505525
+      "@nham-avey/common": ["../../libs/common/src/index.ts"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
   "exclude": ["node_modules", "jest.config.ts"]

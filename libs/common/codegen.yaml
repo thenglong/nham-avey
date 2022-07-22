@@ -1,5 +1,5 @@
-schema: http://localhost:3000/graphql # for local development
-#schema: https://nham-avey.herokuapp.com/graphql # for deployed
+#schema: http://localhost:3000/graphql # for local development
+schema: https://nham-avey.herokuapp.com/graphql # for deployed
 documents: "**/*.gql"
 overwrite: true
 generates:

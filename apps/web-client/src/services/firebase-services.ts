@@ -2,17 +2,19 @@ import { FirebaseError, initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getMessaging } from "firebase/messaging"
 import { getMessaging as getMessageSw } from "firebase/messaging/sw"
+
 import firebaseConfig from "src/config/firebase-config"
+import { isClient } from "src/utils/common-utils"
 
-const firebaseApp = initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 
-const auth = getAuth(firebaseApp)
+const auth = getAuth(app)
 
-const messaging = getMessaging(firebaseApp)
+const messaging = isClient ? getMessaging(app) : null
 
-const messagingSw = getMessageSw(firebaseApp)
+const messagingSw = isClient ? getMessageSw(app) : null
 
-const vapidKey = process.env.REACT_APP_FIREBASE_VAPID_KEY
+const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
 
 const getErrorMessage = (error: FirebaseError) => {
   switch (error.code) {
@@ -26,7 +28,7 @@ const getErrorMessage = (error: FirebaseError) => {
   }
 }
 
-const firebaseService = {
+const firebaseServices = {
   auth,
   messaging,
   messagingSw,
@@ -34,4 +36,4 @@ const firebaseService = {
   getErrorMessage,
 }
 
-export default firebaseService
+export default firebaseServices

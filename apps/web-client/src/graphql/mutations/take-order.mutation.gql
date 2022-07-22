@@ -1,6 +1,0 @@
-mutation takeOrder($input: TakeOrderInput!) {
-  takeOrder(input: $input) {
-    ok
-    error
-  }
-}

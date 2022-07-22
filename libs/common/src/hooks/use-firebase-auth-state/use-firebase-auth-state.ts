@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useMemo } from "react"
 
 import { onAuthStateChanged, User, Auth } from "firebase/auth"
-import firebaseService from "../../services/firebase-services"
+
 import useLoadingValue from "../../hooks/use-loading-value/use-loading-value"
 
-const { auth: fallbackAuth } = firebaseService
 export interface UseFirebaseAuthState {
   onStateChanged?: (user: User | null) => void
-  auth?: Auth
+  auth: Auth
 }
-export const useFirebaseAuthState = ({
-  onStateChanged,
-  auth = fallbackAuth,
-}: UseFirebaseAuthState = {}) => {
+export const useFirebaseAuthState = ({ onStateChanged, auth }: UseFirebaseAuthState) => {
   const getCurrentUser = useCallback(() => auth.currentUser, [auth.currentUser])
   const {
     error,

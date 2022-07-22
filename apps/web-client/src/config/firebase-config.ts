@@ -1,10 +1,7 @@
 import { FirebaseOptions } from "firebase/app"
 
-/**
- * @deprecated use config by app base instead
- */
 const firebaseConfig = JSON.parse(
-  process.env.NX_FIREBASE_CONFIG_JSON as string
+  process.env.NEXT_PUBLIC_CLIENT_FIREBASE_CONFIG_JSON || "{}"
 ) as FirebaseOptions
 
 export default firebaseConfig

@@ -10,9 +10,9 @@ import { WebSocketLink } from "@apollo/client/link/ws"
 import { getMainDefinition } from "@apollo/client/utilities"
 import merge from "deepmerge"
 import isEqual from "lodash-es/isEqual"
-import { getSession } from "next-auth/react"
 
-const isClient = typeof window !== "undefined"
+import firebaseServices from "src/services/firebase-services"
+import { isClient } from "src/utils/common-utils"
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__"
 
@@ -20,10 +20,12 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | undefined
 
 const getBearerToken = async () => {
   try {
-    const session = await getSession()
-    const accessToken = session?.user?.accessToken
-    return accessToken ? `Bearer ${accessToken}` : ""
-  } catch (e) {
+    const idToken = await firebaseServices.auth.currentUser?.getIdToken()
+    return `Bearer ${idToken}`
+  } catch (err) {
+    // TODO: Setup logger
+    // eslint-disable-next-line no-console
+    console.log("Failed to get Bearer Token", err)
     return ""
   }
 }
@@ -32,7 +34,7 @@ const getWsLink = () => {
   if (!isClient) return null
 
   return new WebSocketLink({
-    uri: process.env.NX_WS_GRAPHQL_URI as string,
+    uri: process.env.NEXT_PUBLIC_WS_GRAPHQL_URI as string,
     options: {
       reconnect: true,
       connectionParams: async () => {
@@ -45,7 +47,7 @@ const getWsLink = () => {
 }
 
 const httpLink = createHttpLink({
-  uri: process.env.NX_HTTP_GRAPHQL_URI,
+  uri: process.env.NEXT_PUBLIC_HTTP_GRAPHQL_URI,
 })
 
 const authMiddleware = setContext(async (_, { headers }) => {
@@ -73,6 +75,7 @@ const splitLink = isClient
 
 export const createApolloClient = () => {
   return new ApolloClient({
+    ssrMode: !isClient,
     link: splitLink,
     cache: new InMemoryCache(),
   })

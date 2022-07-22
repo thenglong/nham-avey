@@ -1,9 +1,0 @@
-query myRestaurants {
-  myRestaurants {
-    ok
-    error
-    restaurants {
-      ...RestaurantParts
-    }
-  }
-}

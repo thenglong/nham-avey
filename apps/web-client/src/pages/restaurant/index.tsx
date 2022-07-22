@@ -4,9 +4,8 @@ import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
-
 import { useRestaurantsPageQueryQuery } from "src/__generated__/types.react-apollo"
-import { Restaurant } from "src/components/restaurant"
+import { RestaurantCard } from "src/components/restaurantCard"
 
 const RestaurantsPage = () => {
   const [page, setPage] = useState(1)
@@ -71,7 +70,7 @@ const RestaurantsPage = () => {
           </div>
           <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
             {data?.restaurants.results?.map(restaurant => (
-              <Restaurant
+              <RestaurantCard
                 key={restaurant.id}
                 id={restaurant.id + ""}
                 coverImg={restaurant.coverImg}

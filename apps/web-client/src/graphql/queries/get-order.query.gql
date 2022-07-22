@@ -1,9 +1,0 @@
-query getOrder($input: GetOrderInput!) {
-  getOrder(input: $input) {
-    ok
-    error
-    order {
-      ...FullOrderParts
-    }
-  }
-}

@@ -1,6 +1,0 @@
-mutation editOrder($input: EditOrderInput!) {
-  editOrder(input: $input) {
-    ok
-    error
-  }
-}

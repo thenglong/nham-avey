@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
+import slugify from "slugify"
 import {
   AdminCreateRestaurantInput,
   AdminUpdateCategoryInput,
@@ -51,7 +52,7 @@ export class RestaurantService {
   private async getOrCreateCategories(request: { name: string; coverImageUrl?: string }[]): Promise<Category[]> {
     return Promise.all<Category>(
       request.map(async ({ name, coverImageUrl }) => {
-        const slug = name.trim().toLowerCase().replace(/ /g, "-")
+        const slug = slugify(name)
         let category = await this.categoryRepo.findOneBy({ slug })
         if (!category) {
           const entity = this.categoryRepo.create({ name, slug, coverImageUrl })
@@ -454,8 +455,10 @@ export class RestaurantService {
     const existing = await this.categoryRepo.findOneBy({ id: categoryId })
     if (!existing) return { ok: false, error: "[App] Category not found" }
 
+    const slug = slugify(updatePayload.name || existing.name)
     const category = Object.assign(existing, updatePayload)
     category.updatedBy = adminId
+    category.slug = slug
     const saved = await this.categoryRepo.save(category)
     return { ok: true, category: saved }
   }
