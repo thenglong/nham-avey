@@ -152,7 +152,7 @@ export class RestaurantService {
   }
 
   async getAllCategories(): Promise<AllCategoriesOutput> {
-    const categories = await this.categoryRepo.find()
+    const categories = await this.categoryRepo.find({ order: { name: "ASC" } })
     return { ok: true, categories }
   }
 
@@ -167,6 +167,7 @@ export class RestaurantService {
 
     const matchedCount = await queryBuilder.getCount()
     const categories = await queryBuilder
+      .orderBy("category.name", "ASC")
       .skip(skip)
       .take(take) //
       .getMany() //
