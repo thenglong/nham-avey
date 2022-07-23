@@ -7,19 +7,17 @@ import {
   CreateOrderItemInput,
   CreateOrderMutation,
   useCreateOrderMutation,
-  useRestaurantQuery,
-} from "src/__generated__/types.react-apollo"
+  usePublicGetRestaurantByIdQuery,
+} from "@nham-avey/common"
 import { Dish } from "src/components/dish"
 import { DishOption } from "src/components/dish-option"
 
 const RestaurantPage = () => {
   const { query } = useRouter()
   const { id } = query
-  const { data } = useRestaurantQuery({
+  const { data } = usePublicGetRestaurantByIdQuery({
     variables: {
-      input: {
-        restaurantId: +(id as string),
-      },
+      restaurantId: +(id as string),
     },
   })
 
@@ -134,20 +132,26 @@ const RestaurantPage = () => {
 
   return (
     <div>
-      <NextSeo title={`${data?.restaurant.restaurant?.name} | Nham Avey`} />
+      <NextSeo title={`${data?.publicGetRestaurantById.restaurant?.name} | Nham Avey`} />
       <div
         className="bg-gray-800 bg-cover bg-center py-48"
         style={{
-          backgroundImage: `url(${data?.restaurant.restaurant?.coverImg})`,
+          backgroundImage: `url(${data?.publicGetRestaurantById.restaurant?.coverImageUrls?.[0]})`,
         }}
       >
         <div className="w-3/12 bg-white py-8 pl-48">
-          <h4 className="mb-3 text-4xl">{data?.restaurant.restaurant?.name}</h4>
+          <h4 className="mb-3 text-4xl">
+            {data?.publicGetRestaurantById.restaurant?.name}
+          </h4>
           <h5 className="mb-2 text-sm font-light">
-            {data?.restaurant.restaurant?.category?.name}
+            {data?.publicGetRestaurantById.restaurant?.categories
+              ?.map(category => category.name)
+              .join(", ")}
           </h5>
 
-          <h6 className="text-sm font-light">{data?.restaurant.restaurant?.address}</h6>
+          <h6 className="text-sm font-light">
+            {data?.publicGetRestaurantById.restaurant?.address}
+          </h6>
         </div>
       </div>
 
@@ -171,7 +175,7 @@ const RestaurantPage = () => {
           </div>
         )}
         <div className="mt-16 grid w-full gap-x-5 gap-y-10 md:grid-cols-3">
-          {data?.restaurant.restaurant?.menu.map((dish, index) => (
+          {data?.publicGetRestaurantById?.restaurant?.menu?.map((dish, index) => (
             <Dish
               id={dish.id}
               isSelected={isSelected(dish.id)}

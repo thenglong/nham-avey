@@ -15,6 +15,7 @@ import {
   Restaurant,
 } from "@nham-avey/common"
 import CategoryCard from "src/components/category-card"
+import { AuthedLayout } from "src/components/layout/authed-layout"
 import { RestaurantCard } from "src/components/restaurant-card"
 import { addApolloState, initializeApollo } from "src/graphql/apollo-config"
 
@@ -80,35 +81,37 @@ const RestaurantsPage = () => {
   }, [categoriesData, fetchMoreRestaurant])
 
   return (
-    <div className="container mx-auto px-8">
-      {/* Top Categories */}
-      <div className="grid grid-cols-3 gap-8 md:grid-cols-6">
-        {categoriesData?.getCategories.categories?.map(category => (
-          <CategoryCard category={category} key={category.id} />
-        ))}
-      </div>
-
-      <h3 className="my-8 text-xl font-semibold">Top Restaurants</h3>
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {restaurantData?.pubicGetRestaurants.restaurants?.map(restaurant => (
-          <RestaurantCard restaurant={restaurant as Restaurant} key={restaurant.id} />
-        ))}
-      </div>
-
-      {/* Load More button */}
-      {restaurantData?.pubicGetRestaurants.hasNext && (
-        <div className="my-6 text-center">
-          <button
-            className={clsx("btn btn-active w-40", {
-              "loading btn-ghost": isLoadingRestaurant,
-            })}
-            onClick={handleLoadMore}
-          >
-            {isLoadingRestaurant ? "Loading" : "Load More"}
-          </button>
+    <AuthedLayout>
+      <div className="container mx-auto px-8">
+        {/* Top Categories */}
+        <div className="mb-6 mt-12 grid grid-cols-3 gap-8 md:grid-cols-6">
+          {categoriesData?.getCategories.categories?.map(category => (
+            <CategoryCard category={category} key={category.id} />
+          ))}
         </div>
-      )}
-    </div>
+
+        <h3 className="h3 mt-12 mb-6">Top Restaurants</h3>
+        <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {restaurantData?.pubicGetRestaurants.restaurants?.map(restaurant => (
+            <RestaurantCard restaurant={restaurant as Restaurant} key={restaurant.id} />
+          ))}
+        </div>
+
+        {/* Load More button */}
+        {restaurantData?.pubicGetRestaurants.hasNext && (
+          <div className="mb-16 text-center">
+            <button
+              className={clsx("btn btn-active btn-sm w-30 h-10", {
+                "loading btn-ghost": isLoadingRestaurant,
+              })}
+              onClick={handleLoadMore}
+            >
+              {isLoadingRestaurant ? "Loading" : "Load More"}
+            </button>
+          </div>
+        )}
+      </div>
+    </AuthedLayout>
   )
 }
 

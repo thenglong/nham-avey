@@ -840,6 +840,13 @@ export type TakeOrderMutationVariables = Exact<{
 
 export type TakeOrderMutation = { __typename?: 'Mutation', takeOrder: { __typename?: 'TakeOrderOutput', ok: boolean, error?: string | null } };
 
+export type UpdateMeMutationVariables = Exact<{
+  input: UpdateProfileInput;
+}>;
+
+
+export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'UpdateProfileOutput', error?: string | null, ok: boolean } };
+
 export type AdminGetRestaurantsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
@@ -873,6 +880,11 @@ export type GetCategoriesQueryVariables = Exact<{
 
 export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'PaginationCategoriesOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
 
+export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMeQuery = { __typename?: 'Query', getMe: { __typename?: 'User', createdAt: any, email: string, firstName?: string | null, id: string, isVerified: boolean, lastName?: string | null, photoURL?: string | null, roles: Array<UserRole> } };
+
 export type GetOrderQueryVariables = Exact<{
   input: GetOrderInput;
 }>;
@@ -884,6 +896,13 @@ export type GetMyRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMyRestaurantsQuery = { __typename?: 'Query', getMyRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImageUrls?: Array<string> | null, address: string, isPromoted: boolean, logoImageUrl?: string | null, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null }> | null } };
+
+export type PublicGetRestaurantByIdQueryVariables = Exact<{
+  restaurantId: Scalars['Int'];
+}>;
+
+
+export type PublicGetRestaurantByIdQuery = { __typename?: 'Query', publicGetRestaurantById: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, restaurant?: { __typename?: 'Restaurant', address: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null } | null } };
 
 export type PubicGetRestaurantsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1441,6 +1460,40 @@ export function useTakeOrderMutation(baseOptions?: Apollo.MutationHookOptions<Ta
 export type TakeOrderMutationHookResult = ReturnType<typeof useTakeOrderMutation>;
 export type TakeOrderMutationResult = Apollo.MutationResult<TakeOrderMutation>;
 export type TakeOrderMutationOptions = Apollo.BaseMutationOptions<TakeOrderMutation, TakeOrderMutationVariables>;
+export const UpdateMeDocument = gql`
+    mutation UpdateMe($input: UpdateProfileInput!) {
+  updateMe(input: $input) {
+    error
+    ok
+  }
+}
+    `;
+export type UpdateMeMutationFn = Apollo.MutationFunction<UpdateMeMutation, UpdateMeMutationVariables>;
+
+/**
+ * __useUpdateMeMutation__
+ *
+ * To run a mutation, you first call `useUpdateMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMeMutation, { data, loading, error }] = useUpdateMeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMeMutation, UpdateMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMeMutation, UpdateMeMutationVariables>(UpdateMeDocument, options);
+      }
+export type UpdateMeMutationHookResult = ReturnType<typeof useUpdateMeMutation>;
+export type UpdateMeMutationResult = Apollo.MutationResult<UpdateMeMutation>;
+export type UpdateMeMutationOptions = Apollo.BaseMutationOptions<UpdateMeMutation, UpdateMeMutationVariables>;
 export const AdminGetRestaurantsDocument = gql`
     query AdminGetRestaurants($page: Int, $q: String, $take: Int) {
   adminGetRestaurants(page: $page, q: $q, take: $take) {
@@ -1654,6 +1707,47 @@ export function useGetCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQuery>;
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const GetMeDocument = gql`
+    query GetMe {
+  getMe {
+    createdAt
+    email
+    firstName
+    id
+    isVerified
+    lastName
+    photoURL
+    roles
+  }
+}
+    `;
+
+/**
+ * __useGetMeQuery__
+ *
+ * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+      }
+export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+        }
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const GetOrderDocument = gql`
     query GetOrder($input: GetOrderInput!) {
   getOrder(input: $input) {
@@ -1731,6 +1825,79 @@ export function useGetMyRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetMyRestaurantsQueryHookResult = ReturnType<typeof useGetMyRestaurantsQuery>;
 export type GetMyRestaurantsLazyQueryHookResult = ReturnType<typeof useGetMyRestaurantsLazyQuery>;
 export type GetMyRestaurantsQueryResult = Apollo.QueryResult<GetMyRestaurantsQuery, GetMyRestaurantsQueryVariables>;
+export const PublicGetRestaurantByIdDocument = gql`
+    query PublicGetRestaurantById($restaurantId: Int!) {
+  publicGetRestaurantById(restaurantId: $restaurantId) {
+    error
+    ok
+    restaurant {
+      address
+      categories {
+        coverImageUrl
+        createdAt
+        id
+        name
+        restaurantCount
+        slug
+        updatedAt
+      }
+      coverImageUrls
+      createdAt
+      id
+      isPromoted
+      logoImageUrl
+      menu {
+        createdAt
+        description
+        id
+        name
+        options {
+          choices {
+            extra
+            name
+          }
+          extra
+          name
+        }
+        photo
+        price
+        updatedAt
+      }
+      name
+      promotedUntil
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __usePublicGetRestaurantByIdQuery__
+ *
+ * To run a query within a React component, call `usePublicGetRestaurantByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePublicGetRestaurantByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePublicGetRestaurantByIdQuery({
+ *   variables: {
+ *      restaurantId: // value for 'restaurantId'
+ *   },
+ * });
+ */
+export function usePublicGetRestaurantByIdQuery(baseOptions: Apollo.QueryHookOptions<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>(PublicGetRestaurantByIdDocument, options);
+      }
+export function usePublicGetRestaurantByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>(PublicGetRestaurantByIdDocument, options);
+        }
+export type PublicGetRestaurantByIdQueryHookResult = ReturnType<typeof usePublicGetRestaurantByIdQuery>;
+export type PublicGetRestaurantByIdLazyQueryHookResult = ReturnType<typeof usePublicGetRestaurantByIdLazyQuery>;
+export type PublicGetRestaurantByIdQueryResult = Apollo.QueryResult<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>;
 export const PubicGetRestaurantsDocument = gql`
     query PubicGetRestaurants($page: Int, $q: String, $take: Int) {
   pubicGetRestaurants(page: $page, q: $q, take: $take) {

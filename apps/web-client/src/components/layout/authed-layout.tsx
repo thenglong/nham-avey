@@ -1,16 +1,18 @@
 import { ReactNode } from "react"
 
+import Footer from "../footer"
 import { Header } from "../header"
 
-interface LoggedInRouterProps {
+interface AuthedLayoutProps {
   children: ReactNode
 }
 
-export const LoggedInRouter = ({ children }: LoggedInRouterProps) => {
+export const AuthedLayout = ({ children }: AuthedLayoutProps) => {
   return (
     <>
       <Header />
       {children}
+      <Footer />
     </>
   )
 }

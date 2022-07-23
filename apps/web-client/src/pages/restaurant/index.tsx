@@ -4,17 +4,35 @@ import { NextSeo } from "next-seo"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
-import { useRestaurantsPageQueryQuery } from "src/__generated__/types.react-apollo"
-import { RestaurantCard } from "src/components/restaurantCard"
+
+import {
+  Restaurant,
+  useGetCategoriesQuery,
+  usePubicGetRestaurantsQuery,
+} from "@nham-avey/common"
+import RestaurantCard from "src/components/restaurant-card"
+
+interface PageState {
+  page: number
+  take: number
+  q: string
+}
+
+const pageState: PageState = {
+  page: 1,
+  take: 2,
+  q: "",
+}
 
 const RestaurantsPage = () => {
   const [page, setPage] = useState(1)
-  const { data, loading } = useRestaurantsPageQueryQuery({
-    variables: {
-      input: {
-        page,
-      },
-    },
+  const {
+    data: data,
+    fetchMore: fetchMoreRestaurant,
+    loading,
+  } = usePubicGetRestaurantsQuery({
+    variables: pageState,
+    notifyOnNetworkStatusChange: true,
   })
 
   interface IFormProps {
@@ -25,6 +43,10 @@ const RestaurantsPage = () => {
   const onNextPageClick = () => setPage(current => current + 1)
   const { register, handleSubmit, getValues } = useForm<IFormProps>()
   const router = useRouter()
+
+  const { data: categoriesData } = useGetCategoriesQuery({
+    variables: { ...pageState, page: 1, take: 6 }, // take top 6
+  })
 
   const onSearchSubmit = () => {
     const { searchTerm } = getValues()
@@ -54,12 +76,12 @@ const RestaurantsPage = () => {
       {!loading && (
         <div className="mx-auto mt-8 max-w-screen-2xl pb-20">
           <div className="mx-auto flex max-w-sm justify-around ">
-            {data?.allCategories.categories?.map(category => (
+            {categoriesData?.getCategories.categories?.map(category => (
               <Link href={`/category/${category.slug}`} key={category.id}>
                 <div className="group flex cursor-pointer flex-col items-center">
                   <div
                     className="h-16 w-16 rounded-full bg-cover group-hover:bg-gray-100"
-                    style={{ backgroundImage: `url(${category.coverImg})` }}
+                    style={{ backgroundImage: `url(${category.coverImageUrl})` }}
                   ></div>
                   <span className="mt-1 text-center text-sm font-medium">
                     {category.name}
@@ -69,14 +91,8 @@ const RestaurantsPage = () => {
             ))}
           </div>
           <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
-            {data?.restaurants.results?.map(restaurant => (
-              <RestaurantCard
-                key={restaurant.id}
-                id={restaurant.id + ""}
-                coverImg={restaurant.coverImg}
-                name={restaurant.name}
-                categoryName={restaurant.category?.name}
-              />
+            {data?.pubicGetRestaurants?.restaurants?.map(restaurant => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant as Restaurant} />
             ))}
           </div>
           <div className="mx-auto mt-10 grid max-w-md grid-cols-3 items-center text-center ">
@@ -91,9 +107,9 @@ const RestaurantsPage = () => {
               <div></div>
             )}
             <span>
-              Page {page} of {data?.restaurants.totalPages}
+              Page {page} of {data?.pubicGetRestaurants.pageCount}
             </span>
-            {page !== data?.restaurants.totalPages ? (
+            {page !== data?.pubicGetRestaurants.pageCount ? (
               <button
                 onClick={onNextPageClick}
                 className="text-2xl font-medium focus:outline-none"

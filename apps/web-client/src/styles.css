@@ -1,12 +1,81 @@
 @tailwind base;
 @tailwind components;
 
-.container {
-  @apply mx-auto max-w-screen-2xl;
-}
 
-.link {
-  @apply text-lime-600 hover:underline;
+@layer components {
+  .h1, .h2, .h3, .h4, .h5, .h6, .subtitle-1, .subtitle-2, .body-1, .body-2 {
+    @apply font-sans
+  }
+
+  .h1 {
+    font-weight: bold;
+    font-size: 3.75rem;
+    line-height: 82px;
+    letter-spacing: 0.1px;
+  }
+
+  .h2 {
+    font-weight: 800;
+    font-size: 2.5rem;
+    line-height: 56px;
+    letter-spacing: 0.1px;
+  }
+
+  .h3 {
+    font-weight: bold;
+    font-size: 2rem;
+    line-height: 42px;
+    letter-spacing: 0.1px;
+  }
+
+  .h4 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 32px;
+    letter-spacing: 0.1px;
+  }
+
+  .h5 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    line-height: 28px;
+    letter-spacing: 0.1px;
+  }
+
+  .h5 {
+    font-weight: bold;
+    font-size: 1.125rem;
+    line-height: 24px;
+    letter-spacing: 0.1px;
+  }
+
+  .subtitle-1 {
+    font-weight: bold;
+    font-size: 0.875rem;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+  }
+
+  .subtitle-2 {
+    font-weight: 600;
+    font-size: 0.813rem;
+    line-height: 18px;
+    letter-spacing: 0;
+  }
+
+  .body-1 {
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+  }
+
+  .body-2 {
+    font-weight: 400;
+    font-size: 0.813rem;
+    line-height: 18px;
+    letter-spacing: 0.2px;
+  }
 }
 
 @tailwind utilities;

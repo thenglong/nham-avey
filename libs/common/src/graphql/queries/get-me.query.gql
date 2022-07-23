@@ -1,0 +1,12 @@
+query GetMe {
+  getMe {
+    createdAt
+    email
+    firstName
+    id
+    isVerified
+    lastName
+    photoURL
+    roles
+  }
+}

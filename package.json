@@ -6,8 +6,22 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
+    "serve-client": "nx run web-client:serve",
+    "serve-bo": "nx run web-backoffice:serve",
     "heroku-postbuild": "nx build api --prod",
     "prepare": "husky install"
+  },
+  "fig": {
+    "serve-client": {
+      "description": "Serve Web Client in Development",
+      "icon": "🧪",
+      "priority": 100
+    },
+    "serve-bo": {
+      "description": "Serve Web Backoffice in Development",
+      "icon": "🧪",
+      "priority": 100
+    }
   },
   "private": true,
   "dependencies": {
@@ -17,6 +31,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@headlessui/react": "^1.6.6",
     "@hookform/resolvers": "^2.9.6",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/apollo": "^10.0.19",
@@ -28,6 +43,7 @@
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/swagger": "^6.0.4",
     "@nestjs/typeorm": "^9.0.0",
+    "@next/bundle-analyzer": "^12.2.3",
     "@nrwl/next": "14.4.3",
     "@reduxjs/toolkit": "^1.8.3",
     "@tanstack/react-query": "^4.0.10",
@@ -145,6 +161,7 @@
     "jest": "^27.5.1",
     "less": "^4.1.3",
     "less-loader": "^11.0.0",
+    "next-bundle-analyzer": "^0.6.4",
     "nx": "14.4.3",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",

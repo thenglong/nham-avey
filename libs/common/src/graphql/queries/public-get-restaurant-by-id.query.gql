@@ -1,0 +1,43 @@
+query PublicGetRestaurantById($restaurantId: Int!) {
+  publicGetRestaurantById(restaurantId: $restaurantId) {
+    error
+    ok
+    restaurant {
+      address
+      categories {
+        coverImageUrl
+        createdAt
+        id
+        name
+        restaurantCount
+        slug
+        updatedAt
+      }
+      coverImageUrls
+      createdAt
+      id
+      isPromoted
+      logoImageUrl
+      menu {
+        createdAt
+        description
+        id
+        name
+        options {
+          choices {
+            extra
+            name
+          }
+          extra
+          name
+        }
+        photo
+        price
+        updatedAt
+      }
+      name
+      promotedUntil
+      updatedAt
+    }
+  }
+}

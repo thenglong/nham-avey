@@ -8,7 +8,10 @@ interface RestaurantCardProps {
 
 export const RestaurantCard = ({ restaurant }: RestaurantCardProps) => (
   <Link href={`/restaurants/${restaurant.id}`}>
-    <a className="card bg-base-100 aspect-[12/10] w-full ring-1">
+    <a
+      className="ring-accent hover:ring-accent-focus card bg-base-100 hover:bg-base-200 aspect-[12/10] w-full ring-2 transition-colors duration-500 ease-in-out"
+      target="_blank"
+    >
       <figure className="!block h-1/2 w-full object-cover">
         <img
           src={restaurant.coverImageUrls?.[0] || "https://placeimg.com/400/225/food"}
@@ -20,7 +23,7 @@ export const RestaurantCard = ({ restaurant }: RestaurantCardProps) => (
         <h2 className="card-title">{restaurant.name}</h2>
         <p>If a dog chews shoes whose shoes does he choose?</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary">Buy Now</button>
+          <button className="btn btn-accent">Buy Now</button>
         </div>
       </div>
     </a>

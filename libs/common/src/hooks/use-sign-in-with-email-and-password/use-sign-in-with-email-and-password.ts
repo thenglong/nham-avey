@@ -1,4 +1,4 @@
-import { MutationFunction, useMutation } from "@tanstack/react-query"
+import { MutationFunction, useMutation, UseMutationOptions } from "@tanstack/react-query"
 import { FirebaseError } from "firebase/app"
 import {
   Auth,
@@ -7,12 +7,9 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
 } from "firebase/auth"
-import firebaseService from "src/services/firebase-service"
-
-const { auth: fallbackAuth } = firebaseService
 
 interface SignInParams {
-  auth?: Auth
+  auth: Auth
   email: string
   password: string
   staySignedIn?: boolean
@@ -21,18 +18,23 @@ interface SignInParams {
 const doSignInWithEmailAndPassword: MutationFunction<
   UserCredential,
   SignInParams
-> = async ({ auth = fallbackAuth, email, password, staySignedIn = true }) => {
+> = async ({ auth, email, password, staySignedIn = true }) => {
   const persistence = staySignedIn ? browserLocalPersistence : browserSessionPersistence
   await auth.setPersistence(persistence)
   return signInWithEmailAndPassword(auth, email, password)
 }
 
-const useSignInWithEmailAndPassword = () => {
+export const useSignInWithEmailAndPassword = (
+  options?: Omit<
+    UseMutationOptions<UserCredential, FirebaseError, SignInParams>,
+    "mutationFn"
+  >
+) => {
   const { error, isLoading, mutate, mutateAsync } = useMutation<
     UserCredential,
     FirebaseError,
     SignInParams
-  >(doSignInWithEmailAndPassword)
+  >(doSignInWithEmailAndPassword, options)
 
   return {
     error,

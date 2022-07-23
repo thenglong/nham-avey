@@ -3,7 +3,19 @@ import { useEffect } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { useSearchRestaurantLazyQuery } from "src/__generated__/types.react-apollo"
+import { usePubicGetRestaurantsLazyQuery } from "@nham-avey/common"
+
+interface PageState {
+  page: number
+  take: number
+  q: string
+}
+
+const pageState: PageState = {
+  page: 1,
+  take: 2,
+  q: "",
+}
 
 /**
  * @todo Implement this component.
@@ -12,7 +24,7 @@ const SearchPage = () => {
   const { query, isReady } = useRouter()
   const { term } = query
   const router = useRouter()
-  const [callQuery, { loading, data }] = useSearchRestaurantLazyQuery()
+  const [getRestaurants, { loading, data }] = usePubicGetRestaurantsLazyQuery()
 
   useEffect(() => {
     if (!isReady || loading) return
@@ -21,15 +33,10 @@ const SearchPage = () => {
       router.replace("/")
       return
     }
-    callQuery({
-      variables: {
-        input: {
-          page: 1,
-          query: term as string, // TODO
-        },
-      },
+    getRestaurants({
+      variables: pageState,
     })
-  }, [router, callQuery, term, isReady, loading])
+  }, [router, getRestaurants, term, isReady, loading])
 
   if (loading) return <p>Loading...</p>
 

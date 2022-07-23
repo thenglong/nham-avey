@@ -1,0 +1,6 @@
+mutation UpdateMe($input: UpdateProfileInput!) {
+  updateMe(input: $input) {
+    error
+    ok
+  }
+}

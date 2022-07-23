@@ -12,7 +12,7 @@ import {
   useGetMeQuery,
   useGetOrderQuery,
   UserRole,
-} from "src/__generated__/types.react-apollo"
+} from "@nham-avey/common"
 
 const OrderPage: NextPage = () => {
   const router = useRouter()
@@ -88,12 +88,12 @@ const OrderPage: NextPage = () => {
               {data?.getOrder.order?.driver?.email || "Not yet."}
             </span>
           </div>
-          {userData?.me.role === UserRole.Client && (
+          {userData?.getMe.roles.includes(UserRole.Customer) && (
             <span className="mt-5 mb-3 text-center text-2xl text-lime-600">
               Order Status: {data?.getOrder.order?.status}
             </span>
           )}
-          {userData?.me.role === UserRole.Owner && (
+          {userData?.getMe.roles.includes(UserRole.Vendor) && (
             <>
               {data?.getOrder.order?.status === OrderStatus.Pending && (
                 <button
@@ -118,7 +118,7 @@ const OrderPage: NextPage = () => {
             </>
           )}
 
-          {userData?.me.role === UserRole.Delivery && (
+          {userData?.getMe.roles.includes(UserRole.Driver) && (
             <>
               {data?.getOrder.order?.status === OrderStatus.Cooked && (
                 <button

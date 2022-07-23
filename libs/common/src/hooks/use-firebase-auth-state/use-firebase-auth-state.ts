@@ -4,11 +4,7 @@ import { onAuthStateChanged, User, Auth } from "firebase/auth"
 
 import useLoadingValue from "../../hooks/use-loading-value/use-loading-value"
 
-export interface UseFirebaseAuthState {
-  onStateChanged?: (user: User | null) => void
-  auth: Auth
-}
-export const useFirebaseAuthState = ({ onStateChanged, auth }: UseFirebaseAuthState) => {
+export const useFirebaseAuthState = (auth: Auth) => {
   const getCurrentUser = useCallback(() => auth.currentUser, [auth.currentUser])
   const {
     error,
@@ -23,11 +19,10 @@ export const useFirebaseAuthState = ({ onStateChanged, auth }: UseFirebaseAuthSt
       auth,
       user => {
         setUser(user)
-        onStateChanged?.(user)
       },
       setError
     )
-  }, [auth, onStateChanged, setError, setUser])
+  }, [auth, setError, setUser])
 
   return useMemo(() => ({ error, isLoading: isLoading, user }), [error, isLoading, user])
 }

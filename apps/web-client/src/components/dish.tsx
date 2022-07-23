@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-import { DishOption } from "../__generated__/types.react-apollo"
+import { DishOption } from "@nham-avey/common"
 
 interface DishProps {
   id?: number

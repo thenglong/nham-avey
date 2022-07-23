@@ -1,4 +1,3 @@
-import { gql, useApolloClient } from "@apollo/client"
 import { yupResolver } from "@hookform/resolvers/yup"
 import clsx from "clsx"
 import { NextSeo } from "next-seo"
@@ -6,10 +5,12 @@ import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
 import {
-  EditProfileMutation,
-  useEditProfileMutation,
+  useFirebaseAuthState,
   useGetMeQuery,
-} from "../__generated__/types.react-apollo"
+  useUpdateMeMutation,
+} from "@nham-avey/common"
+import useRedirectOnUnauthed from "src/hooks/useRedirectOnUnauthed"
+import firebaseServices from "src/services/firebase-services"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -21,7 +22,10 @@ interface FormProps {
   password?: string
 }
 
-const EditProfilePage = () => {
+const { auth } = firebaseServices
+
+const UpdateProfilePage = () => {
+  useRedirectOnUnauthed(auth, "/login")
   const {
     register,
     handleSubmit,
@@ -33,56 +37,30 @@ const EditProfilePage = () => {
     resolver: yupResolver(schema),
   })
 
+  const { user } = useFirebaseAuthState(auth)
   const { data: userData } = useGetMeQuery({
     onCompleted: data => {
-      setValue("email", data.me.email)
+      setValue("email", data.getMe.email)
     },
+    ssr: false,
+    skip: !user,
   })
 
-  const client = useApolloClient()
-
-  const onCompleted = (data: EditProfileMutation) => {
-    const {
-      editProfile: { ok },
-    } = data
-
-    if (ok && userData) {
-      const {
-        me: { email: prevEmail, id },
-      } = userData
-      const { email: newEmail } = getValues()
-
-      if (prevEmail !== newEmail) {
-        client.writeFragment({
-          id: `User:${id}`,
-          fragment: gql`
-            fragment EditedUser on User {
-              verified
-              email
-            }
-          `,
-          data: {
-            verified: false,
-            email: newEmail,
-          },
-        })
-      }
-    }
-  }
-  const [editProfile, { loading }] = useEditProfileMutation({
-    onCompleted,
-  })
+  console.log({ userData })
+  const [updateMe, { loading }] = useUpdateMeMutation({})
 
   const onSubmit = () => {
-    const { email, password } = getValues()
-    editProfile({
-      variables: {
-        input: {
-          email,
-          ...(password !== "" && { password }),
-        },
-      },
-    })
+    // const { email, password } = getValues()
+    // updateMe({
+    //   variables: {
+    //     input: {
+    //       email,
+    //       firstName,
+    //       lastName,
+    //       photoURL,
+    //     },
+    //   },
+    // })
   }
   return (
     <div className="mt-52 flex flex-col items-center justify-center">
@@ -118,4 +96,4 @@ const EditProfilePage = () => {
   )
 }
 
-export default EditProfilePage
+export default UpdateProfilePage

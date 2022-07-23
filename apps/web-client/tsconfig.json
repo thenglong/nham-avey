@@ -15,7 +15,8 @@
     "baseUrl": "./",
     "paths": {
       // This is just a workaround https://stackoverflow.com/a/68505525
-      "@nham-avey/common": ["../../libs/common/src/index.ts"]
+      "@nham-avey/common": ["../../libs/common/src/index.ts"],
+      "@nham-avey/common/svgs/*": ["../../libs/common/src/svgs/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

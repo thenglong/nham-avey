@@ -2,30 +2,33 @@ import { faUser } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 
-import { useGetMeQuery } from "../__generated__/types.react-apollo"
+import { useGetMeQuery } from "@nham-avey/common"
 
 export const Header = () => {
-  const { data } = useGetMeQuery()
+  const { data, loading } = useGetMeQuery()
 
   return (
-    <>
-      {!data?.me.verified && (
-        <div className="bg-red-500 p-3 text-center text-base text-white">
-          <span>Please verify your email</span>
-        </div>
-      )}
-      <header className="py-4">
-        <div className="item-center mx-auto flex w-full max-w-screen-xl justify-between px-5 xl:px-0">
-          <Link href="/">
-            <h1 className="my-10 w-52 text-4xl font-semibold">Nham Avey</h1>
+    <header className="container mx-auto h-20 px-8">
+      <div className="item-center mx-auto flex h-full w-full items-center justify-between">
+        <Link href="/">
+          <a className="h-full">
+            <img className="h-full p-2" src="/images/logo.png" alt="Nham Avey Logo" />
+          </a>
+        </Link>
+        <input
+          type="text"
+          placeholder="Type here"
+          className="input input-bordered input-accent ring-accent ml-8 w-full max-w-xs border-none !ring-2 focus:outline-none focus:ring-offset-2"
+        />
+        <div className="grow" />
+        <span className="text-xs">
+          <Link href="/edit-profile">
+            <a>
+              <FontAwesomeIcon icon={faUser} className="text-xl" /> {data?.getMe.email}
+            </a>
           </Link>
-          <span className="text-xs">
-            <Link href="/edit-profile">
-              <FontAwesomeIcon icon={faUser} className="text-xl" /> {data?.me.email}
-            </Link>
-          </span>
-        </div>
-      </header>
-    </>
+        </span>
+      </div>
+    </header>
   )
 }

@@ -1,12 +1,17 @@
+import { useEffect } from "react"
+
 import { yupResolver } from "@hookform/resolvers/yup"
 import clsx from "clsx"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
+import { useFirebaseAuthState, useSignInWithEmailAndPassword } from "@nham-avey/common"
 import { FormError } from "src/components/form-error"
-import useSignIn from "src/hooks/use-sign-in"
+import useRedirectOnAuthed from "src/hooks/useRedirectOnAuthed"
+import firebaseService from "src/services/firebase-services"
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -18,7 +23,10 @@ interface LoginForm {
   password: string
 }
 
+const { auth } = firebaseService
+
 const LoginPage = () => {
+  useRedirectOnAuthed(auth, "/")
   const {
     register,
     getValues,
@@ -28,16 +36,11 @@ const LoginPage = () => {
     resolver: yupResolver(schema),
   })
 
-  const {
-    mutate: signIn,
-    data,
-    error: _, // not used, use data.error instead
-    isLoading: isSigningIn,
-  } = useSignIn()
+  const { signIn, isLoading: isSigningIn, error } = useSignInWithEmailAndPassword()
 
   const onSubmit = async () => {
     const { email, password } = getValues()
-    signIn({ email, password })
+    signIn({ email, password, auth })
   }
 
   return (
@@ -87,26 +90,13 @@ const LoginPage = () => {
             Log in
           </button>
           <div className="text-center">
-            {data?.error && <FormError errorMessage={data.error} />}
+            {error && <FormError errorMessage={error.message} />}
           </div>
         </form>
 
         <Link href="/create-account">
           <a className="link">Create an Account instead</a>
         </Link>
-      </div>
-
-      <div className="mt-40 flex w-max flex-col gap-2">
-        <button className="btn" data-set-theme="dark" data-act-class="ACTIVECLASS">
-          Dark Theme
-        </button>
-        <button
-          className="btn btn-outline"
-          data-set-theme="light"
-          data-act-class="ACTIVECLASS"
-        >
-          Light Theme
-        </button>
       </div>
     </div>
   )
