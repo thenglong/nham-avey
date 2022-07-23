@@ -12,10 +12,13 @@ import { cert } from "firebase-admin/app"
 import { ApiKeyMiddleware } from "src/auth/api-key.middleware"
 import { AuthMiddleware } from "src/auth/auth.middleware"
 import { AuthModule } from "src/auth/auth.module"
+import { CategoryModule } from "src/categories/category.module"
+import { CityModule } from "src/city/city.module"
 import { AUTHORIZATION_HEADER, SWAGGER_PATH } from "src/common/common.constants"
 import { CommonModule } from "src/common/common.module"
 import { EnhancedDate } from "src/common/scalar/enhanced-date.scalar"
 import configuration from "src/config/configuration"
+import { DishModule } from "src/dishes/dish.module"
 import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
 import { FirebaseAdminModule } from "src/firebase-admin/firebase-admin.module"
 import { MailModule } from "src/mail/mail.module"
@@ -79,6 +82,9 @@ import * as Yup from "yup"
     AuthModule,
     UsersModule,
     RestaurantsModule,
+    CategoryModule,
+    CityModule,
+    DishModule,
     OrdersModule,
     CommonModule,
     PaymentsModule,
@@ -86,7 +92,7 @@ import * as Yup from "yup"
   ],
   controllers: [],
   providers: [
-    EnhancedDate, // override default graphql date since default one doesn't parse from string
+    EnhancedDate, // override default graphql date since default one doesn't parse date from string
   ],
 })
 export class AppModule implements NestModule {

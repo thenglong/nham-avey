@@ -14,7 +14,7 @@ type AdminCreateCategoryOutput {
 }
 
 input AdminCreateRestaurantInput {
-  address: String!
+  address: String
   categories: [String!]
   coverImageUrls: [String!]
   logoImageUrl: String
@@ -68,9 +68,20 @@ type AllCategoriesOutput {
 type Category {
   coverImageUrl: String
   createdAt: EnhancedDate!
+  iconUrl: String
   id: Float!
   name: String!
   restaurantCount: Int!
+  slug: String!
+  updatedAt: EnhancedDate!
+}
+
+type City {
+  createdAt: EnhancedDate!
+  id: Float!
+  location: Location
+  name: String!
+  nameInKhmer: String
   slug: String!
   updatedAt: EnhancedDate!
 }
@@ -228,6 +239,14 @@ type GetPaymentsOutput {
   payments: [Payment!]
 }
 
+type Location {
+  createdAt: EnhancedDate!
+  id: Float!
+  latitude: Float!
+  longitude: Float!
+  updatedAt: EnhancedDate!
+}
+
 type Mutation {
   adminCreateAdmin(input: CreateAccountInput!): CreateAccountOutput!
   adminCreateCategory(input: AdminCreateCategoryInput!): AdminCreateCategoryOutput!
@@ -260,6 +279,19 @@ type MyRestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
+}
+
+type OpeningHours {
+  createdAt: EnhancedDate!
+  fridayHours: String
+  id: Float!
+  mondayHours: String
+  saturdayHours: String
+  sundayHours: String
+  thursdayHours: String
+  tuesdayHours: String
+  updatedAt: EnhancedDate!
+  wednesdayHours: String
 }
 
 type Order {
@@ -366,31 +398,50 @@ type Query {
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
+  getRestaurantById(restaurantId: Int!): RestaurantOutput!
+  getRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   getRestaurantsByCategorySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
-  pubicGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
-  publicGetRestaurantById(restaurantId: Int!): RestaurantOutput!
 }
 
 type Restaurant {
-  address: String!
+  address: String
   categories: [Category!]
+  city: City
   coverImageUrls: [String!]
   createdAt: EnhancedDate!
   id: Float!
   isPromoted: Boolean!
+  location: Location
   logoImageUrl: String
   menu: [Dish!]
   name: String!
+  neighborhood: String
+  openingHours: OpeningHours
   orders: [Order!]
   promotedUntil: EnhancedDate
+  reviews: Review
+  slug: String!
+  street: String
   updatedAt: EnhancedDate!
   vendors: [User!]!
+  website: String
 }
 
 type RestaurantOutput {
   error: String
   ok: Boolean!
   restaurant: Restaurant
+}
+
+type Review {
+  createdAt: EnhancedDate!
+  customer: User!
+  id: Float!
+  name: String!
+  restaurant: Restaurant!
+  stars: Int!
+  text: String
+  updatedAt: EnhancedDate!
 }
 
 input SignUpAccountInput {
@@ -478,7 +529,7 @@ enum UserRole {
 }
 
 input VendorCreateRestaurantInput {
-  address: String!
+  address: String
   categories: [String!]
   coverImageUrls: [String!]
   logoImageUrl: String

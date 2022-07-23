@@ -2,12 +2,16 @@ import { Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm"
 import { parse } from "pg-connection-string"
+import { Category } from "src/categories/category.entity"
+import { City } from "src/city/city.entity"
+import { Dish } from "src/dishes/dish.entity"
 import { OrderItem } from "src/orders/entities/order-item.entity"
 import { Order } from "src/orders/entities/order.entity"
 import { Payment } from "src/payments/payment.entity"
-import { Category } from "src/restaurants/entities/category.entity"
-import { Dish } from "src/restaurants/entities/dish.entity"
+import { Location } from "src/restaurants/entities/location.entity"
+import { OpeningHours } from "src/restaurants/entities/opening-hours.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
+import { Review } from "src/restaurants/entities/review.entity"
 import { User } from "src/users/entities/user.entity"
 import { SnakeNamingStrategy } from "typeorm-naming-strategies"
 import { LoggerOptions } from "typeorm/logger/LoggerOptions"
@@ -26,7 +30,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       database: database as string,
       username: user,
       password,
-      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment],
+      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment, City, Location, OpeningHours, Review],
       migrations: [],
       migrationsTableName: "migrations",
       namingStrategy: new SnakeNamingStrategy(),

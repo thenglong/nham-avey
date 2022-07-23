@@ -7,7 +7,7 @@ interface RestaurantCardProps {
 }
 
 export const RestaurantCard = ({ restaurant }: RestaurantCardProps) => (
-  <Link href={`/restaurants/${restaurant.id}`}>
+  <Link href={`/restaurant/${restaurant.id}`}>
     <a
       className="ring-accent hover:ring-accent-focus card bg-base-100 hover:bg-base-200 aspect-[12/10] w-full ring-2 transition-colors duration-500 ease-in-out"
       target="_blank"

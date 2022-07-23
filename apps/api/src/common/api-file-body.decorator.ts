@@ -18,6 +18,6 @@ export const ApiFileBody = ({ key, required }: { key: string; required: boolean 
         },
         required: required ? [key] : [],
       },
-    })
+    }),
   )
 }

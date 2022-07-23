@@ -9,7 +9,7 @@ interface CategoryCardProps {
 export const CategoryCard = ({ category }: CategoryCardProps) => (
   <Link href={`/category/${category.slug}`}>
     <a
-      className="ring-accent hover:ring-accent-focus rounded-2xl p-3 text-center ring-2 transition-shadow ease-in-out hover:ring-offset-2"
+      className="ring-base-300 hover:ring-primary-focus rounded-2xl p-3 text-center ring-2 transition-shadow ease-in-out hover:ring-offset-2"
       target="_blank"
     >
       <img

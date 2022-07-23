@@ -1,9 +1,9 @@
 import { Field, InputType, Int, ObjectType, PartialType, PickType } from "@nestjs/graphql"
+import { Category } from "src/categories/category.entity"
 import { CoreOutput } from "src/common/dtos/output.dto"
-import { Category } from "src/restaurants/entities/category.entity"
 
 @InputType()
-export class AdminUpdateCategoryInput extends PartialType(PickType(Category, ["name", "coverImageUrl"])) {
+export class AdminUpdateCategoryInput extends PartialType(PickType(Category, ["name", "coverImageUrl", "iconUrl"])) {
   @Field(type => Int)
   readonly categoryId: number
 }

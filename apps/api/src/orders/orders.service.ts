@@ -82,7 +82,7 @@ export class OrderService {
     )
 
     await this.pubSub.publish(NEW_PENDING_ORDER, {
-      pendingOrders: { order, vendorId: restaurant.vendorId },
+      pendingOrders: { order, vendorIds: restaurant.vendorIds },
     })
 
     return { ok: true, orderId: order.id }
@@ -127,7 +127,7 @@ export class OrderService {
     let canSee = true
     if (user.roles.includes(UserRole.Customer) && order.customerId !== user.id) canSee = false
     if (user.roles.includes(UserRole.Driver) && order.driverId !== user.id) canSee = false
-    if (user.roles.includes(UserRole.Vendor) && order.restaurant?.vendorId !== user.id) canSee = false
+    if (user.roles.includes(UserRole.Vendor) && !order.restaurant?.vendorIds?.includes(user.id)) canSee = false
 
     return canSee
   }

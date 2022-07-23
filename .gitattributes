@@ -1,9 +1,58 @@
-# Automatically normalize line endings for all text-based files
-# http://git-scm.com/docs/gitattributes#_end_of_line_conversion
+# Encrypt the repository
+# Remove/modify this line if the repository is meant to be open-source
+*.* filter=git-crypt diff=git-crypt
+.gitattributes !filter !diff
+
+# These files are text and should be normalized (Convert crlf => lf)
+*.css text eol=lf
+*.gql text eol=lf
+*.graphql text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.htm text eol=lf
+*.html text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+*.ini text eol=lf
+*.inc text eol=lf
+*.php text eol=lf
+.htaccess text eol=lf
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.flv binary
+*.fla binary
+*.swf binary
+*.gz binary
+*.zip binary
+*.7z binary
+*.ttf binary
+
+# Auto detect text files and perform LF normalization
+# http://davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/
 * text=auto
 
-# For the following file types, normalize line endings to LF on
-# checkin and prevent conversion to CRLF when they are checked out
-# (this is required in order to prevent newline related issues like,
-# for example, after the build script is run)
-*.*      text eol=lf
+# Documents
+*.doc  diff=astextplain
+*.DOC  diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.dot  diff=astextplain
+*.DOT  diff=astextplain
+*.pdf  diff=astextplain
+*.PDF  diff=astextplain
+*.rtf  diff=astextplain
+*.RTF  diff=astextplain

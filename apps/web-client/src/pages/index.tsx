@@ -8,8 +8,8 @@ import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
 import {
-  usePubicGetRestaurantsQuery,
-  PubicGetRestaurantsDocument,
+  usePublicGetRestaurantsQuery,
+  PublicGetRestaurantsDocument,
   useGetCategoriesQuery,
   GetCategoriesDocument,
   Restaurant,
@@ -40,7 +40,7 @@ const RestaurantsPage = () => {
     data: restaurantData,
     fetchMore: fetchMoreRestaurant,
     loading: isLoadingRestaurant,
-  } = usePubicGetRestaurantsQuery({
+  } = usePublicGetRestaurantsQuery({
     variables: pageState,
     notifyOnNetworkStatusChange: true,
   })
@@ -101,7 +101,7 @@ const RestaurantsPage = () => {
         {restaurantData?.pubicGetRestaurants.hasNext && (
           <div className="mb-16 text-center">
             <button
-              className={clsx("btn btn-active btn-sm w-30 h-10", {
+              className={clsx("btn btn-active btn-sm w-30 h-10 hover:shadow-lg", {
                 "loading btn-ghost": isLoadingRestaurant,
               })}
               onClick={handleLoadMore}
@@ -121,7 +121,7 @@ export const getServerSideProps = async (_: GetStaticPropsContext) => {
   const apolloClient = initializeApollo()
 
   await apolloClient.query({
-    query: PubicGetRestaurantsDocument,
+    query: PublicGetRestaurantsDocument,
     variables: pageState,
   })
 

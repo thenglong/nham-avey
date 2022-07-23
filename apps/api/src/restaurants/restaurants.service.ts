@@ -2,75 +2,73 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
 import slugify from "slugify"
+import { Category } from "src/categories/category.entity"
+import { CategoryRequest } from "src/categories/category.interface"
+import { CategoryService } from "src/categories/category.service"
+import { PaginatedCategoryRestaurantsOutput, PaginationCategoryRestaurantsArgs } from "src/categories/dtos"
+import { CoreOutput } from "src/common/dtos/output.dto"
+import { PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
 import {
   AdminCreateRestaurantInput,
-  AdminUpdateCategoryInput,
-  AdminUpdateCategoryOutput,
   AdminUpdateRestaurantInput,
-  AllCategoriesOutput,
-  CreateDishInput,
-  CreateDishOutput,
-  CreateRestaurantOutput,
-  DeleteCategoryArgs,
-  DeleteCategoryOutput,
-  DeleteDishArgs,
-  DeleteRestaurantOutput,
-  MyRestaurantOutput,
-  PaginatedCategoryRestaurantOutput,
   PaginatedRestaurantsOutput,
-  PaginationCategoriesArgs,
-  PaginationCategoriesOutput,
-  PaginationCategoryRestaurantArgs,
-  PaginationRestaurantsArgs,
   RestaurantOutput,
-  UpdateDishInput,
-  UpdateDishOutput,
-  UpdateRestaurantOutput,
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
 } from "src/restaurants/dtos"
-import { AdminCreateCategoryInput, AdminCreateCategoryOutput } from "src/restaurants/dtos/admin-create-category.dto"
-import { Category } from "src/restaurants/entities/category.entity"
-import { Dish } from "src/restaurants/entities/dish.entity"
 import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 import { UserRole } from "src/users/entities/user.entity"
 import { UserService } from "src/users/users.service"
-import { Equal, Repository } from "typeorm"
+import { Any, Repository } from "typeorm"
 
 @Injectable()
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant)
     private readonly restaurantRepo: Repository<Restaurant>,
-    @InjectRepository(Dish)
-    private readonly dishRepo: Repository<Dish>,
     @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>,
     private readonly userService: UserService,
+    private readonly categoryService: CategoryService,
   ) {}
 
-  private async getOrCreateCategories(request: { name: string; coverImageUrl?: string }[]): Promise<Category[]> {
-    return Promise.all<Category>(
-      request.map(async ({ name, coverImageUrl }) => {
-        const slug = slugify(name)
-        let category = await this.categoryRepo.findOneBy({ slug })
-        if (!category) {
-          const entity = this.categoryRepo.create({ name, slug, coverImageUrl })
-          category = await this.categoryRepo.save(entity)
-        }
-        return category
-      }),
-    )
+  async findRestaurantsByCategorySlug(args: PaginationCategoryRestaurantsArgs): Promise<PaginatedCategoryRestaurantsOutput> {
+    const {
+      pageOptions: { take, skip },
+      slug,
+    } = args
+    const category = await this.categoryService.getCategoryBySlug(slug)
+    if (!category) return { ok: false, error: "[App] Category not found" }
+
+    const queryBuilder = await this.restaurantRepo
+      .createQueryBuilder("restaurant")
+      .leftJoinAndSelect("restaurant.categories", "category")
+      .leftJoinAndSelect("restaurant.vendors", "vendor")
+      .where(`category.id = :categoryId`, { categoryId: category.id })
+
+    const matchedCount = await queryBuilder.getCount()
+    const restaurants = await queryBuilder //
+      .orderBy("restaurant.isPromoted", "DESC")
+      .take(take)
+      .skip(skip)
+      .getMany()
+
+    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
+    return {
+      category,
+      restaurants,
+      ...paginatedOutput,
+    }
   }
 
-  async createRestaurantByVendor(vendorId: UserRecord["uid"], input: VendorCreateRestaurantInput): Promise<CreateRestaurantOutput> {
+  async createRestaurantByVendor(vendorId: UserRecord["uid"], input: VendorCreateRestaurantInput): Promise<RestaurantOutput> {
     const { categories, ...restaurantPayload } = input
     const vendorEntity = await this.userService.findUserById(vendorId)
 
     if (!vendorEntity) return { ok: false, error: `Vendor with id ${vendorId} not found` }
 
-    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
-    const restaurant = this.restaurantRepo.create(restaurantPayload)
+    const categoryEntities = await this.categoryService.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
+    const slug = slugify(restaurantPayload.name, { lower: true })
+    const restaurant = this.restaurantRepo.create({ ...restaurantPayload, slug })
     restaurant.vendors = [vendorEntity]
     restaurant.categories = categoryEntities
 
@@ -78,16 +76,17 @@ export class RestaurantService {
     return { ok: true, restaurant }
   }
 
-  async createRestaurantByAdmin(admin: DecodedIdToken, input: AdminCreateRestaurantInput): Promise<CreateRestaurantOutput> {
+  async createRestaurantByAdmin(admin: DecodedIdToken, input: AdminCreateRestaurantInput): Promise<RestaurantOutput> {
     const { categories, vendorIds, ...restaurantPayload } = input
 
     const vendorEntities = await this.userService.findUsersByIds(vendorIds)
 
     if (vendorEntities.length < vendorIds.length) return { ok: false, error: `Cannot Find All Vendors with ids ${vendorIds.join(", ")}` }
 
-    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
+    const categoryEntities = await this.categoryService.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
 
-    const restaurant = this.restaurantRepo.create(restaurantPayload)
+    const slug = slugify(restaurantPayload.name, { lower: true })
+    const restaurant = this.restaurantRepo.create({ ...restaurantPayload, slug })
     restaurant.vendors = vendorEntities
     restaurant.categories = categoryEntities
     const saved = await this.restaurantRepo.save(restaurant)
@@ -95,13 +94,14 @@ export class RestaurantService {
     return { ok: true, restaurant: saved }
   }
 
-  async updateRestaurantByVendor(vendorId: UserRecord["uid"], input: VendorUpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
+  async updateRestaurantByVendor(vendorId: UserRecord["uid"], input: VendorUpdateRestaurantInput): Promise<RestaurantOutput> {
     const { restaurantId, categories, ...restaurantPayload } = input
     const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    if (vendorId !== restaurant.vendorId) return { ok: false, error: "[App] You can't update a restaurant that you don't own" }
+    if (!restaurant.vendorIds?.includes(vendorId)) return { ok: false, error: "[App] You can't update a restaurant that you don't own" }
 
-    const categoryEntities = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
+    const categoryRequests: CategoryRequest[] = categories?.map(name => ({ name })) ?? []
+    const categoryEntities = await this.categoryService.getOrCreateCategories(categoryRequests)
     await this.restaurantRepo.save({
       id: restaurantId,
       ...restaurantPayload,
@@ -110,7 +110,7 @@ export class RestaurantService {
     return { ok: true }
   }
 
-  async updateRestaurantByAdmin(input: AdminUpdateRestaurantInput): Promise<UpdateRestaurantOutput> {
+  async updateRestaurantByAdmin(input: AdminUpdateRestaurantInput): Promise<RestaurantOutput> {
     const { restaurantId, categories, vendorIds, ...restaurantPayload } = input
 
     const existing = await this.restaurantRepo.findOne({
@@ -134,7 +134,7 @@ export class RestaurantService {
       restaurant.vendors = vendorEntities
     }
 
-    restaurant.categories = await this.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
+    restaurant.categories = await this.categoryService.getOrCreateCategories(categories?.map(name => ({ name })) ?? [])
 
     await this.restaurantRepo.save(restaurant)
     return {
@@ -142,172 +142,24 @@ export class RestaurantService {
     }
   }
 
-  async deleteRestaurant(decodedIdToken: DecodedIdToken, restaurantId: Restaurant["id"]): Promise<DeleteRestaurantOutput> {
+  async deleteRestaurant(decodedIdToken: DecodedIdToken, restaurantId: Restaurant["id"]): Promise<CoreOutput> {
     const restaurant = await this.restaurantRepo.findOneBy({ id: restaurantId })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    if (!decodedIdToken.roles.includes(UserRole.Admin) && decodedIdToken.uid !== restaurant.vendorId)
+    if (!decodedIdToken.roles.includes(UserRole.Admin) || !restaurant.vendorIds?.includes(decodedIdToken.uid))
       return { ok: false, error: "[App] You can't delete a restaurant that you don't own" }
 
     await this.restaurantRepo.delete(restaurantId)
     return { ok: true }
   }
 
-  async getAllCategories(): Promise<AllCategoriesOutput> {
-    const categories = await this.categoryRepo.find({ order: { name: "ASC" } })
-    return { ok: true, categories }
-  }
-
-  async getCategories(args: PaginationCategoriesArgs): Promise<PaginationCategoriesOutput> {
-    const {
-      pageOptions: { take, skip },
-      searchQuery,
-    } = args
-
-    const queryBuilder = this.categoryRepo.createQueryBuilder("category")
-    if (searchQuery) queryBuilder.where(`category.name ILIKE :searchQuery`, { searchQuery })
-
-    const matchedCount = await queryBuilder.getCount()
-    const categories = await queryBuilder
-      .orderBy("category.name", "ASC")
-      .skip(skip)
-      .take(take) //
-      .getMany() //
-
-    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
-
-    return { ...paginatedOutput, categories }
-  }
-
-  countRestaurantsByCategory(category: Category) {
-    return this.restaurantRepo
-      .createQueryBuilder("restaurant")
-      .leftJoinAndSelect("restaurant.categories", "category")
-      .where(`category.id = :categoryId`, { categoryId: category.id })
-      .getCount()
-  }
-
-  async findRestaurantsByCategorySlug(args: PaginationCategoryRestaurantArgs): Promise<PaginatedCategoryRestaurantOutput> {
-    const {
-      pageOptions: { take, skip },
-      slug,
-    } = args
-    const category = await this.categoryRepo.findOne({ where: { slug } })
-    if (!category) return { ok: false, error: "[App] Category not found" }
-
-    const restaurants = await this.restaurantRepo
-      .createQueryBuilder("restaurant")
-      .leftJoinAndSelect("restaurant.categories", "category")
-      .leftJoinAndSelect("restaurant.vendors", "vendor")
-      .where(`category.id = :categoryId`, { categoryId: category.id })
-      .orderBy("restaurant.isPromoted", "DESC")
-      .take(take)
-      .skip(skip)
-      .getMany()
-
-    const matchedCount = await this.countRestaurantsByCategory(category)
-    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
-    return {
-      category,
-      restaurants,
-      ...paginatedOutput,
-    }
-  }
-
-  async findRestaurantById(id: Restaurant["id"]): Promise<RestaurantOutput> {
-    const restaurant = await this.restaurantRepo.findOne({
-      where: { id },
-      relations: ["menu"],
-    })
-
+  async getRestaurantById(id: Restaurant["id"]): Promise<RestaurantOutput> {
+    const restaurant = await this.restaurantRepo.findOneBy({ id })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
 
     return { ok: true, restaurant }
   }
 
-  async createDishByVendor(vendorId: UserRecord["uid"], input: CreateDishInput): Promise<CreateDishOutput> {
-    const restaurant = await this.restaurantRepo.findOneBy({
-      id: input.restaurantId,
-    })
-
-    if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    if (vendorId !== restaurant.vendorId) return { ok: false, error: "[App] You can't do that" }
-
-    await this.dishRepo.save(this.dishRepo.create({ ...input, restaurant, createdAt: vendorId }))
-
-    return { ok: true }
-  }
-
-  async createDishByAdmin(adminId: UserRecord["uid"], input: CreateDishInput): Promise<CreateDishOutput> {
-    const { restaurantId } = input
-    const restaurant = await this.restaurantRepo.findOneBy({
-      id: restaurantId,
-    })
-
-    if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-
-    await this.dishRepo.save(this.dishRepo.create({ ...input, restaurant, createdBy: adminId }))
-
-    return { ok: true }
-  }
-
-  async updateDishByVendor(vendorId: UserRecord["uid"], input: UpdateDishInput): Promise<UpdateDishOutput> {
-    const dish = await this.dishRepo.findOne({
-      where: { id: input.dishId },
-      relations: ["restaurant"],
-    })
-
-    if (!dish) return { ok: false, error: "[App] Dish not found" }
-    if (dish.restaurant.vendorId !== vendorId) return { ok: false, error: "[App] You can't do that" }
-
-    await this.dishRepo.save([{ id: input.dishId, ...input, updatedBy: vendorId }])
-    return { ok: true }
-  }
-
-  async updateDishByAdmin(adminId: UserRecord["uid"], input: UpdateDishInput): Promise<UpdateDishOutput> {
-    const { dishId } = input
-    const existing = await this.dishRepo.findOneBy({
-      id: dishId,
-    })
-
-    if (!existing) return { ok: false, error: "[App] Dish not found" }
-
-    const dish = Object.assign(existing, input)
-    dish.updatedBy = adminId
-
-    await this.dishRepo.save(dish)
-    return { ok: true }
-  }
-
-  async deleteDishByVendor(vendorId: UserRecord["uid"], { dishId }: DeleteDishArgs): Promise<DeleteCategoryOutput> {
-    const existing = await this.dishRepo.findOne({
-      where: { id: dishId },
-      relations: ["restaurant"],
-    })
-
-    if (!existing) return { ok: false, error: "[App] Dish not found" }
-    if (existing.restaurant.vendorId !== vendorId) return { ok: false, error: "[App] You can't do that" }
-
-    existing.deletedBy = vendorId
-    const saved = await this.dishRepo.save(existing)
-    await this.dishRepo.softDelete({ id: saved.id })
-    return { ok: true }
-  }
-
-  async deleteDishByAdmin(adminId: UserRecord["uid"], { dishId }: DeleteDishArgs): Promise<DeleteCategoryOutput> {
-    const existing = await this.dishRepo.findOne({
-      where: { id: dishId },
-      relations: ["restaurant"],
-    })
-
-    if (!existing) return { ok: false, error: "[App] Dish not found" }
-
-    existing.deletedBy = adminId
-    const saved = await this.dishRepo.save(existing)
-    await this.dishRepo.softDelete({ id: saved.id })
-    return { ok: true }
-  }
-
-  async getRestaurantsByAdmin(args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByAdmin(args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
     const {
       searchQuery,
       pageOptions: { skip, take },
@@ -345,7 +197,7 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByVendor(vendorId: UserRecord["uid"], args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurantsByVendor(vendorId: UserRecord["uid"], args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
     const {
       searchQuery,
       pageOptions: { skip, take },
@@ -357,9 +209,11 @@ export class RestaurantService {
 
     if (searchQuery)
       queryBuilder.andWhere(
-        `restaurant.name ILIKE :searchQuery
-                 OR
-                 restaurant.address ILIKE :searchQuery`,
+        `
+        restaurant.name ILIKE :searchQuery
+        OR
+        restaurant.address ILIKE :searchQuery
+        `,
         { searchQuery },
       )
 
@@ -383,7 +237,7 @@ export class RestaurantService {
     }
   }
 
-  async getRestaurantsByPublic(args: PaginationRestaurantsArgs): Promise<PaginatedRestaurantsOutput> {
+  async getRestaurants(args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
     const {
       pageOptions: { take, skip },
       searchQuery,
@@ -419,47 +273,17 @@ export class RestaurantService {
     }
   }
 
-  async findRestaurantByIdAndVendorId(vendorId: UserRecord["uid"], restaurantId: Restaurant["id"]): Promise<MyRestaurantOutput> {
+  async getRestaurantByIdAndVendorId(vendorId: UserRecord["uid"], restaurantId: Restaurant["id"]): Promise<RestaurantOutput> {
     const restaurant = await this.restaurantRepo.findOne({
       where: {
         id: restaurantId,
-        vendorId: Equal(vendorId),
+        vendorIds: Any([vendorId]),
       },
       relations: ["menu", "orders"],
     })
 
+    if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
+
     return { ok: true, restaurant }
-  }
-
-  async deleteCategoryByAdmin(adminId: UserRecord["uid"], { categoryId }: DeleteCategoryArgs): Promise<DeleteCategoryOutput> {
-    const existing = await this.categoryRepo.findOneBy({ id: categoryId })
-    if (!existing) return { ok: false, error: "[App] Category not found" }
-    existing.deletedBy = adminId
-    const saved = await this.categoryRepo.save(existing)
-    await this.categoryRepo.softDelete({ id: saved.id })
-    return { ok: true }
-  }
-
-  async createCategoryByAdmin(adminId: UserRecord["uid"], input: AdminCreateCategoryInput): Promise<AdminCreateCategoryOutput> {
-    const { name, coverImageUrl } = input
-    const [category] = await this.getOrCreateCategories([{ name, coverImageUrl }])
-    category.updatedBy = adminId
-
-    // TODO: Make it just one insert query
-    const saved = await this.categoryRepo.save(category)
-    return { ok: true, category: saved }
-  }
-
-  async updateCategoryByAdmin(adminId: UserRecord["uid"], input: AdminUpdateCategoryInput): Promise<AdminUpdateCategoryOutput> {
-    const { categoryId, ...updatePayload } = input
-    const existing = await this.categoryRepo.findOneBy({ id: categoryId })
-    if (!existing) return { ok: false, error: "[App] Category not found" }
-
-    const slug = slugify(updatePayload.name || existing.name)
-    const category = Object.assign(existing, updatePayload)
-    category.updatedBy = adminId
-    category.slug = slug
-    const saved = await this.categoryRepo.save(category)
-    return { ok: true, category: saved }
   }
 }

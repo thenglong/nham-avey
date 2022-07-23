@@ -1,4 +1,4 @@
-query PubicGetRestaurants($page: Int, $q: String, $take: Int) {
+query PublicGetRestaurants($page: Int, $q: String, $take: Int) {
   pubicGetRestaurants(page: $page, q: $q, take: $take) {
     error
     hasNext

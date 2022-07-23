@@ -904,14 +904,14 @@ export type PublicGetRestaurantByIdQueryVariables = Exact<{
 
 export type PublicGetRestaurantByIdQuery = { __typename?: 'Query', publicGetRestaurantById: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, restaurant?: { __typename?: 'Restaurant', address: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null } | null } };
 
-export type PubicGetRestaurantsQueryVariables = Exact<{
+export type PublicGetRestaurantsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   q?: InputMaybe<Scalars['String']>;
   take?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type PubicGetRestaurantsQuery = { __typename?: 'Query', pubicGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null }> | null } };
+export type PublicGetRestaurantsQuery = { __typename?: 'Query', pubicGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null }> | null } };
 
 export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -1898,8 +1898,8 @@ export function usePublicGetRestaurantByIdLazyQuery(baseOptions?: Apollo.LazyQue
 export type PublicGetRestaurantByIdQueryHookResult = ReturnType<typeof usePublicGetRestaurantByIdQuery>;
 export type PublicGetRestaurantByIdLazyQueryHookResult = ReturnType<typeof usePublicGetRestaurantByIdLazyQuery>;
 export type PublicGetRestaurantByIdQueryResult = Apollo.QueryResult<PublicGetRestaurantByIdQuery, PublicGetRestaurantByIdQueryVariables>;
-export const PubicGetRestaurantsDocument = gql`
-    query PubicGetRestaurants($page: Int, $q: String, $take: Int) {
+export const PublicGetRestaurantsDocument = gql`
+    query PublicGetRestaurants($page: Int, $q: String, $take: Int) {
   pubicGetRestaurants(page: $page, q: $q, take: $take) {
     error
     hasNext
@@ -1943,16 +1943,16 @@ export const PubicGetRestaurantsDocument = gql`
     ${CategoryPartsFragmentDoc}`;
 
 /**
- * __usePubicGetRestaurantsQuery__
+ * __usePublicGetRestaurantsQuery__
  *
- * To run a query within a React component, call `usePubicGetRestaurantsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePubicGetRestaurantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePublicGetRestaurantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePublicGetRestaurantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePubicGetRestaurantsQuery({
+ * const { data, loading, error } = usePublicGetRestaurantsQuery({
  *   variables: {
  *      page: // value for 'page'
  *      q: // value for 'q'
@@ -1960,17 +1960,17 @@ export const PubicGetRestaurantsDocument = gql`
  *   },
  * });
  */
-export function usePubicGetRestaurantsQuery(baseOptions?: Apollo.QueryHookOptions<PubicGetRestaurantsQuery, PubicGetRestaurantsQueryVariables>) {
+export function usePublicGetRestaurantsQuery(baseOptions?: Apollo.QueryHookOptions<PublicGetRestaurantsQuery, PublicGetRestaurantsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PubicGetRestaurantsQuery, PubicGetRestaurantsQueryVariables>(PubicGetRestaurantsDocument, options);
+        return Apollo.useQuery<PublicGetRestaurantsQuery, PublicGetRestaurantsQueryVariables>(PublicGetRestaurantsDocument, options);
       }
-export function usePubicGetRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PubicGetRestaurantsQuery, PubicGetRestaurantsQueryVariables>) {
+export function usePublicGetRestaurantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PublicGetRestaurantsQuery, PublicGetRestaurantsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PubicGetRestaurantsQuery, PubicGetRestaurantsQueryVariables>(PubicGetRestaurantsDocument, options);
+          return Apollo.useLazyQuery<PublicGetRestaurantsQuery, PublicGetRestaurantsQueryVariables>(PublicGetRestaurantsDocument, options);
         }
-export type PubicGetRestaurantsQueryHookResult = ReturnType<typeof usePubicGetRestaurantsQuery>;
-export type PubicGetRestaurantsLazyQueryHookResult = ReturnType<typeof usePubicGetRestaurantsLazyQuery>;
-export type PubicGetRestaurantsQueryResult = Apollo.QueryResult<PubicGetRestaurantsQuery, PubicGetRestaurantsQueryVariables>;
+export type PublicGetRestaurantsQueryHookResult = ReturnType<typeof usePublicGetRestaurantsQuery>;
+export type PublicGetRestaurantsLazyQueryHookResult = ReturnType<typeof usePublicGetRestaurantsLazyQuery>;
+export type PublicGetRestaurantsQueryResult = Apollo.QueryResult<PublicGetRestaurantsQuery, PublicGetRestaurantsQueryVariables>;
 export const CookedOrdersDocument = gql`
     subscription cookedOrders {
   cookedOrders {

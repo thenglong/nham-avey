@@ -1,9 +1,9 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql"
+import { Category } from "src/categories/category.entity"
 import { CoreOutput } from "src/common/dtos/output.dto"
-import { Category } from "src/restaurants/entities/category.entity"
 
 @InputType()
-export class AdminCreateCategoryInput extends PickType(Category, ["name", "coverImageUrl"]) {}
+export class AdminCreateCategoryInput extends PickType(Category, ["name", "coverImageUrl", "iconUrl"]) {}
 
 @ObjectType()
 export class AdminCreateCategoryOutput extends CoreOutput {

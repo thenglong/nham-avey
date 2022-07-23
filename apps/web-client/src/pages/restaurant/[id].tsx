@@ -1,16 +1,37 @@
 import { useState } from "react"
 
+import { GetStaticPropsContext } from "next"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
 import {
   CreateOrderItemInput,
   CreateOrderMutation,
+  PublicGetRestaurantByIdDocument,
+  PublicGetRestaurantByIdQuery,
+  PublicGetRestaurantByIdQueryVariables,
   useCreateOrderMutation,
   usePublicGetRestaurantByIdQuery,
 } from "@nham-avey/common"
 import { Dish } from "src/components/dish"
 import { DishOption } from "src/components/dish-option"
+import { addApolloState, initializeApollo } from "src/graphql/apollo-config"
+
+export const getServerSideProps = async ({ params }: GetStaticPropsContext) => {
+  const apolloClient = initializeApollo()
+
+  await apolloClient.query<
+    PublicGetRestaurantByIdQuery,
+    PublicGetRestaurantByIdQueryVariables
+  >({
+    query: PublicGetRestaurantByIdDocument,
+    variables: { restaurantId: +(params?.id as string) },
+  })
+
+  return addApolloState(apolloClient, {
+    props: {},
+  })
+}
 
 const RestaurantPage = () => {
   const { query } = useRouter()

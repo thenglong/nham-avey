@@ -1,12 +1,31 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql"
-import { IsString, Length } from "class-validator"
+import { IsOptional, IsString } from "class-validator"
+import { Category } from "src/categories/category.entity"
+import { City } from "src/city/city.entity"
 import { CoreEntity } from "src/common/entities/core.entity"
+import { Dish } from "src/dishes/dish.entity"
+import { Location } from "src/locations/location.entity"
 import { Order } from "src/orders/entities/order.entity"
-import { Category } from "src/restaurants/entities/category.entity"
-import { Dish } from "src/restaurants/entities/dish.entity"
+import { OpeningHours } from "src/restaurants/entities/opening-hours.entity"
+import { Review } from "src/restaurants/entities/review.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, RelationId } from "typeorm"
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm"
 
+/**
+ * @todo add additional info like this
+ *   // "additionalInfo": {
+ *   //   "Service options": [
+ *   //     {
+ *   //       "Dine-in": true
+ *   //     }
+ *   //   ],
+ *   //   "Amenities": [
+ *   //     {
+ *   //       "Good for kids": true
+ *   //     }
+ *   //   ]
+ *   // },
+ */
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
 @Entity({ name: "restaurants" })
@@ -14,8 +33,12 @@ export class Restaurant extends CoreEntity {
   @Field(() => String)
   @Column()
   @IsString()
-  @Length(4)
   name: string
+
+  @Field(type => String)
+  @Column({ nullable: false })
+  @IsString()
+  slug: string
 
   @Field(() => [String], { nullable: true })
   @Column("varchar", { array: true, nullable: true })
@@ -25,12 +48,57 @@ export class Restaurant extends CoreEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   @IsString()
+  @IsOptional()
   logoImageUrl?: string
 
-  @Field(() => String)
-  @Column()
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  @IsOptional()
   @IsString()
-  address: string
+  address?: string
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  neighborhood?: string
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  street?: string
+
+  @Field(() => City, { nullable: true })
+  @ManyToOne(() => City, city => city.restaurants, { nullable: true })
+  @JoinColumn({ name: "city_id", referencedColumnName: "id" })
+  city?: City
+
+  @RelationId((restaurant: Restaurant) => restaurant.city)
+  cityId?: number
+
+  @Field(() => Review, { nullable: true })
+  @OneToMany(() => Review, review => review.restaurant, { nullable: true })
+  reviews?: Review[]
+
+  @RelationId((restaurant: Restaurant) => restaurant.reviews)
+  reviewsIds?: number[]
+
+  @Field(() => Location, { nullable: true })
+  @OneToOne(() => Location, { nullable: true })
+  @JoinColumn({ name: "location_id", referencedColumnName: "id" })
+  location?: Location
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  website?: string
+
+  @Field(() => OpeningHours, { nullable: true })
+  @OneToOne(() => OpeningHours, { nullable: true })
+  @JoinColumn({ name: "opening_hours_id", referencedColumnName: "id" })
+  openingHours?: OpeningHours
 
   @Field(() => [Category], { nullable: true })
   @ManyToMany(type => Category, category => category.restaurants, { nullable: true, onDelete: "SET NULL" })
@@ -51,7 +119,7 @@ export class Restaurant extends CoreEntity {
   vendors: User[]
 
   @RelationId((restaurant: Restaurant) => restaurant.vendors)
-  vendorId?: string
+  vendorIds?: string[]
 
   @Field(() => [Order], { nullable: true })
   @OneToMany(() => Order, order => order.restaurant)

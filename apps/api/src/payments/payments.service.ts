@@ -21,7 +21,7 @@ export class PaymentService {
   async createPayment(vendorId: string, { transactionId, restaurantId }: CreatePaymentInput): Promise<CreatePaymentOutput> {
     const restaurant = await this.restaurants.findOneBy({ id: restaurantId })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    if (restaurant.vendorId !== vendorId) return { ok: false, error: "[App] You can't do this" }
+    if (!restaurant.vendorIds?.includes(vendorId)) return { ok: false, error: "[App] You can't do this" }
 
     const vendorEntity = (await this.userService.findUserById(vendorId)) as User
     if (!vendorEntity) return { ok: false, error: "[App] Vendor deleted" }

@@ -30,7 +30,27 @@ module.exports = {
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
     styled: true,
-    themes: ["emerald", "dracula"],
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/colors/themes")["[data-theme=emerald]"],
+          primary: "#ea5234",
+          "primary-content": "#f9fafb",
+          accent: "#66cc8a",
+          "accent-content": "#223D30",
+          secondary: "#377cfb",
+          "secondary-content": "#f9fafb",
+          neutral: "#333c4d",
+          "neutral-content": "#f9fafb",
+          "base-100": "#ffffff",
+          "base-content": "#333c4d",
+          "--animation-btn": "0",
+          "--animation-input": "0",
+          "--btn-focus-scale": "1",
+        },
+      },
+      "dracula",
+    ],
     base: true,
     utils: true,
     logs: true,

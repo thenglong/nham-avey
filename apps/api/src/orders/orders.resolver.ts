@@ -71,7 +71,7 @@ export class OrderResolver {
 
   @Subscription(() => Order, {
     filter: ({ orderUpdates: order }: { orderUpdates: Order }, { input }: { input: OrderUpdatesInput }, { user }: { user: User }) => {
-      if (order.driverId !== user.id && order.customerId !== user.id && order.restaurant?.vendorId !== user.id) {
+      if (order.driverId !== user.id && order.customerId !== user.id && !order.restaurant?.vendorIds?.includes(user.id)) {
         return false
       }
       return order.id === input.id
