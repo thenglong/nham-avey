@@ -78,6 +78,7 @@ export const createApolloClient = () => {
     ssrMode: !isClient,
     link: splitLink,
     cache: new InMemoryCache(),
+    defaultOptions: {},
   })
 }
 

@@ -7,38 +7,56 @@ import { useRouter } from "next/router"
 import {
   CreateOrderItemInput,
   CreateOrderMutation,
-  PublicGetRestaurantByIdDocument,
-  PublicGetRestaurantByIdQuery,
-  PublicGetRestaurantByIdQueryVariables,
+  RestaurantBySlugDocument,
+  RestaurantBySlugQuery,
+  RestaurantBySlugQueryVariables,
   useCreateOrderMutation,
-  usePublicGetRestaurantByIdQuery,
+  useRestaurantBySlugQuery,
+  AllRestaurantsSlugQuery,
+  AllRestaurantsSlugQueryVariables,
+  AllRestaurantsSlugDocument,
 } from "@nham-avey/common"
 import { Dish } from "src/components/dish"
 import { DishOption } from "src/components/dish-option"
 import { addApolloState, initializeApollo } from "src/graphql/apollo-config"
 
-export const getServerSideProps = async ({ params }: GetStaticPropsContext) => {
+export const getStaticProps = async ({ params }: GetStaticPropsContext) => {
   const apolloClient = initializeApollo()
 
-  await apolloClient.query<
-    PublicGetRestaurantByIdQuery,
-    PublicGetRestaurantByIdQueryVariables
-  >({
-    query: PublicGetRestaurantByIdDocument,
-    variables: { restaurantId: +(params?.id as string) },
+  await apolloClient.query<RestaurantBySlugQuery, RestaurantBySlugQueryVariables>({
+    query: RestaurantBySlugDocument,
+    variables: { slug: params?.slug as string },
   })
 
   return addApolloState(apolloClient, {
     props: {},
+    revalidate: 2,
   })
+}
+
+export const getStaticPaths = async () => {
+  const apolloClient = initializeApollo()
+  const { data } = await apolloClient.query<
+    AllRestaurantsSlugQuery,
+    AllRestaurantsSlugQueryVariables
+  >({
+    query: AllRestaurantsSlugDocument,
+    fetchPolicy: "no-cache",
+  })
+  const paths =
+    data.allRestaurantsSlug?.slugs?.map(slug => ({
+      params: { slug: slug },
+    })) || []
+
+  return { paths, fallback: "blocking" }
 }
 
 const RestaurantPage = () => {
   const { query } = useRouter()
-  const { id } = query
-  const { data } = usePublicGetRestaurantByIdQuery({
+  const { slug } = query
+  const { data } = useRestaurantBySlugQuery({
     variables: {
-      restaurantId: +(id as string),
+      slug: slug as string,
     },
   })
 
@@ -143,7 +161,7 @@ const RestaurantPage = () => {
       createOrderMutation({
         variables: {
           input: {
-            restaurantId: +(id as string),
+            restaurantId: data?.restaurantBySlug.restaurant?.id as number,
             items: orderItems,
           },
         },
@@ -153,25 +171,23 @@ const RestaurantPage = () => {
 
   return (
     <div>
-      <NextSeo title={`${data?.publicGetRestaurantById.restaurant?.name} | Nham Avey`} />
+      <NextSeo title={`${data?.restaurantBySlug.restaurant?.name} | Nham Avey`} />
       <div
-        className="bg-gray-800 bg-cover bg-center py-48"
+        className="bg-gray-800 py-48"
         style={{
-          backgroundImage: `url(${data?.publicGetRestaurantById.restaurant?.coverImageUrls?.[0]})`,
+          background: `linear-gradient(90deg, rgba(2,0,36,.6) 0%,  rgba(2,0,36,.5) 30%, rgba(234,82,52,.1) 100%), center / cover url(${data?.restaurantBySlug.restaurant?.coverImageUrls?.[0]}) no-repeat`,
         }}
       >
         <div className="w-3/12 bg-white py-8 pl-48">
-          <h4 className="mb-3 text-4xl">
-            {data?.publicGetRestaurantById.restaurant?.name}
-          </h4>
+          <h4 className="mb-3 text-4xl">{data?.restaurantBySlug.restaurant?.name}</h4>
           <h5 className="mb-2 text-sm font-light">
-            {data?.publicGetRestaurantById.restaurant?.categories
+            {data?.restaurantBySlug.restaurant?.categories
               ?.map(category => category.name)
               .join(", ")}
           </h5>
 
           <h6 className="text-sm font-light">
-            {data?.publicGetRestaurantById.restaurant?.address}
+            {data?.restaurantBySlug.restaurant?.address}
           </h6>
         </div>
       </div>
@@ -196,7 +212,7 @@ const RestaurantPage = () => {
           </div>
         )}
         <div className="mt-16 grid w-full gap-x-5 gap-y-10 md:grid-cols-3">
-          {data?.publicGetRestaurantById?.restaurant?.menu?.map((dish, index) => (
+          {data?.restaurantBySlug?.restaurant?.menu?.map((dish, index) => (
             <Dish
               id={dish.id}
               isSelected={isSelected(dish.id)}

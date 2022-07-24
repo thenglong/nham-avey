@@ -5,11 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
-import {
-  Restaurant,
-  useGetCategoriesQuery,
-  usePubicGetRestaurantsQuery,
-} from "@nham-avey/common"
+import { Restaurant, useCategoriesQuery, useRestaurantsQuery } from "@nham-avey/common"
 import RestaurantCard from "src/components/restaurant-card"
 
 interface PageState {
@@ -26,11 +22,7 @@ const pageState: PageState = {
 
 const RestaurantsPage = () => {
   const [page, setPage] = useState(1)
-  const {
-    data: data,
-    fetchMore: fetchMoreRestaurant,
-    loading,
-  } = usePubicGetRestaurantsQuery({
+  const { data: data, loading } = useRestaurantsQuery({
     variables: pageState,
     notifyOnNetworkStatusChange: true,
   })
@@ -44,7 +36,7 @@ const RestaurantsPage = () => {
   const { register, handleSubmit, getValues } = useForm<IFormProps>()
   const router = useRouter()
 
-  const { data: categoriesData } = useGetCategoriesQuery({
+  const { data: categoriesData } = useCategoriesQuery({
     variables: { ...pageState, page: 1, take: 6 }, // take top 6
   })
 
@@ -76,7 +68,7 @@ const RestaurantsPage = () => {
       {!loading && (
         <div className="mx-auto mt-8 max-w-screen-2xl pb-20">
           <div className="mx-auto flex max-w-sm justify-around ">
-            {categoriesData?.getCategories.categories?.map(category => (
+            {categoriesData?.categories.categories?.map(category => (
               <Link href={`/category/${category.slug}`} key={category.id}>
                 <div className="group flex cursor-pointer flex-col items-center">
                   <div
@@ -91,7 +83,7 @@ const RestaurantsPage = () => {
             ))}
           </div>
           <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
-            {data?.pubicGetRestaurants?.restaurants?.map(restaurant => (
+            {data?.restaurants?.restaurants?.map(restaurant => (
               <RestaurantCard key={restaurant.id} restaurant={restaurant as Restaurant} />
             ))}
           </div>
@@ -107,9 +99,9 @@ const RestaurantsPage = () => {
               <div></div>
             )}
             <span>
-              Page {page} of {data?.pubicGetRestaurants.pageCount}
+              Page {page} of {data?.restaurants.pageCount}
             </span>
-            {page !== data?.pubicGetRestaurants.pageCount ? (
+            {page !== data?.restaurants.pageCount ? (
               <button
                 onClick={onNextPageClick}
                 className="text-2xl font-medium focus:outline-none"

@@ -96,6 +96,13 @@ type AllCitiesOutput {
   ok: Boolean!
 }
 
+type AllRestaurantsSlugOutput {
+  allCount: Int
+  error: String
+  ok: Boolean!
+  slugs: [String!]
+}
+
 type Category {
   coverImageUrl: String
   createdAt: EnhancedDate!
@@ -426,16 +433,18 @@ type Query {
   adminGetUsers(page: Int = 1, q: String, role: UserRole, take: Int = 20): PaginatedUsersOutput!
   allCategories: AllCategoriesOutput!
   allCities: AllCitiesOutput!
+  allRestaurantsSlug(take: Int): AllRestaurantsSlugOutput!
   categories(page: Int = 1, q: String, take: Int = 20): PaginationCategoriesOutput!
   cities(page: Int = 1, q: String, take: Int = 20): PaginationCitiesOutput!
-  getMe: User!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  getRestaurantById(id: Int!): RestaurantOutput!
-  getRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
-  myRestaurantById(id: Int!): RestaurantOutput!
+  me: User!
+  myRestaurant(id: Int!): RestaurantOutput!
   myRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
+  restaurant(id: Int!): RestaurantOutput!
+  restaurantBySlug(slug: String!): RestaurantOutput!
+  restaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   restaurantsByCategorySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantsOutput!
   restaurantsByCitySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCityRestaurantsOutput!
 }

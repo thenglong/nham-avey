@@ -1,0 +1,8 @@
+query AllRestaurantsSlug($take: Int) {
+  allRestaurantsSlug(take: $take) {
+    allCount
+    error
+    ok
+    slugs
+  }
+}

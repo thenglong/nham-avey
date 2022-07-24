@@ -6,6 +6,7 @@ import Head from "next/head"
 import NextNProgress from "nextjs-progressbar"
 
 import { PRIMARY } from "src/constants/colors-constants"
+import RestaurantPageStateContextProvider from "src/context/restaurant-page-state-context"
 import useApollo from "src/hooks/use-apollo"
 import "src/styles.css"
 
@@ -24,7 +25,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           <ApolloProvider client={apolloClient}>
-            <Component {...pageProps} />
+            <RestaurantPageStateContextProvider>
+              <Component {...pageProps} />
+            </RestaurantPageStateContextProvider>
           </ApolloProvider>
         </QueryClientProvider>
       </main>

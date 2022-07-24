@@ -28,12 +28,12 @@ export class CategoryResolver {
 
   @Query(returns => AllCategoriesOutput)
   allCategories(): Promise<AllCategoriesOutput> {
-    return this.categoryService.getAllCategories()
+    return this.categoryService.findAllCategories()
   }
 
   @Query(returns => PaginationCategoriesOutput)
   categories(@Args() args: PaginationWithSearchArgs): Promise<PaginationCategoriesOutput> {
-    return this.categoryService.getCategories(args)
+    return this.categoryService.findCategories(args)
   }
 
   @Mutation(returns => CoreOutput)

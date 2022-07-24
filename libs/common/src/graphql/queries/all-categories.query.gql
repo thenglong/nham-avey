@@ -1,5 +1,5 @@
-query GetAllCategories {
-  getAllCategories {
+query AllCategories {
+  allCategories {
     categories {
       coverImageUrl
       createdAt

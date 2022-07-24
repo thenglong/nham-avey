@@ -1,0 +1,22 @@
+query AllCities {
+  allCities {
+    ok
+    error
+    cities {
+      createdAt
+      id
+      location {
+        createdAt
+        id
+        latitude
+        longitude
+        updatedAt
+      }
+      name
+      nameInKhmer
+      restaurantCount
+      slug
+      updatedAt
+    }
+  }
+}

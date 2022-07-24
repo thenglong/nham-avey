@@ -1,0 +1,84 @@
+query RestaurantBySlug($slug: String!) {
+  restaurantBySlug(slug: $slug) {
+    error
+    ok
+    restaurant {
+      address
+      categories {
+        coverImageUrl
+        createdAt
+        iconUrl
+        id
+        name
+        restaurantCount
+        slug
+        updatedAt
+      }
+      city {
+        createdAt
+        id
+        name
+        nameInKhmer
+        restaurantCount
+        slug
+        updatedAt
+      }
+      coverImageUrls
+      createdAt
+      id
+      isPromoted
+      location {
+        createdAt
+        id
+        latitude
+        longitude
+        updatedAt
+      }
+      logoImageUrl
+      menu {
+        createdAt
+        description
+        id
+        name
+        options {
+          choices {
+            extra
+            name
+          }
+          extra
+          name
+        }
+        photo
+        price
+        updatedAt
+      }
+      name
+      neighborhood
+      openingHours {
+        createdAt
+        fridayHours
+        id
+        mondayHours
+        saturdayHours
+        sundayHours
+        thursdayHours
+        tuesdayHours
+        updatedAt
+        wednesdayHours
+      }
+      promotedUntil
+      reviews {
+        createdAt
+        id
+        name
+        stars
+        text
+        updatedAt
+      }
+      slug
+      street
+      updatedAt
+      website
+    }
+  }
+}

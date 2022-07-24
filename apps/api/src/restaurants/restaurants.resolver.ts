@@ -5,6 +5,7 @@ import { Roles } from "src/auth/role.decorator"
 import { IdArg } from "src/common/dtos/id.dto"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
+import { SlugArg } from "src/common/dtos/slug.dto"
 import {
   AdminCreateRestaurantInput,
   AdminUpdateRestaurantInput,
@@ -17,12 +18,33 @@ import {
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
 } from "src/restaurants/dtos"
+import { AllRestaurantsSlugArgs, AllRestaurantsSlugOutput } from "src/restaurants/dtos/all-restaurants-slug.dto"
 import { RestaurantService } from "src/restaurants/restaurants.service"
 import { UserRole } from "src/users/entities/user.entity"
 
 @Resolver()
 export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
+
+  @Query(returns => AllRestaurantsSlugOutput)
+  allRestaurantsSlug(@Args() args: AllRestaurantsSlugArgs): Promise<AllRestaurantsSlugOutput> {
+    return this.restaurantService.findAllRestaurantsSlug(args)
+  }
+
+  @Query(returns => PaginatedRestaurantsOutput)
+  restaurants(@Args() args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
+    return this.restaurantService.findRestaurants(args)
+  }
+
+  @Query(returns => RestaurantOutput)
+  restaurant(@Args() arg: IdArg): Promise<RestaurantOutput> {
+    return this.restaurantService.findRestaurantById(arg.id)
+  }
+
+  @Query(returns => RestaurantOutput)
+  restaurantBySlug(@Args() arg: SlugArg): Promise<RestaurantOutput> {
+    return this.restaurantService.findRestaurantBySlug(arg.slug)
+  }
 
   @Mutation(returns => RestaurantOutput)
   @Roles(UserRole.Vendor)
@@ -48,19 +70,19 @@ export class RestaurantResolver {
     @GraphqlAuthUser() decodedIdToken: DecodedIdToken,
     @Args() args: PaginationWithSearchArgs,
   ): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurantsByVendor(decodedIdToken.uid, args)
+    return this.restaurantService.findRestaurantsByVendor(decodedIdToken.uid, args)
   }
 
   @Query(returns => RestaurantOutput)
   @Roles(UserRole.Vendor)
-  myRestaurantById(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() arg: IdArg): Promise<RestaurantOutput> {
-    return this.restaurantService.getRestaurantByIdAndVendorId(decodedIdToken.uid, arg.id)
+  myRestaurant(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() arg: IdArg): Promise<RestaurantOutput> {
+    return this.restaurantService.findRestaurantByIdAndVendorId(decodedIdToken.uid, arg.id)
   }
 
   @Query(returns => PaginatedRestaurantsOutput)
   @Roles(UserRole.Admin)
   adminGetRestaurants(@Args() args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurantsByAdmin(args)
+    return this.restaurantService.findRestaurantsByAdmin(args)
   }
 
   @Query(returns => PaginatedCategoryRestaurantsOutput)
@@ -95,15 +117,5 @@ export class RestaurantResolver {
   @Roles(UserRole.Vendor, UserRole.Admin)
   deleteRestaurant(@GraphqlAuthUser() decodedIdToken: DecodedIdToken, @Args() arg: IdArg): Promise<CoreOutput> {
     return this.restaurantService.deleteRestaurant(decodedIdToken, arg.id)
-  }
-
-  @Query(returns => PaginatedRestaurantsOutput)
-  getRestaurants(@Args() args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
-    return this.restaurantService.getRestaurants(args)
-  }
-
-  @Query(returns => RestaurantOutput)
-  getRestaurantById(@Args() arg: IdArg): Promise<RestaurantOutput> {
-    return this.restaurantService.getRestaurantById(arg.id)
   }
 }

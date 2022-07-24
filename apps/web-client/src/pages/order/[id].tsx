@@ -9,7 +9,7 @@ import {
   OrderUpdatesDocument,
   OrderUpdatesSubscription,
   useEditOrderMutation,
-  useGetMeQuery,
+  useMeQuery,
   useGetOrderQuery,
   UserRole,
 } from "@nham-avey/common"
@@ -18,7 +18,7 @@ const OrderPage: NextPage = () => {
   const router = useRouter()
   const id = +(router.query.id as string)
 
-  const { data: userData } = useGetMeQuery()
+  const { data: userData } = useMeQuery()
   const [editOrderMutation] = useEditOrderMutation()
   const { data, subscribeToMore } = useGetOrderQuery({
     variables: { input: { id: +id } },
@@ -88,12 +88,12 @@ const OrderPage: NextPage = () => {
               {data?.getOrder.order?.driver?.email || "Not yet."}
             </span>
           </div>
-          {userData?.getMe.roles.includes(UserRole.Customer) && (
+          {userData?.me.roles.includes(UserRole.Customer) && (
             <span className="mt-5 mb-3 text-center text-2xl text-lime-600">
               Order Status: {data?.getOrder.order?.status}
             </span>
           )}
-          {userData?.getMe.roles.includes(UserRole.Vendor) && (
+          {userData?.me.roles.includes(UserRole.Vendor) && (
             <>
               {data?.getOrder.order?.status === OrderStatus.Pending && (
                 <button
@@ -118,7 +118,7 @@ const OrderPage: NextPage = () => {
             </>
           )}
 
-          {userData?.getMe.roles.includes(UserRole.Driver) && (
+          {userData?.me.roles.includes(UserRole.Driver) && (
             <>
               {data?.getOrder.order?.status === OrderStatus.Cooked && (
                 <button

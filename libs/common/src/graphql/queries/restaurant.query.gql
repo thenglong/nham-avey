@@ -1,5 +1,5 @@
-query PublicGetRestaurantById($restaurantId: Int!) {
-  publicGetRestaurantById(restaurantId: $restaurantId) {
+query RestaurantById($id: Int!) {
+  restaurant(id: $id){
     error
     ok
     restaurant {

@@ -1,5 +1,5 @@
-query GetMe {
-  getMe {
+query Me {
+  me {
     createdAt
     email
     firstName

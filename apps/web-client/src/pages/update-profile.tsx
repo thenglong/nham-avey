@@ -4,11 +4,7 @@ import { NextSeo } from "next-seo"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-import {
-  useFirebaseAuthState,
-  useGetMeQuery,
-  useUpdateMeMutation,
-} from "@nham-avey/common"
+import { useFirebaseAuthState, useMeQuery, useUpdateMeMutation } from "@nham-avey/common"
 import useRedirectOnUnauthed from "src/hooks/useRedirectOnUnauthed"
 import firebaseServices from "src/services/firebase-services"
 
@@ -38,9 +34,9 @@ const UpdateProfilePage = () => {
   })
 
   const { user } = useFirebaseAuthState(auth)
-  const { data: userData } = useGetMeQuery({
+  const { data: userData } = useMeQuery({
     onCompleted: data => {
-      setValue("email", data.getMe.email)
+      setValue("email", data.me.email)
     },
     ssr: false,
     skip: !user,

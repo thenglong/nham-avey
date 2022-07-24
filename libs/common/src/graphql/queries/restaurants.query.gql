@@ -1,5 +1,5 @@
-query PublicGetRestaurants($page: Int, $q: String, $take: Int) {
-  pubicGetRestaurants(page: $page, q: $q, take: $take) {
+query Restaurants($page: Int, $q: String, $take: Int) {
+  restaurants(page: $page, q: $q, take: $take) {
     error
     hasNext
     hasPrevious
@@ -8,14 +8,15 @@ query PublicGetRestaurants($page: Int, $q: String, $take: Int) {
     pageCount
     restaurants {
       address
-      categories {
-        ...CategoryParts
-      }
+      slug
       coverImageUrls
       createdAt
       id
       isPromoted
       logoImageUrl
+      categories {
+        ...CategoryParts
+      }
       menu {
         createdAt
         description

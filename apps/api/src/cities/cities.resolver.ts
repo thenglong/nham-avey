@@ -28,12 +28,12 @@ export class CityResolver {
 
   @Query(returns => AllCitiesOutput)
   allCities(): Promise<AllCitiesOutput> {
-    return this.cityService.getAllCities()
+    return this.cityService.findAllCities()
   }
 
   @Query(returns => PaginationCitiesOutput)
   cities(@Args() args: PaginationWithSearchArgs): Promise<PaginationCitiesOutput> {
-    return this.cityService.getCities(args)
+    return this.cityService.findCities(args)
   }
 
   @Mutation(returns => CoreOutput)

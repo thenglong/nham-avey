@@ -1,0 +1,26 @@
+query Cities($page: Int, $q: String, $take: Int) {
+  cities(page: $page, q: $q, take: $take) {
+    ok
+    error
+    hasNext
+    hasPrevious
+    matchedCount
+    pageCount
+    cities {
+      createdAt
+      id
+      name
+      nameInKhmer
+      restaurantCount
+      slug
+      updatedAt
+      location {
+        createdAt
+        id
+        latitude
+        longitude
+        updatedAt
+      }
+    }
+  }
+}

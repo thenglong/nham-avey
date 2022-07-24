@@ -1,5 +1,5 @@
-mutation DeleteRestaurant($restaurantId: Int!) {
-  deleteRestaurant(restaurantId: $restaurantId) {
+mutation DeleteRestaurant($id: Int!) {
+  deleteRestaurant(id: $id) {
     error
     ok
   }

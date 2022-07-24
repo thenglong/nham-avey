@@ -52,7 +52,7 @@ export class CityService {
     return entity?.restaurantCount as number
   }
 
-  async getAllCities(): Promise<AllCitiesOutput> {
+  async findAllCities(): Promise<AllCitiesOutput> {
     const cities = await this.cityRepo.find({
       order: { name: "ASC" },
       relations: { location: true },
@@ -60,7 +60,7 @@ export class CityService {
     return { ok: true, cities }
   }
 
-  async getCities(args: PaginationWithSearchArgs): Promise<PaginationCitiesOutput> {
+  async findCities(args: PaginationWithSearchArgs): Promise<PaginationCitiesOutput> {
     const {
       pageOptions: { take, skip },
       searchQuery,

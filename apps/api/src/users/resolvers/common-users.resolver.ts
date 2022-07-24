@@ -15,7 +15,7 @@ export class CommonUserResolver {
   @Query(returns => User)
   @UseGuards(GraphqlAuthGuard)
   @AnyRoles()
-  getMe(@GraphqlAuthUser() authUser: DecodedIdToken): Promise<User | null> {
+  me(@GraphqlAuthUser() authUser: DecodedIdToken): Promise<User | null> {
     return this.userService.findUserById(authUser.uid)
   }
 

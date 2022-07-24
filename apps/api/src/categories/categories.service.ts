@@ -52,12 +52,12 @@ export class CategoryService {
     return entity?.restaurantCount as number
   }
 
-  async getAllCategories(): Promise<AllCategoriesOutput> {
+  async findAllCategories(): Promise<AllCategoriesOutput> {
     const categories = await this.categoryRepo.find({ order: { name: "ASC" } })
     return { ok: true, categories }
   }
 
-  async getCategories(args: PaginationWithSearchArgs): Promise<PaginationCategoriesOutput> {
+  async findCategories(args: PaginationWithSearchArgs): Promise<PaginationCategoriesOutput> {
     const {
       pageOptions: { take, skip },
       searchQuery,

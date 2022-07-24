@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { NextSeo } from "next-seo"
 import { useRouter } from "next/router"
 
-import { usePubicGetRestaurantsLazyQuery } from "@nham-avey/common"
+import { useRestaurantsLazyQuery } from "@nham-avey/common"
 
 interface PageState {
   page: number
@@ -24,7 +24,7 @@ const SearchPage = () => {
   const { query, isReady } = useRouter()
   const { term } = query
   const router = useRouter()
-  const [getRestaurants, { loading, data }] = usePubicGetRestaurantsLazyQuery()
+  const [getRestaurants, { loading, data }] = useRestaurantsLazyQuery()
 
   useEffect(() => {
     if (!isReady || loading) return

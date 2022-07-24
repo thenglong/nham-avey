@@ -1,5 +1,5 @@
-mutation AdminDeleteCategory($categoryId: Int!) {
-  adminDeleteCategory(categoryId: $categoryId) {
+mutation AdminDeleteCategory($id: Int!) {
+  adminDeleteCategory(id: $id) {
     error
     ok
   }

@@ -1,17 +1,18 @@
 import { UserIcon } from "@heroicons/react/outline"
 import Link from "next/link"
 
-import { useGetMeQuery } from "@nham-avey/common"
+import { useMeQuery } from "@nham-avey/common"
 
 export const Header = () => {
-  const { data, loading } = useGetMeQuery()
+  const { data, loading } = useMeQuery()
 
   return (
-    <header className="border-accent border-b-2">
+    <header className="border-primary border-b-2">
       <div className="navbar bg-base-100 container mx-auto h-20 px-8">
         <div className="navbar-start">
           <div className="dropdown">
-            <label tabIndex="0" className="btn btn-ghost lg:hidden">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/no-noninteractive-tabindex */}
+            <label tabIndex={0} className="btn btn-ghost lg:hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -28,13 +29,15 @@ export const Header = () => {
               </svg>
             </label>
             <ul
-              tabIndex="0"
+              // eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/no-noninteractive-tabindex
+              tabIndex={0}
               className="menu menu-compact dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow"
             >
               <li>
                 <a>Item 1</a>
               </li>
-              <li tabIndex="0">
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/no-noninteractive-tabindex */}
+              <li tabIndex={0}>
                 <a className="justify-between">
                   Parent
                   <svg
@@ -68,7 +71,8 @@ export const Header = () => {
             <li>
               <a>Item 1</a>
             </li>
-            <li tabIndex="0">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/no-noninteractive-tabindex */}
+            <li tabIndex={0}>
               <a>
                 Parent
                 <svg
