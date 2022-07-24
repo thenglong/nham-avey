@@ -2,16 +2,19 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth"
 import slugify from "slugify"
-import { Category } from "src/categories/category.entity"
+import { CategoryService } from "src/categories/categories.service"
 import { CategoryRequest } from "src/categories/category.interface"
-import { CategoryService } from "src/categories/category.service"
-import { PaginatedCategoryRestaurantsOutput, PaginationCategoryRestaurantsArgs } from "src/categories/dtos"
+import { CityService } from "src/cities/cities.service"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
 import {
   AdminCreateRestaurantInput,
   AdminUpdateRestaurantInput,
+  PaginatedCategoryRestaurantsOutput,
+  PaginatedCityRestaurantsOutput,
   PaginatedRestaurantsOutput,
+  PaginationCategoryRestaurantsArgs,
+  PaginationCityRestaurantsArgs,
   RestaurantOutput,
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
@@ -26,9 +29,9 @@ export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant)
     private readonly restaurantRepo: Repository<Restaurant>,
-    @InjectRepository(Category)
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
+    private readonly cityService: CityService,
   ) {}
 
   async findRestaurantsByCategorySlug(args: PaginationCategoryRestaurantsArgs): Promise<PaginatedCategoryRestaurantsOutput> {
@@ -55,6 +58,35 @@ export class RestaurantService {
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
     return {
       category,
+      restaurants,
+      ...paginatedOutput,
+    }
+  }
+
+  async findRestaurantsByCitySlug(args: PaginationCityRestaurantsArgs): Promise<PaginatedCityRestaurantsOutput> {
+    const {
+      pageOptions: { take, skip },
+      slug,
+    } = args
+    const city = await this.cityService.getCityBySlug(slug)
+    if (!city) return { ok: false, error: "[App] City not found" }
+
+    const queryBuilder = await this.restaurantRepo
+      .createQueryBuilder("restaurant")
+      .leftJoinAndSelect("restaurant.city", "city")
+      .where(`city.id = :cityId`, { cityId: city.id })
+      .leftJoinAndSelect("restaurant.vendors", "vendor")
+
+    const matchedCount = await queryBuilder.getCount()
+    const restaurants = await queryBuilder //
+      .orderBy("restaurant.isPromoted", "DESC")
+      .take(take)
+      .skip(skip)
+      .getMany()
+
+    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
+    return {
+      city,
       restaurants,
       ...paginatedOutput,
     }

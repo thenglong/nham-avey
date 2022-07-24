@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-  UnauthorizedException,
-} from "@nestjs/common"
+import { BadRequestException, Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { NextFunction, Request, Response } from "express"
 import { API_KEY_HEADER } from "src/common/common.constants"

@@ -32,4 +32,7 @@ export class City extends CoreEntity {
 
   @OneToMany(() => Restaurant, restaurant => restaurant.city, { nullable: true })
   restaurants?: Restaurant[]
+
+  // non-column field for custom query
+  public restaurantCount?: number
 }

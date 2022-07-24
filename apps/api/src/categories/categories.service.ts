@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
-import { UserRecord } from "firebase-admin/lib/auth"
+import { InjectRepository } from "@nestjs/typeorm"
+import { UserRecord } from "firebase-admin/auth"
 import slugify from "slugify"
 import { Category } from "src/categories/category.entity"
 import { CategoryRequest } from "src/categories/category.interface"
@@ -18,7 +19,10 @@ import { Repository } from "typeorm"
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepo: Repository<Category>) {}
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepo: Repository<Category>,
+  ) {}
 
   getCategoryBySlug(slug: string) {
     return this.categoryRepo.findOne({ where: { slug } })
@@ -39,12 +43,13 @@ export class CategoryService {
     return Promise.all<Category>(requests.map(async request => this.getOrCreateCategory(request)))
   }
 
-  countRestaurantsByCategory(category: Category) {
-    return this.categoryRepo //
+  async countRestaurantsByCategory(category: Category): Promise<number> {
+    const entity = await this.categoryRepo //
       .createQueryBuilder("category")
       .where("category.id = :id", { id: category.id })
-      .leftJoinAndSelect("category.restaurants", "restaurant")
-      .getCount()
+      .loadRelationCountAndMap("category.restaurantCount", "category.restaurants", "restaurant")
+      .getOne()
+    return entity?.restaurantCount as number
   }
 
   async getAllCategories(): Promise<AllCategoriesOutput> {

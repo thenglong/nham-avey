@@ -3,7 +3,7 @@ import { SignUpAccountInput, SignUpAccountOutput } from "src/users/users.dto"
 import { UserService } from "src/users/users.service"
 
 @Resolver()
-export class VendorsResolver {
+export class VendorResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(returns => SignUpAccountOutput)

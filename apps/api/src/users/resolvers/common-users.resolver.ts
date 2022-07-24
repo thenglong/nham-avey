@@ -9,7 +9,7 @@ import { UpdateProfileInput, UpdateProfileOutput } from "src/users/users.dto"
 import { UserService } from "src/users/users.service"
 
 @Resolver()
-export class CommonUsersResolver {
+export class CommonUserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(returns => User)

@@ -2,14 +2,17 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql"
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
-import { PaginatedCategoryRestaurantsOutput, PaginationCategoryRestaurantsArgs } from "src/categories/dtos"
 import { IdArg } from "src/common/dtos/id.dto"
 import { CoreOutput } from "src/common/dtos/output.dto"
 import { PaginationWithSearchArgs } from "src/common/dtos/pagination.dto"
 import {
   AdminCreateRestaurantInput,
   AdminUpdateRestaurantInput,
+  PaginatedCategoryRestaurantsOutput,
+  PaginatedCityRestaurantsOutput,
   PaginatedRestaurantsOutput,
+  PaginationCategoryRestaurantsArgs,
+  PaginationCityRestaurantsArgs,
   RestaurantOutput,
   VendorCreateRestaurantInput,
   VendorUpdateRestaurantInput,
@@ -63,6 +66,11 @@ export class RestaurantResolver {
   @Query(returns => PaginatedCategoryRestaurantsOutput)
   restaurantsByCategorySlug(@Args() args: PaginationCategoryRestaurantsArgs): Promise<PaginatedCategoryRestaurantsOutput> {
     return this.restaurantService.findRestaurantsByCategorySlug(args)
+  }
+
+  @Query(returns => PaginatedCityRestaurantsOutput)
+  restaurantsByCitySlug(@Args() args: PaginationCityRestaurantsArgs): Promise<PaginatedCityRestaurantsOutput> {
+    return this.restaurantService.findRestaurantsByCitySlug(args)
   }
 
   @Mutation(returns => RestaurantOutput)

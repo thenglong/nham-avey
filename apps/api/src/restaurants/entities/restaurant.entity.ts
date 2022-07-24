@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql"
 import { IsOptional, IsString } from "class-validator"
 import { Category } from "src/categories/category.entity"
-import { City } from "src/city/city.entity"
+import { City } from "src/cities/city.entity"
 import { CoreEntity } from "src/common/entities/core.entity"
 import { Dish } from "src/dishes/dish.entity"
 import { Location } from "src/locations/location.entity"

@@ -4,11 +4,23 @@
 
 input AdminCreateCategoryInput {
   coverImageUrl: String
+  iconUrl: String
   name: String!
 }
 
 type AdminCreateCategoryOutput {
   category: Category
+  error: String
+  ok: Boolean!
+}
+
+input AdminCreateCityInput {
+  name: String!
+  nameInKhmer: String
+}
+
+type AdminCreateCityOutput {
+  city: City
   error: String
   ok: Boolean!
 }
@@ -25,11 +37,24 @@ input AdminCreateRestaurantInput {
 input AdminUpdateCategoryInput {
   categoryId: Int!
   coverImageUrl: String
+  iconUrl: String
   name: String
 }
 
 type AdminUpdateCategoryOutput {
   category: Category
+  error: String
+  ok: Boolean!
+}
+
+input AdminUpdateCityInput {
+  cityId: Int!
+  name: String
+  nameInKhmer: String
+}
+
+type AdminUpdateCityOutput {
+  city: City
   error: String
   ok: Boolean!
 }
@@ -65,6 +90,12 @@ type AllCategoriesOutput {
   ok: Boolean!
 }
 
+type AllCitiesOutput {
+  cities: [City!]
+  error: String
+  ok: Boolean!
+}
+
 type Category {
   coverImageUrl: String
   createdAt: EnhancedDate!
@@ -82,8 +113,14 @@ type City {
   location: Location
   name: String!
   nameInKhmer: String
+  restaurantCount: Int!
   slug: String!
   updatedAt: EnhancedDate!
+}
+
+type CoreOutput {
+  error: String
+  ok: Boolean!
 }
 
 input CreateAccountInput {
@@ -105,11 +142,6 @@ input CreateDishInput {
   options: [DishOptionInputType!]
   price: Int!
   restaurantId: Int!
-}
-
-type CreateDishOutput {
-  error: String
-  ok: Boolean!
 }
 
 input CreateOrderInput {
@@ -138,28 +170,7 @@ type CreatePaymentOutput {
   ok: Boolean!
 }
 
-type CreateRestaurantOutput {
-  error: String
-  ok: Boolean!
-  restaurant: Restaurant
-}
-
 type DeleteAccountOutput {
-  error: String
-  ok: Boolean!
-}
-
-type DeleteCategoryOutput {
-  error: String
-  ok: Boolean!
-}
-
-type DeleteDishOutput {
-  error: String
-  ok: Boolean!
-}
-
-type DeleteRestaurantOutput {
   error: String
   ok: Boolean!
 }
@@ -196,6 +207,12 @@ input DishOptionInputType {
   choices: [DishChoiceInputType!]
   extra: Int
   name: String!
+}
+
+type DishOutput {
+  dish: Dish
+  error: String
+  ok: Boolean!
 }
 
 input EditOrderInput {
@@ -250,35 +267,31 @@ type Location {
 type Mutation {
   adminCreateAdmin(input: CreateAccountInput!): CreateAccountOutput!
   adminCreateCategory(input: AdminCreateCategoryInput!): AdminCreateCategoryOutput!
-  adminCreateDish(input: CreateDishInput!): CreateDishOutput!
-  adminCreateRestaurant(input: AdminCreateRestaurantInput!): CreateRestaurantOutput!
-  adminDeleteCategory(categoryId: Int!): DeleteCategoryOutput!
-  adminDeleteDish(dishId: Int!): DeleteDishOutput!
+  adminCreateCity(input: AdminCreateCityInput!): AdminCreateCityOutput!
+  adminCreateDish(input: CreateDishInput!): DishOutput!
+  adminCreateRestaurant(input: AdminCreateRestaurantInput!): RestaurantOutput!
+  adminDeleteCategory(id: Int!): CoreOutput!
+  adminDeleteCity(id: Int!): CoreOutput!
+  adminDeleteDish(id: Int!): CoreOutput!
   adminDeleteUser(userId: String!): DeleteAccountOutput!
   adminUpdateCategory(input: AdminUpdateCategoryInput!): AdminUpdateCategoryOutput!
-  adminUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
-  adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): UpdateRestaurantOutput!
+  adminUpdateCity(input: AdminUpdateCityInput!): AdminUpdateCityOutput!
+  adminUpdateDish(input: UpdateDishInput!): DishOutput!
+  adminUpdateRestaurant(input: AdminUpdateRestaurantInput!): RestaurantOutput!
   adminUpdateUser(input: AdminUpdateUserInput!): AdminUpdateUserOutput!
   createOrder(input: CreateOrderInput!): CreateOrderOutput!
   createPayment(input: CreatePaymentInput!): CreatePaymentOutput!
-  customerSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
-  deleteRestaurant(restaurantId: Int!): DeleteRestaurantOutput!
+  deleteRestaurant(id: Int!): CoreOutput!
   driverSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
   takeOrder(input: TakeOrderInput!): TakeOrderOutput!
   updateMe(input: UpdateProfileInput!): UpdateProfileOutput!
   updateOrder(input: EditOrderInput!): EditOrderOutput!
-  vendorCreateDish(input: CreateDishInput!): CreateDishOutput!
-  vendorCreateRestaurant(input: VendorCreateRestaurantInput!): CreateRestaurantOutput!
-  vendorDeleteDish(dishId: Int!): DeleteDishOutput!
+  vendorCreateDish(input: CreateDishInput!): DishOutput!
+  vendorCreateRestaurant(input: VendorCreateRestaurantInput!): RestaurantOutput!
+  vendorDeleteDish(id: Int!): CoreOutput!
   vendorSignUp(input: SignUpAccountInput!): SignUpAccountOutput!
-  vendorUpdateDish(input: UpdateDishInput!): UpdateDishOutput!
-  vendorUpdateRestaurant(input: VendorUpdateRestaurantInput!): UpdateRestaurantOutput!
-}
-
-type MyRestaurantOutput {
-  error: String
-  ok: Boolean!
-  restaurant: Restaurant
+  vendorUpdateDish(input: UpdateDishInput!): DishOutput!
+  vendorUpdateRestaurant(input: VendorUpdateRestaurantInput!): RestaurantOutput!
 }
 
 type OpeningHours {
@@ -336,8 +349,19 @@ input OrderUpdatesInput {
   id: Float!
 }
 
-type PaginatedCategoryRestaurantOutput {
+type PaginatedCategoryRestaurantsOutput {
   category: Category
+  error: String
+  hasNext: Boolean
+  hasPrevious: Boolean
+  matchedCount: Int
+  ok: Boolean!
+  pageCount: Int
+  restaurants: [Restaurant!]
+}
+
+type PaginatedCityRestaurantsOutput {
+  city: City
   error: String
   hasNext: Boolean
   hasPrevious: Boolean
@@ -377,6 +401,16 @@ type PaginationCategoriesOutput {
   pageCount: Int
 }
 
+type PaginationCitiesOutput {
+  cities: [City!]
+  error: String
+  hasNext: Boolean
+  hasPrevious: Boolean
+  matchedCount: Int
+  ok: Boolean!
+  pageCount: Int
+}
+
 type Payment {
   createdAt: EnhancedDate!
   id: Float!
@@ -390,17 +424,20 @@ type Payment {
 type Query {
   adminGetRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   adminGetUsers(page: Int = 1, q: String, role: UserRole, take: Int = 20): PaginatedUsersOutput!
-  getAllCategories: AllCategoriesOutput!
-  getCategories(page: Int = 1, q: String, take: Int = 20): PaginationCategoriesOutput!
+  allCategories: AllCategoriesOutput!
+  allCities: AllCitiesOutput!
+  categories(page: Int = 1, q: String, take: Int = 20): PaginationCategoriesOutput!
+  cities(page: Int = 1, q: String, take: Int = 20): PaginationCitiesOutput!
   getMe: User!
-  getMyRestaurantById(restaurantId: Int!): MyRestaurantOutput!
-  getMyRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
   getOrder(input: GetOrderInput!): GetOrderOutput!
   getOrders(input: GetOrdersInput!): GetOrdersOutput!
   getPayments: GetPaymentsOutput!
-  getRestaurantById(restaurantId: Int!): RestaurantOutput!
+  getRestaurantById(id: Int!): RestaurantOutput!
   getRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
-  getRestaurantsByCategorySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantOutput!
+  myRestaurantById(id: Int!): RestaurantOutput!
+  myRestaurants(page: Int = 1, q: String, take: Int = 20): PaginatedRestaurantsOutput!
+  restaurantsByCategorySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCategoryRestaurantsOutput!
+  restaurantsByCitySlug(page: Int = 1, slug: String!, take: Int = 20): PaginatedCityRestaurantsOutput!
 }
 
 type Restaurant {
@@ -482,11 +519,6 @@ input UpdateDishInput {
   price: Int
 }
 
-type UpdateDishOutput {
-  error: String
-  ok: Boolean!
-}
-
 input UpdateProfileInput {
   email: String
   firstName: String
@@ -496,11 +528,6 @@ input UpdateProfileInput {
 }
 
 type UpdateProfileOutput {
-  error: String
-  ok: Boolean!
-}
-
-type UpdateRestaurantOutput {
   error: String
   ok: Boolean!
 }

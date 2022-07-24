@@ -30,4 +30,7 @@ export class Category extends CoreEntity {
 
   @ManyToMany(type => Restaurant, restaurant => restaurant.categories)
   restaurants: Restaurant[]
+
+  // non-column field for custom query
+  public restaurantCount?: number
 }

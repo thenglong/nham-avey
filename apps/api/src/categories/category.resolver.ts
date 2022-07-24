@@ -2,8 +2,8 @@ import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nes
 import { DecodedIdToken } from "firebase-admin/auth"
 import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
+import { CategoryService } from "src/categories/categories.service"
 import { Category } from "src/categories/category.entity"
-import { CategoryService } from "src/categories/category.service"
 import {
   AdminCreateCategoryInput,
   AdminCreateCategoryOutput,

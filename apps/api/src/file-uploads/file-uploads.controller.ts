@@ -24,7 +24,7 @@ export class FileUploadsController {
   @UseInterceptors(FileInterceptor("file"))
   async uploadFile(
     @UploadedFile(new ImageFilePipe({ required: true }))
-    file: Express.Multer.File
+    file: Express.Multer.File,
   ): Promise<string> {
     return this.fileUploadsService.upload(file)
   }

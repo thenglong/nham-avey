@@ -4,7 +4,7 @@ import { GraphqlAuthUser } from "src/auth/graphql-auth-user.decorator"
 import { Roles } from "src/auth/role.decorator"
 import { IdArg } from "src/common/dtos/id.dto"
 import { CoreOutput } from "src/common/dtos/output.dto"
-import { DishService } from "src/dishes/dish.service"
+import { DishService } from "src/dishes/dishes.service"
 import { DishOutput, CreateDishInput, UpdateDishInput } from "src/dishes/dto"
 import { UserRole } from "src/users/entities/user.entity"
 

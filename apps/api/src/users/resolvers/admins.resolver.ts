@@ -14,7 +14,7 @@ import {
 import { UserService } from "src/users/users.service"
 
 @Resolver()
-export class AdminsResolver {
+export class AdminResolver {
   constructor(private readonly userService: UserService) {}
 
   @Roles(UserRole.Admin)
