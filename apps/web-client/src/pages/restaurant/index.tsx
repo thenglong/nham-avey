@@ -72,7 +72,7 @@ const RestaurantsPage = () => {
       {!loading && (
         <div className="mx-auto mt-8 max-w-screen-2xl pb-20">
           <div className="mx-auto flex max-w-sm justify-around ">
-            {categoriesData?.categories.categories?.map(category => (
+            {categoriesData?.categories.data?.map(category => (
               <Link href={`/category/${category.slug}`} key={category.id}>
                 <div className="group flex cursor-pointer flex-col items-center">
                   <div
@@ -89,7 +89,7 @@ const RestaurantsPage = () => {
             ))}
           </div>
           <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
-            {data?.restaurants?.restaurants?.map(restaurant => (
+            {data?.restaurants?.data?.map(restaurant => (
               <RestaurantCard
                 key={restaurant.id}
                 restaurant={restaurant as Restaurant}

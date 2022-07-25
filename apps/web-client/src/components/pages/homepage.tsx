@@ -1,17 +1,20 @@
 import { useCallback, useEffect, useMemo } from "react"
 
+import { QueryResult } from "@apollo/client"
 import clsx from "clsx"
 import { NextSeo } from "next-seo"
 
 import {
   Restaurant,
+  RestaurantsQuery,
+  RestaurantsQueryVariables,
   ScrollProps,
   useCategoriesQuery,
   useRestaurantsQuery,
   useScrollPosition,
 } from "@nham-avey/common"
 import CategoryCard from "src/components/cards/category-card"
-import { RestaurantCard } from "src/components/cards/restaurant-card"
+import { MemoedRestaurantCards as RestaurantCards } from "src/components/cards/restaurant-cards"
 import { AuthedLayout } from "src/components/layout/authed-layout"
 import { APP_NAME, DEFAULT_PAGE_STATE } from "src/constants/common-constants"
 import {
@@ -51,10 +54,8 @@ const HomePage = () => {
 
   // update scroll position when navigate back
   useEffect(() => {
-    const loadedLength = loadedRestaurants?.restaurants.restaurants
-      ?.length as number
-    const defaultLength = restaurantData?.restaurants?.restaurants
-      ?.length as number
+    const loadedLength = loadedRestaurants?.restaurants.data?.length as number
+    const defaultLength = restaurantData?.restaurants.data?.length as number
     if (loadedLength > defaultLength) {
       updateQuery(prev => {
         return {
@@ -95,19 +96,6 @@ const HomePage = () => {
   //   })
   // }
 
-  // this makes support for ssr since inside the useEffect,
-  // the loaded will be rendered on the client
-  const restaurants = useMemo<Restaurant[]>(() => {
-    if (
-      (loadedRestaurants?.restaurants.restaurants?.length as number) >
-      (restaurantData?.restaurants?.restaurants?.length as number)
-    ) {
-      return loadedRestaurants?.restaurants.restaurants as []
-    } else {
-      return restaurantData?.restaurants?.restaurants as []
-    }
-  }, [restaurantData, loadedRestaurants])
-
   const handleLoadMore = useCallback(() => {
     setPageState(previousState => {
       const newPageState: PageState = {
@@ -118,12 +106,16 @@ const HomePage = () => {
         variables: newPageState,
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev
-          const updatedData = {
+
+          const updatedData: QueryResult<
+            RestaurantsQuery,
+            RestaurantsQueryVariables
+          >["data"] = {
             restaurants: {
               ...fetchMoreResult.restaurants,
-              restaurants: [
-                ...(prev?.restaurants?.restaurants || []),
-                ...(fetchMoreResult.restaurants.restaurants || []),
+              data: [
+                ...(prev?.restaurants?.data || []),
+                ...(fetchMoreResult.restaurants?.data || []),
               ],
             },
           }
@@ -135,26 +127,32 @@ const HomePage = () => {
     })
   }, [fetchMoreRestaurant, setPageState])
 
+  // this makes support for ssr since inside the useEffect,
+  // the loaded will be rendered on the client
+  const restaurants = useMemo<Restaurant[]>(() => {
+    if (
+      (loadedRestaurants?.restaurants.data?.length as number) >
+      (restaurantData?.restaurants?.data?.length as number)
+    ) {
+      return loadedRestaurants?.restaurants.data as []
+    } else {
+      return restaurantData?.restaurants?.data as []
+    }
+  }, [restaurantData, loadedRestaurants])
+
   return (
     <AuthedLayout>
       <NextSeo title={APP_NAME} />
       <div className="container mx-auto px-4 lg:px-8">
         {/* Top Categories */}
         <div className="mb-6 mt-12 grid grid-cols-3 gap-8 md:grid-cols-6">
-          {categoriesData?.categories.categories?.map(category => (
+          {categoriesData?.categories.data?.map(category => (
             <CategoryCard category={category} key={category.id} />
           ))}
         </div>
 
         <h3 className="h3 mt-12 mb-6">Top Restaurants</h3>
-        <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {restaurants?.map(restaurant => (
-            <RestaurantCard
-              restaurant={restaurant as Restaurant}
-              key={restaurant.id}
-            />
-          ))}
-        </div>
+        <RestaurantCards restaurants={restaurants} />
 
         {/* Load More button */}
         {restaurantData?.restaurants.hasNext && (

@@ -42,7 +42,7 @@
     letter-spacing: 0.1px;
   }
 
-  .h5 {
+  .h6 {
     font-weight: bold;
     font-size: 1.125rem;
     line-height: 24px;
@@ -76,6 +76,43 @@
     line-height: 18px;
     letter-spacing: 0.2px;
   }
+
+  .small-1 {
+    font-weight: bold;
+    font-size: 0.813rem;
+    line-height: 18px;
+    letter-spacing: 0.1px;
+  }
+
+  .small-2 {
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 16px;
+    letter-spacing: 0;
+  }
+
+  .small-3 {
+    font-weight: bold;
+    font-size: 0.625rem;
+    line-height: 14px;
+    letter-spacing: 0;
+  }
 }
 
 @tailwind utilities;
+
+
+/* Restaurant Card */
+.restaurant-card:hover .restaurant-card-image {
+  --image-url: "";
+  --scale-size: 1.009;
+  transform: scale(var(--scale-size), var(--scale-size));
+  opacity: .95;
+}
+
+.restaurant-card-image {
+  background: linear-gradient(90deg, rgba(33, 33, 65, 0.3) 0%, rgba(2, 0, 36, .3) 30%, rgba(234, 82, 52, .1) 100%), center / cover var(--image-url) no-repeat;
+  transition: transform .1s ease-in-out,
+  background-color .25s ease-in-out,
+  box-shadow .4s ease-in-out;
+}

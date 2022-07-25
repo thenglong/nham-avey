@@ -555,29 +555,29 @@ export type PaginatedCityRestaurantsOutput = {
 
 export type PaginatedRestaurantsOutput = {
   __typename?: 'PaginatedRestaurantsOutput';
+  data?: Maybe<Array<Restaurant>>;
   error?: Maybe<Scalars['String']>;
   hasNext?: Maybe<Scalars['Boolean']>;
   hasPrevious?: Maybe<Scalars['Boolean']>;
   matchedCount?: Maybe<Scalars['Int']>;
   ok: Scalars['Boolean'];
   pageCount?: Maybe<Scalars['Int']>;
-  restaurants?: Maybe<Array<Restaurant>>;
 };
 
 export type PaginatedUsersOutput = {
   __typename?: 'PaginatedUsersOutput';
+  data?: Maybe<Array<User>>;
   error?: Maybe<Scalars['String']>;
   hasNext?: Maybe<Scalars['Boolean']>;
   hasPrevious?: Maybe<Scalars['Boolean']>;
   matchedCount?: Maybe<Scalars['Int']>;
   ok: Scalars['Boolean'];
   pageCount?: Maybe<Scalars['Int']>;
-  users?: Maybe<Array<User>>;
 };
 
 export type PaginationCategoriesOutput = {
   __typename?: 'PaginationCategoriesOutput';
-  categories?: Maybe<Array<Category>>;
+  data?: Maybe<Array<Category>>;
   error?: Maybe<Scalars['String']>;
   hasNext?: Maybe<Scalars['Boolean']>;
   hasPrevious?: Maybe<Scalars['Boolean']>;
@@ -588,7 +588,7 @@ export type PaginationCategoriesOutput = {
 
 export type PaginationCitiesOutput = {
   __typename?: 'PaginationCitiesOutput';
-  cities?: Maybe<Array<City>>;
+  data?: Maybe<Array<City>>;
   error?: Maybe<Scalars['String']>;
   hasNext?: Maybe<Scalars['Boolean']>;
   hasPrevious?: Maybe<Scalars['Boolean']>;
@@ -744,9 +744,9 @@ export type Restaurant = {
 
 export type RestaurantOutput = {
   __typename?: 'RestaurantOutput';
+  data?: Maybe<Restaurant>;
   error?: Maybe<Scalars['String']>;
   ok: Scalars['Boolean'];
-  restaurant?: Maybe<Restaurant>;
 };
 
 export type Review = {
@@ -979,7 +979,7 @@ export type AdminGetRestaurantsQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', restaurantCount: number, coverImageUrl?: string | null, createdAt: any, id: number, name: string, slug: string, updatedAt: any }> | null, vendors: Array<{ __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> }> }> | null } };
+export type AdminGetRestaurantsQuery = { __typename?: 'Query', adminGetRestaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, data?: Array<{ __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', restaurantCount: number, coverImageUrl?: string | null, createdAt: any, id: number, name: string, slug: string, updatedAt: any }> | null, vendors: Array<{ __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string, isVerified: boolean, createdAt: any, photoURL?: string | null, roles: Array<UserRole> }> }> | null } };
 
 export type AdminGetUsersQueryVariables = Exact<{
   role?: InputMaybe<UserRole>;
@@ -989,7 +989,7 @@ export type AdminGetUsersQueryVariables = Exact<{
 }>;
 
 
-export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, users?: Array<{ __typename?: 'User', createdAt: any, firstName?: string | null, lastName?: string | null, email: string, id: string, roles: Array<UserRole>, updatedAt: any, isVerified: boolean, photoURL?: string | null }> | null } };
+export type AdminGetUsersQuery = { __typename?: 'Query', adminGetUsers: { __typename?: 'PaginatedUsersOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, data?: Array<{ __typename?: 'User', createdAt: any, firstName?: string | null, lastName?: string | null, email: string, id: string, roles: Array<UserRole>, updatedAt: any, isVerified: boolean, photoURL?: string | null }> | null } };
 
 export type AllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1015,7 +1015,7 @@ export type CategoriesQueryVariables = Exact<{
 }>;
 
 
-export type CategoriesQuery = { __typename?: 'Query', categories: { __typename?: 'PaginationCategoriesOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
+export type CategoriesQuery = { __typename?: 'Query', categories: { __typename?: 'PaginationCategoriesOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, data?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null } };
 
 export type CitiesQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1024,7 +1024,7 @@ export type CitiesQueryVariables = Exact<{
 }>;
 
 
-export type CitiesQuery = { __typename?: 'Query', cities: { __typename?: 'PaginationCitiesOutput', ok: boolean, error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, pageCount?: number | null, cities?: Array<{ __typename?: 'City', createdAt: any, id: number, name: string, nameInKhmer?: string | null, restaurantCount: number, slug: string, updatedAt: any, location?: { __typename?: 'Location', createdAt: any, id: number, latitude: number, longitude: number, updatedAt: any } | null }> | null } };
+export type CitiesQuery = { __typename?: 'Query', cities: { __typename?: 'PaginationCitiesOutput', ok: boolean, error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, pageCount?: number | null, data?: Array<{ __typename?: 'City', createdAt: any, id: number, name: string, nameInKhmer?: string | null, restaurantCount: number, slug: string, updatedAt: any, location?: { __typename?: 'Location', createdAt: any, id: number, latitude: number, longitude: number, updatedAt: any } | null }> | null } };
 
 export type GetOrderQueryVariables = Exact<{
   input: GetOrderInput;
@@ -1041,21 +1041,21 @@ export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', created
 export type MyRestaurantsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, restaurants?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImageUrls?: Array<string> | null, address?: string | null, isPromoted: boolean, logoImageUrl?: string | null, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null }> | null } };
+export type MyRestaurantsQuery = { __typename?: 'Query', myRestaurants: { __typename?: 'PaginatedRestaurantsOutput', ok: boolean, error?: string | null, data?: Array<{ __typename?: 'Restaurant', id: number, name: string, coverImageUrls?: Array<string> | null, address?: string | null, isPromoted: boolean, logoImageUrl?: string | null, categories?: Array<{ __typename?: 'Category', name: string, coverImageUrl?: string | null }> | null }> | null } };
 
 export type RestaurantBySlugQueryVariables = Exact<{
   slug: Scalars['String'];
 }>;
 
 
-export type RestaurantBySlugQuery = { __typename?: 'Query', restaurantBySlug: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, restaurant?: { __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, neighborhood?: string | null, promotedUntil?: any | null, slug: string, street?: string | null, updatedAt: any, website?: string | null, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, iconUrl?: string | null, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, city?: { __typename?: 'City', createdAt: any, id: number, name: string, nameInKhmer?: string | null, restaurantCount: number, slug: string, updatedAt: any } | null, location?: { __typename?: 'Location', createdAt: any, id: number, latitude: number, longitude: number, updatedAt: any } | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null, openingHours?: { __typename?: 'OpeningHours', createdAt: any, fridayHours?: string | null, id: number, mondayHours?: string | null, saturdayHours?: string | null, sundayHours?: string | null, thursdayHours?: string | null, tuesdayHours?: string | null, updatedAt: any, wednesdayHours?: string | null } | null, reviews?: { __typename?: 'Review', createdAt: any, id: number, name: string, stars: number, text?: string | null, updatedAt: any } | null } | null } };
+export type RestaurantBySlugQuery = { __typename?: 'Query', restaurantBySlug: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, data?: { __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, neighborhood?: string | null, promotedUntil?: any | null, slug: string, street?: string | null, updatedAt: any, website?: string | null, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, iconUrl?: string | null, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, city?: { __typename?: 'City', createdAt: any, id: number, name: string, nameInKhmer?: string | null, restaurantCount: number, slug: string, updatedAt: any } | null, location?: { __typename?: 'Location', createdAt: any, id: number, latitude: number, longitude: number, updatedAt: any } | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null, openingHours?: { __typename?: 'OpeningHours', createdAt: any, fridayHours?: string | null, id: number, mondayHours?: string | null, saturdayHours?: string | null, sundayHours?: string | null, thursdayHours?: string | null, tuesdayHours?: string | null, updatedAt: any, wednesdayHours?: string | null } | null, reviews?: { __typename?: 'Review', createdAt: any, id: number, name: string, stars: number, text?: string | null, updatedAt: any } | null } | null } };
 
 export type RestaurantByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
 
-export type RestaurantByIdQuery = { __typename?: 'Query', restaurant: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, restaurant?: { __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null } | null } };
+export type RestaurantByIdQuery = { __typename?: 'Query', restaurant: { __typename?: 'RestaurantOutput', error?: string | null, ok: boolean, data?: { __typename?: 'Restaurant', address?: string | null, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', coverImageUrl?: string | null, createdAt: any, id: number, name: string, restaurantCount: number, slug: string, updatedAt: any }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null } | null } };
 
 export type RestaurantsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -1064,7 +1064,7 @@ export type RestaurantsQueryVariables = Exact<{
 }>;
 
 
-export type RestaurantsQuery = { __typename?: 'Query', restaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, restaurants?: Array<{ __typename?: 'Restaurant', address?: string | null, slug: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null }> | null } };
+export type RestaurantsQuery = { __typename?: 'Query', restaurants: { __typename?: 'PaginatedRestaurantsOutput', error?: string | null, hasNext?: boolean | null, hasPrevious?: boolean | null, matchedCount?: number | null, ok: boolean, pageCount?: number | null, data?: Array<{ __typename?: 'Restaurant', address?: string | null, slug: string, coverImageUrls?: Array<string> | null, createdAt: any, id: number, isPromoted: boolean, logoImageUrl?: string | null, name: string, promotedUntil?: any | null, updatedAt: any, categories?: Array<{ __typename?: 'Category', id: number, name: string, coverImageUrl?: string | null, slug: string, restaurantCount: number }> | null, menu?: Array<{ __typename?: 'Dish', createdAt: any, description: string, id: number, name: string, photo?: string | null, price: number, updatedAt: any, options?: Array<{ __typename?: 'DishOption', extra?: number | null, name: string, choices?: Array<{ __typename?: 'DishChoice', extra?: number | null, name: string }> | null }> | null }> | null }> | null } };
 
 export type CookedOrdersSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -1656,7 +1656,7 @@ export const AdminGetRestaurantsDocument = gql`
     matchedCount
     ok
     pageCount
-    restaurants {
+    data {
       address
       categories {
         restaurantCount
@@ -1720,7 +1720,7 @@ export const AdminGetUsersDocument = gql`
     matchedCount
     ok
     pageCount
-    users {
+    data {
       createdAt
       firstName
       lastName
@@ -1901,7 +1901,7 @@ export type AllRestaurantsSlugQueryResult = Apollo.QueryResult<AllRestaurantsSlu
 export const CategoriesDocument = gql`
     query Categories($page: Int, $q: String, $take: Int) {
   categories(page: $page, q: $q, take: $take) {
-    categories {
+    data {
       coverImageUrl
       createdAt
       id
@@ -1958,7 +1958,7 @@ export const CitiesDocument = gql`
     hasPrevious
     matchedCount
     pageCount
-    cities {
+    data {
       createdAt
       id
       name
@@ -2092,7 +2092,7 @@ export const MyRestaurantsDocument = gql`
   myRestaurants {
     ok
     error
-    restaurants {
+    data {
       ...RestaurantParts
     }
   }
@@ -2130,7 +2130,7 @@ export const RestaurantBySlugDocument = gql`
   restaurantBySlug(slug: $slug) {
     error
     ok
-    restaurant {
+    data {
       address
       categories {
         coverImageUrl
@@ -2244,7 +2244,7 @@ export const RestaurantByIdDocument = gql`
   restaurant(id: $id) {
     error
     ok
-    restaurant {
+    data {
       address
       categories {
         coverImageUrl
@@ -2321,7 +2321,7 @@ export const RestaurantsDocument = gql`
     matchedCount
     ok
     pageCount
-    restaurants {
+    data {
       address
       slug
       coverImageUrls

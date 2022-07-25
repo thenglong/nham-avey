@@ -5,7 +5,7 @@ export const LogoLink = () => {
     <Link href="/">
       <a className="h-[90%] pl-0 text-xl normal-case">
         <img
-          className="h-full w-full"
+          className="h-full w-full object-contain"
           src="/images/logo.png"
           alt="Nham avey logo"
         />

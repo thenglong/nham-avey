@@ -18,7 +18,10 @@ export interface PageState {
   q: string
 }
 
-type RestaurantData = QueryResult<RestaurantsQuery, RestaurantsQueryVariables>["data"]
+type RestaurantData = QueryResult<
+  RestaurantsQuery,
+  RestaurantsQueryVariables
+>["data"]
 
 interface RestaurantPageState {
   pageState: PageState
@@ -29,9 +32,15 @@ interface RestaurantPageState {
   setLoadedRestaurants: Dispatch<SetStateAction<RestaurantData>>
 }
 
-const RestaurantPageStateContext = createContext<RestaurantPageState | null>(null)
+const RestaurantPageStateContext = createContext<RestaurantPageState | null>(
+  null,
+)
 
-const RestaurantPageStateContextProvider = ({ children }: { children: ReactNode }) => {
+const RestaurantPageStateContextProvider = ({
+  children,
+}: {
+  children: ReactNode
+}) => {
   const [pageState, setPageState] = useState(DEFAULT_PAGE_STATE)
   const [loadedRestaurants, setLoadedRestaurants] = useState<RestaurantData>()
   const [scrollYPosition, setScrollYPosition] = useState(0)
@@ -56,7 +65,7 @@ export const useRestaurantPageStateContext = () => {
   const context = useContext(RestaurantPageStateContext)
   if (!context) {
     throw new Error(
-      "useRestaurantPageStateContext must be used within a RestaurantPageStateContext"
+      "useRestaurantPageStateContext must be used within a RestaurantPageStateContext",
     )
   }
   return context
