@@ -58,7 +58,7 @@
     "class-validator": "^0.13.2",
     "clsx": "^1.2.1",
     "core-js": "^3.23.5",
-    "daisyui": "^2.19.1",
+    "daisyui": "^2.20.0",
     "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
     "firebase": "^9.9.1",
