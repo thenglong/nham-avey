@@ -19,11 +19,11 @@ export const Header = () => {
 
   return (
     <header className="border-b-[1px] border-base-300 shadow">
-      <div className="subtitle-1 container navbar mx-auto h-20 bg-base-100 px-4 lg:px-8">
+      <div className="subtitle-1 container navbar mx-auto h-20 justify-between bg-base-100 px-4 lg:px-8">
         <div className="navbar-start h-full">
           <LogoLink />
         </div>
-        <div className="grow"></div>
+
         <div className="navbar-end lg:flex">
           <div className="hidden gap-4 md:flex">
             <LargeScreenMenu />
