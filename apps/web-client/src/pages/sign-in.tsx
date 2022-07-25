@@ -1,14 +1,11 @@
-import { useEffect } from "react"
-
 import { yupResolver } from "@hookform/resolvers/yup"
 import clsx from "clsx"
 import { NextSeo } from "next-seo"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-import { useFirebaseAuthState, useSignInWithEmailAndPassword } from "@nham-avey/common"
+import { useSignInWithEmailAndPassword } from "@nham-avey/common"
 import { FormError } from "src/components/form-error"
 import useRedirectOnAuthed from "src/hooks/useRedirectOnAuthed"
 import firebaseService from "src/services/firebase-services"

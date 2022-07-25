@@ -9,7 +9,7 @@ interface RestaurantCardProps {
 
 export const RestaurantCard = ({ restaurant }: RestaurantCardProps) => (
   <Link href={`/restaurant/${restaurant.slug}`}>
-    <a className="ring-base-200 card bg-base-100 hover:bg-base-100 aspect-[12/10] w-full ring-1">
+    <a className="card aspect-[12/10] w-full bg-base-100 ring-1 ring-base-200 hover:bg-base-100">
       <figure className="!block h-1/2 w-full object-cover">
         <motion.div
           animate={{ scale: 1 }}
