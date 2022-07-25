@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateRequest, UserRecord } from "firebase-admin/auth"
 import { FirebaseAuthenticationService } from "src/firebase-admin/services/firebase-admin-authentication.service"
-import { PaginatedRestaurantsOutput } from "src/restaurants/dtos"
 import { User, UserRole } from "src/users/entities/user.entity"
 import {
   AdminUpdateUserInput,
@@ -175,9 +174,9 @@ export class UserService {
       .take(take) //
 
     const users = await queryBuilder.getMany()
-    const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
+    const paginatedOutput = new PaginatedUsersOutput(args, matchedCount)
     return {
-      users,
+      data: users,
       ...paginatedOutput,
     }
   }

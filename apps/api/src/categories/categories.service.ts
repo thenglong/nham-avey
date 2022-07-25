@@ -74,7 +74,7 @@ export class CategoryService {
       .getMany() //
 
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
-    return { ...paginatedOutput, categories }
+    return { ...paginatedOutput, data: categories }
   }
 
   async deleteCategoryByAdmin(adminId: UserRecord["uid"], categoryId: number): Promise<CoreOutput> {

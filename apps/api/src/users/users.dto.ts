@@ -13,7 +13,7 @@ export class PaginationUserArgs extends PaginationWithSearchArgs {
 @ObjectType()
 export class PaginatedUsersOutput extends PaginationOutput {
   @Field(type => [User], { nullable: true })
-  users?: User[]
+  data?: User[]
 }
 
 @InputType()

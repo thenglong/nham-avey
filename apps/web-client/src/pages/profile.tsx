@@ -4,8 +4,12 @@ import { NextSeo } from "next-seo"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 
-import { useFirebaseAuthState, useMeQuery, useUpdateMeMutation } from "@nham-avey/common"
-import useRedirectOnUnauthed from "src/hooks/useRedirectOnUnauthed"
+import {
+  useFirebaseAuthState,
+  useMeQuery,
+  useUpdateMeMutation,
+} from "@nham-avey/common"
+import useRedirectOnUnauthed from "src/hooks/use-redirect-on-unauthed"
 import firebaseServices from "src/services/firebase-services"
 
 const schema = yup.object().shape({

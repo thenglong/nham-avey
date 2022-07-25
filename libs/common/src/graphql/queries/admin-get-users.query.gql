@@ -6,7 +6,7 @@ query AdminGetUsers($role: UserRole, $q: String, $take: Int, $page: Int) {
     matchedCount
     ok
     pageCount
-    users {
+    data {
       createdAt
       firstName
       lastName

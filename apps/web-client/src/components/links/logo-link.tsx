@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export const HomeLogoLink = () => {
+export const LogoLink = () => {
   return (
     <Link href="/">
       <a className="h-[90%] pl-0 text-xl normal-case">
@@ -14,4 +14,4 @@ export const HomeLogoLink = () => {
   )
 }
 
-export default HomeLogoLink
+export default LogoLink

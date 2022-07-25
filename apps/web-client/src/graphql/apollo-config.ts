@@ -69,7 +69,7 @@ const splitLink = isClient
         )
       },
       getWsLink() as WebSocketLink,
-      authMiddleware.concat(httpLink)
+      authMiddleware.concat(httpLink),
     )
   : authMiddleware.concat(httpLink)
 
@@ -82,7 +82,9 @@ export const createApolloClient = () => {
   })
 }
 
-export function initializeApollo(initialState: NormalizedCacheObject | null = null) {
+export function initializeApollo(
+  initialState: NormalizedCacheObject | null = null,
+) {
   const _apolloClient = apolloClient ?? createApolloClient()
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
@@ -116,7 +118,7 @@ export function initializeApollo(initialState: NormalizedCacheObject | null = nu
 export function addApolloState(
   client: ApolloClient<NormalizedCacheObject>,
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  pageProps: any
+  pageProps: any,
 ) {
   if (pageProps?.props) {
     pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract()

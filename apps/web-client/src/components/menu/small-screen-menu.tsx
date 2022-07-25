@@ -6,7 +6,7 @@ interface MobileMenuProps {
   isLoggedIn: boolean
 }
 
-export const SmallMenu = ({ isLoggedIn, isOpen }: MobileMenuProps) => {
+export const SmallScreenMenu = ({ isLoggedIn, isOpen }: MobileMenuProps) => {
   return (
     <Transition
       show={isOpen}
@@ -22,9 +22,9 @@ export const SmallMenu = ({ isLoggedIn, isOpen }: MobileMenuProps) => {
           {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
           <li tabIndex={0}>
             {isLoggedIn ? (
-              <Link href="profile">View Profile</Link>
+              <Link href="/profile">View Profile</Link>
             ) : (
-              <Link href="sign-in">Sign In</Link>
+              <Link href="/sign-in">Sign In</Link>
             )}
           </li>
           <li>
@@ -43,4 +43,4 @@ export const SmallMenu = ({ isLoggedIn, isOpen }: MobileMenuProps) => {
   )
 }
 
-export default SmallMenu
+export default SmallScreenMenu

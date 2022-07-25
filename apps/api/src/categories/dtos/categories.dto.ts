@@ -5,5 +5,5 @@ import { PaginationOutput } from "src/common/dtos/pagination.dto"
 @ObjectType()
 export class PaginationCategoriesOutput extends PaginationOutput {
   @Field(type => [Category], { nullable: true })
-  readonly categories?: Category[]
+  readonly data?: Category[]
 }

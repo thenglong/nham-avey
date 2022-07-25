@@ -2,7 +2,7 @@ query RestaurantById($id: Int!) {
   restaurant(id: $id){
     error
     ok
-    restaurant {
+    data {
       address
       categories {
         coverImageUrl

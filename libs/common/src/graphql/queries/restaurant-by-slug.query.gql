@@ -2,7 +2,7 @@ query RestaurantBySlug($slug: String!) {
   restaurantBySlug(slug: $slug) {
     error
     ok
-    restaurant {
+    data {
       address
       categories {
         coverImageUrl

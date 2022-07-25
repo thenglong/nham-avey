@@ -125,7 +125,7 @@ export class RestaurantService {
     restaurant.categories = categoryEntities
 
     await this.restaurantRepo.save(restaurant)
-    return { ok: true, restaurant }
+    return { ok: true, data: restaurant }
   }
 
   async createRestaurantByAdmin(admin: DecodedIdToken, input: AdminCreateRestaurantInput): Promise<RestaurantOutput> {
@@ -143,7 +143,7 @@ export class RestaurantService {
     restaurant.categories = categoryEntities
     const saved = await this.restaurantRepo.save(restaurant)
 
-    return { ok: true, restaurant: saved }
+    return { ok: true, data: saved }
   }
 
   async updateRestaurantByVendor(vendorId: UserRecord["uid"], input: VendorUpdateRestaurantInput): Promise<RestaurantOutput> {
@@ -207,13 +207,13 @@ export class RestaurantService {
   async findRestaurantById(id: Restaurant["id"]): Promise<RestaurantOutput> {
     const restaurant = await this.restaurantRepo.findOneBy({ id })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    return { ok: true, restaurant }
+    return { ok: true, data: restaurant }
   }
 
   async findRestaurantBySlug(slug: Restaurant["slug"]): Promise<RestaurantOutput> {
     const restaurant = await this.restaurantRepo.findOneBy({ slug })
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
-    return { ok: true, restaurant }
+    return { ok: true, data: restaurant }
   }
 
   async findRestaurantsByAdmin(args: PaginationWithSearchArgs): Promise<PaginatedRestaurantsOutput> {
@@ -249,7 +249,7 @@ export class RestaurantService {
     const restaurants = await queryBuilder.getMany()
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
     return {
-      restaurants,
+      data: restaurants,
       ...paginatedOutput,
     }
   }
@@ -289,7 +289,7 @@ export class RestaurantService {
     const restaurants = await queryBuilder.getMany()
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
     return {
-      restaurants,
+      data: restaurants,
       ...paginatedOutput,
     }
   }
@@ -326,7 +326,7 @@ export class RestaurantService {
     const restaurants = await queryBuilder.getMany()
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
     return {
-      restaurants,
+      data: restaurants,
       ...paginatedOutput,
     }
   }
@@ -342,6 +342,6 @@ export class RestaurantService {
 
     if (!restaurant) return { ok: false, error: "[App] Restaurant not found" }
 
-    return { ok: true, restaurant }
+    return { ok: true, data: restaurant }
   }
 }

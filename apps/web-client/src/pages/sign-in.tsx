@@ -7,7 +7,7 @@ import * as yup from "yup"
 
 import { useSignInWithEmailAndPassword } from "@nham-avey/common"
 import { FormError } from "src/components/form-error"
-import useRedirectOnAuthed from "src/hooks/useRedirectOnAuthed"
+import useRedirectOnAuthed from "src/hooks/use-redirect-on-authed"
 import firebaseService from "src/services/firebase-services"
 
 const schema = yup.object().shape({
@@ -33,7 +33,11 @@ const LoginPage = () => {
     resolver: yupResolver(schema),
   })
 
-  const { signIn, isLoading: isSigningIn, error } = useSignInWithEmailAndPassword()
+  const {
+    signIn,
+    isLoading: isSigningIn,
+    error,
+  } = useSignInWithEmailAndPassword()
 
   const onSubmit = async () => {
     const { email, password } = getValues()
@@ -45,7 +49,10 @@ const LoginPage = () => {
       <NextSeo title="Login | Nham Avey" />
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
         <h1 className="my-10 w-52 text-4xl font-semibold">Nham Avey</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-5 mb-5 grid w-full gap-3">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-5 mb-5 grid w-full gap-3"
+        >
           <div className="form-control w-full">
             <label htmlFor="email" className="label">
               <span className="label-text">Your Email Address</span>
@@ -58,7 +65,9 @@ const LoginPage = () => {
               className="input input-primary w-full"
             />
             <label htmlFor="email" className="label">
-              <span className="label-text-alt text-error">{errors.email?.message}</span>
+              <span className="label-text-alt text-error">
+                {errors.email?.message}
+              </span>
             </label>
           </div>
 
@@ -91,7 +100,7 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <Link href="/create-account">
+        <Link href="/sign-up">
           <a className="link">Create an Account instead</a>
         </Link>
       </div>

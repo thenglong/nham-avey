@@ -5,15 +5,15 @@ import { useRouter } from "next/router"
 
 import { useFirebaseAuthState } from "@nham-avey/common"
 
-export const useRedirectOnAuthed = (auth: Auth, url: string) => {
+export const useRedirectOnAuthed = (auth: Auth, redirectUrl: string) => {
   const { user } = useFirebaseAuthState(auth)
   const router = useRouter()
 
   useEffect(() => {
     if (user) {
-      router.replace(url)
+      router.replace(redirectUrl)
     }
-  }, [router, url, user])
+  }, [router, redirectUrl, user])
 }
 
 export default useRedirectOnAuthed

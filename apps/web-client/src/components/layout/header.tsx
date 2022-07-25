@@ -1,23 +1,27 @@
 import { useState } from "react"
 
-import { useMeQuery } from "@nham-avey/common"
+import { useFirebaseAuthState, useMeQuery } from "@nham-avey/common"
+import ProfileLinkButton from "src/components/buttons/profile-link-button"
 import { Hamburger } from "src/components/hamburger"
-import HomeLogoLink from "src/components/home-logo-link"
-import LargeScreenMenu from "src/components/large-screen-menu"
-import ProfileLinkButton from "src/components/profile-link-button"
-import SmallMenu from "src/components/small-menu"
+import LogoLink from "src/components/links/logo-link"
+import LargeScreenMenu from "src/components/menu/large-screen-menu"
+import SmallScreenMenu from "src/components/menu/small-screen-menu"
+import firebaseServices from "src/services/firebase-services"
+
+const { auth } = firebaseServices
 
 export const Header = () => {
-  const { data } = useMeQuery()
-  const [isOpen, setIsOpen] = useState(false)
+  const { user } = useFirebaseAuthState(auth)
+  const { data } = useMeQuery({ skip: !user })
+  const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleToggleMenu = () => setIsOpen(prevState => !prevState)
+  const handleToggleMenu = () => setIsExpanded(prevState => !prevState)
 
   return (
     <header className="border-b-[1px] border-base-300 shadow">
       <div className="subtitle-1 container navbar mx-auto h-20 bg-base-100 px-4 lg:px-8">
         <div className="navbar-start h-full">
-          <HomeLogoLink />
+          <LogoLink />
         </div>
         <div className="grow"></div>
         <div className="navbar-end lg:flex">
@@ -30,13 +34,13 @@ export const Header = () => {
             onClick={handleToggleMenu}
           >
             <Hamburger
-              isOpen={isOpen}
+              isOpen={isExpanded}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
             />
           </button>
         </div>
       </div>
-      <SmallMenu isOpen={isOpen} isLoggedIn={!!data?.me} />
+      <SmallScreenMenu isOpen={isExpanded} isLoggedIn={!!data?.me} />
     </header>
   )
 }

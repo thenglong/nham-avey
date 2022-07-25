@@ -87,7 +87,7 @@ export class CityService {
       .getMany() //
 
     const paginatedOutput = new PaginatedRestaurantsOutput(args, matchedCount)
-    return { ...paginatedOutput, cities }
+    return { ...paginatedOutput, data: cities }
   }
 
   async deleteCityByAdmin(adminId: UserRecord["uid"], cityId: number): Promise<CoreOutput> {

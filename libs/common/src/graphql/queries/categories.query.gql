@@ -1,6 +1,6 @@
 query Categories($page: Int, $q: String, $take: Int) {
   categories(page: $page, q: $q, take: $take) {
-    categories {
+    data {
       coverImageUrl
       createdAt
       id

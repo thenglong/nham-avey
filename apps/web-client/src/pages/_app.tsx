@@ -21,7 +21,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Welcome to nham-avey-fe!</title>
       </Head>
       <main className="app">
-        <NextNProgress color={PRIMARY} showOnShallow options={{ showSpinner: false }} />
+        <NextNProgress
+          color={PRIMARY}
+          showOnShallow
+          options={{ showSpinner: false }}
+        />
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           <ApolloProvider client={apolloClient}>

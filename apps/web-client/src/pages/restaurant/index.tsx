@@ -5,8 +5,12 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
-import { Restaurant, useCategoriesQuery, useRestaurantsQuery } from "@nham-avey/common"
-import RestaurantCard from "src/components/restaurant-card"
+import {
+  Restaurant,
+  useCategoriesQuery,
+  useRestaurantsQuery,
+} from "@nham-avey/common"
+import RestaurantCard from "src/components/cards/restaurant-card"
 
 interface PageState {
   page: number
@@ -73,7 +77,9 @@ const RestaurantsPage = () => {
                 <div className="group flex cursor-pointer flex-col items-center">
                   <div
                     className="h-16 w-16 rounded-full bg-cover group-hover:bg-gray-100"
-                    style={{ backgroundImage: `url(${category.coverImageUrl})` }}
+                    style={{
+                      backgroundImage: `url(${category.coverImageUrl})`,
+                    }}
                   ></div>
                   <span className="mt-1 text-center text-sm font-medium">
                     {category.name}
@@ -84,7 +90,10 @@ const RestaurantsPage = () => {
           </div>
           <div className="mt-16 grid gap-x-5 gap-y-10 md:grid-cols-3">
             {data?.restaurants?.restaurants?.map(restaurant => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant as Restaurant} />
+              <RestaurantCard
+                key={restaurant.id}
+                restaurant={restaurant as Restaurant}
+              />
             ))}
           </div>
           <div className="mx-auto mt-10 grid max-w-md grid-cols-3 items-center text-center ">

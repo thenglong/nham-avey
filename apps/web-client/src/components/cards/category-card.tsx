@@ -6,9 +6,9 @@ interface CategoryItemProps {
   category: Category
 }
 
-export const CategoryItem = ({ category }: CategoryItemProps) => (
+export const CategoryCard = ({ category }: CategoryItemProps) => (
   <Link href={`/category/${category.slug}`}>
-    <a className="ring-base-300 hover:ring-primary-focus rounded-2xl p-3 text-center ring-2 transition-shadow ease-in-out hover:ring-offset-2">
+    <a className="rounded-2xl p-3 text-center ring-2 ring-base-300 transition-shadow ease-in-out hover:ring-primary-focus hover:ring-offset-2">
       <img
         src={category.coverImageUrl as string}
         className="mx-auto h-6 w-6 bg-red-300"
@@ -19,4 +19,4 @@ export const CategoryItem = ({ category }: CategoryItemProps) => (
   </Link>
 )
 
-export default CategoryItem
+export default CategoryCard

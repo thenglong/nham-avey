@@ -379,27 +379,27 @@ type PaginatedCityRestaurantsOutput {
 }
 
 type PaginatedRestaurantsOutput {
+  data: [Restaurant!]
   error: String
   hasNext: Boolean
   hasPrevious: Boolean
   matchedCount: Int
   ok: Boolean!
   pageCount: Int
-  restaurants: [Restaurant!]
 }
 
 type PaginatedUsersOutput {
+  data: [User!]
   error: String
   hasNext: Boolean
   hasPrevious: Boolean
   matchedCount: Int
   ok: Boolean!
   pageCount: Int
-  users: [User!]
 }
 
 type PaginationCategoriesOutput {
-  categories: [Category!]
+  data: [Category!]
   error: String
   hasNext: Boolean
   hasPrevious: Boolean
@@ -409,7 +409,7 @@ type PaginationCategoriesOutput {
 }
 
 type PaginationCitiesOutput {
-  cities: [City!]
+  data: [City!]
   error: String
   hasNext: Boolean
   hasPrevious: Boolean
@@ -474,9 +474,9 @@ type Restaurant {
 }
 
 type RestaurantOutput {
+  data: Restaurant
   error: String
   ok: Boolean!
-  restaurant: Restaurant
 }
 
 type Review {

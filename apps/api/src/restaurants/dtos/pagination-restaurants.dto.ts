@@ -5,5 +5,5 @@ import { Restaurant } from "src/restaurants/entities/restaurant.entity"
 @ObjectType()
 export class PaginatedRestaurantsOutput extends PaginationOutput {
   @Field(type => [Restaurant], { nullable: true })
-  restaurants?: Restaurant[]
+  data?: Restaurant[]
 }
