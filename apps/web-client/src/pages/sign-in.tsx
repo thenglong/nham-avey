@@ -47,7 +47,7 @@ const LoginPage = () => {
   return (
     <div className="mt:10 flex h-screen flex-col items-center lg:mt-28">
       <NextSeo title="Login | Nham Avey" />
-      <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
+      <div className="container mx-auto flex w-full flex-col items-center px-5 px-4 lg:px-8">
         <h1 className="my-10 w-52 text-4xl font-semibold">Nham Avey</h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -100,7 +100,7 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <Link href="/sign-up">
+        <Link href="/sign-up-customer">
           <a className="link">Create an Account instead</a>
         </Link>
       </div>

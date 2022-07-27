@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export const DishCard = () => {
   return (
-    <Link href="/dish/">
+    <Link href="/dish/sample">
       <a className="restaurant-card card aspect-[10/12] w-full ring-1 ring-base-200 hover:shadow-lg">
         <figure className="!block h-3/5 w-full overflow-hidden object-cover">
           <div className="h-full w-full p-4 pb-0">

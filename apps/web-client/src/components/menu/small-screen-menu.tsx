@@ -28,14 +28,14 @@ export const SmallScreenMenu = ({ isLoggedIn, isOpen }: MobileMenuProps) => {
             )}
           </li>
           <li>
-            <Link href="#">Promotions</Link>
+            <Link href="/promotions">Promotions</Link>
           </li>
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control,jsx-a11y/no-noninteractive-tabindex */}
           <li tabIndex={0}>
-            <a>Nearby Restaurants</a>
+            <Link href="/restaurant/nearby">Nearby Restaurants</Link>
           </li>
           <li>
-            <a>Our Picks</a>
+            <Link href="/restaurant/our-pick">Our Picks</Link>
           </li>
         </ul>
       </div>

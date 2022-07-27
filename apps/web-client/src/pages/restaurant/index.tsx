@@ -31,13 +31,13 @@ const RestaurantsPage = () => {
     notifyOnNetworkStatusChange: true,
   })
 
-  interface IFormProps {
+  interface FormProps {
     searchTerm: string
   }
 
   const onPrevPageClick = () => setPage(current => current - 1)
   const onNextPageClick = () => setPage(current => current + 1)
-  const { register, handleSubmit, getValues } = useForm<IFormProps>()
+  const { register, handleSubmit, getValues } = useForm<FormProps>()
   const router = useRouter()
 
   const { data: categoriesData } = useCategoriesQuery({

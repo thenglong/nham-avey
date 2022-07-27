@@ -38,8 +38,8 @@ export const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
           />
         </figure>
         <div className="flex flex-row p-6 p-4">
-          <div className="flex-[4]">
-            <h3 className="h6">{restaurant.name}</h3>
+          <div className="w-full flex-[4]">
+            <h3 className="h6 max-w-[95%] truncate">{restaurant.name}</h3>
             <div className="mt-1.5 flex items-center justify-start">
               <ClockIcon className="mr-2 h-4" />
               <p className="small-2 inline text-gray-500">30-40 min</p>
