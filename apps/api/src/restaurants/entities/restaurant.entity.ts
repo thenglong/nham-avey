@@ -40,6 +40,11 @@ export class Restaurant extends CoreEntity {
   @IsString()
   slug: string
 
+  @Field(type => String, { nullable: true })
+  @Column({ nullable: true, type: "varchar", length: 255 })
+  @IsString()
+  description: string
+
   @Field(() => [String], { nullable: true })
   @Column("varchar", { array: true, nullable: true })
   @IsString({ each: true })
