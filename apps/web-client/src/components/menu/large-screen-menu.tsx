@@ -13,7 +13,7 @@ export const LargeScreenMenu = () => {
           Restaurants
           <ChevronDownIcon className="w-4" />
         </a>
-        <ul className="right-0 bg-base-100 p-2 shadow-lg">
+        <ul className="right-0 z-[100] bg-base-100 p-2 shadow-lg">
           <li>
             <Link href="#">Nearby</Link>
           </li>

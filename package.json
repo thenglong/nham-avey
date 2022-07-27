@@ -131,6 +131,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/debug": "^4.1.7",
     "@types/express": "^4.17.13",
+    "@types/google-map-react": "^2.1.7",
     "@types/jest": "^27.5.2",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash-es": "^4.17.6",
