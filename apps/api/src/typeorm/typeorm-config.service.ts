@@ -5,6 +5,7 @@ import { parse } from "pg-connection-string"
 import { Category } from "src/categories/category.entity"
 import { City } from "src/cities/city.entity"
 import { Dish } from "src/dishes/dish.entity"
+import { Image } from "src/images/entities/image.entity"
 import { Location } from "src/locations/location.entity"
 import { OrderItem } from "src/orders/entities/order-item.entity"
 import { Order } from "src/orders/entities/order.entity"
@@ -30,7 +31,7 @@ export class TypeormConfigService implements TypeOrmOptionsFactory {
       database: database as string,
       username: user,
       password,
-      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment, City, Location, OpeningHours, Review],
+      entities: [User, Restaurant, Category, Dish, Order, OrderItem, Payment, City, Location, OpeningHours, Review, Image],
       migrations: [],
       migrationsTableName: "migrations",
       namingStrategy: new SnakeNamingStrategy(),

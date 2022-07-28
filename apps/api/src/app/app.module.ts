@@ -21,6 +21,7 @@ import configuration from "src/config/configuration"
 import { DishModule } from "src/dishes/dishes.module"
 import { FileUploadsModule } from "src/file-uploads/file-uploads.module"
 import { FirebaseAdminModule } from "src/firebase-admin/firebase-admin.module"
+import { ImagesModule } from "src/images/images.module"
 import { MailModule } from "src/mail/mails.module"
 import { OrdersModule } from "src/orders/orders.module"
 import { PaymentsModule } from "src/payments/payments.module"
@@ -89,6 +90,7 @@ import * as Yup from "yup"
     CommonModule,
     PaymentsModule,
     FileUploadsModule,
+    ImagesModule,
   ],
   controllers: [],
   providers: [
